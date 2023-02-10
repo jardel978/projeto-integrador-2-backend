@@ -1,0 +1,37 @@
+server:
+  port: ${PORT_EUREKA_SERVER:8761}
+
+#eureka:
+#  client:
+#    register-with-eureka: false
+#    fetch-registry: false
+
+eureka:
+  instance:
+    hostname: eureka-service
+  client:
+    registerWithEureka: false
+    fetchRegistry: false
+    service-url:
+      defaultZone: http://${eureka.instance.hostname}:8761/eureka
+
+#spring:
+#  application:
+#    name: eureka-service
+#  zipkin:
+#    base-url: http://zipkin-service:9411/
+
+management:
+  info:
+    env:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+
+info:
+  name: Servico de registro e descobrimento dos demais servicos presentes no ecossistema de toda a aplicacao
+  author: grupo 03
+  mail:
+  severity: Medio
