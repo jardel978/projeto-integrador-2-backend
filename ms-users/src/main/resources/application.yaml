@@ -1,0 +1,61 @@
+server:
+  port: 8084
+
+eureka:
+  instance:
+    hostname: localhost
+    prefer-ip-address: true
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka
+
+spring:
+  application:
+    name: ms-users
+  security:
+    oauth2:
+      client:
+        registration:
+          keycloak:
+            provider: keycloak-provider
+            client-id: ms-users-client
+            scope: openid
+            authorization-grant-type: client_credentials
+            client-secret: segredo
+        provider:
+          keycloak-provider:
+            token-uri: http://localhost:8080/realms/umReino/protocol/openid-connect/token
+      resource-server:
+        jwt:
+          issuer-uri: http://localhost:8080/realms/umReino/protocol/openid-connect/certs
+
+dh:
+  keycloak:
+    server-url: http://localhost:8080/
+    realm: umReino
+    client-id: ms-users-client
+    client-secret: segredo
+
+management:
+  info:
+    env:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+
+info:
+  name: Servico de usuários.
+  author: Jardel Oliveira
+  severity: medio
+
+logging:
+  level:
+    org.springframework.security: DEBUG
+  pattern:
+    dateformat: 'dd-MM-yyyy HH:mm:ss.SSS'
+    console: '%clr(%d{"dd-MM-yyyy''T''HH:mm:ss"}){faint} %highlight(%clr(${LOG_LEVEL_PATTERN:-%5p})) %clr(${PID:- })
+    %clr(---){faint} %clr([%15.15t]){faint} %clr([%-40.40logger{39}]:%line){cyan} %clr(-){faint} %m%n%wEx'
