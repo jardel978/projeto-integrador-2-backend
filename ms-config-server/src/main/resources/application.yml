@@ -1,17 +1,24 @@
 server:
-    port: ${PORT:8888}
+    port: ${PORT_MS_CONFIG_SERVER:8888}
+
 spring:
   application:
-    name: config-server
+    name: ms-config-server
   cloud:
     config:
       server:
+        native:
+          search-locations:
+            - classpath:/cloudConfigFiles
         git:
-          uri: https://github.com/tulioviglione/configCloud
+          uri: https://github.com/jardel978/pi2_back-end_grupo3_cloudConfigFiles-
+#          uri: file:///${user.home}/cloudConfigFiles
 eureka:
   client:
     service-url:
       defaultZone: http://localhost:8761/eureka/
+
+
 management:
   info:
     env:
@@ -20,7 +27,8 @@ management:
     web:
       exposure:
         include: health,info
+
 info:
-  name: Actuator informação
-  author: Teste
-  severity: Medio
+  name: Serviço para configuração externalizada do sistema distribuído da aplicação.
+  author: Grupo 03
+  severity: Alto

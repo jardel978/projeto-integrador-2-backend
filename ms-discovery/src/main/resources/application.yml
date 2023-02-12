@@ -1,10 +1,5 @@
 server:
-  port: ${PORT_EUREKA_SERVER:8761}
-
-#eureka:
-#  client:
-#    register-with-eureka: false
-#    fetch-registry: false
+  port: ${PORT_MS_DISCOVERY:8761}
 
 eureka:
   instance:

@@ -1,7 +1,6 @@
-# Configuraciones del servidor
 server:
-  port: 8090
-# Configuraciones de eureka
+  port:  ${PORT_MS_GATEWAY:8090}
+
 eureka:
   instance:
     hostname: localhost
@@ -11,14 +10,15 @@ eureka:
     fetch-registry: true
     serviceUrl:
       defaultZone: http://localhost:8761/eureka
-# Configuraciones de spring cloud
+
 spring:
-  main:
-    web-application-type: reactive
-    allow-circular-references: true
   application:
     name: ms-gateway
+  config:
+    import: optional:configserver:http://localhost:8888
   cloud:
+    config:
+      profile: ${MS_GATEWEAY_PROFILE:dev}
     gateway:
       default-filters:
         - TokenRelay
@@ -27,10 +27,10 @@ spring:
           uri: lb://MS-USERS:8084
           predicates:
             - Path=/users/**
-#        - id: ms-bill
-#          uri: lb://MS-BILLS:9191
-#          predicates:
-#            - Path=/bills/**
+          #        - id: ms-bill
+          #          uri: lb://MS-BILLS:9191
+          #          predicates:
+          #            - Path=/bills/**
           filters:
             - StripPrefix=2
   security:
@@ -38,13 +38,13 @@ spring:
       client:
         provider:
           keycloak-provider:
-            issuer-uri: http://localhost:8080/realms/umReino
+            issuer-uri: http://localhost:8080/realms/dmhRealm
         registration:
           keycloak-spring-gateway-client:
             provider: keycloak-provider
             scope: openid
             client-id: ms-gateway-client
-            client-secret: segredo
+            client-secret: ${KCK_GATEWAY_CLIENT_SECRET:qI6eIic7tR2xho7jYOqGEd4wZ29TL61e}
             authorization-grant-type: authorization_code
             redirect-uri: "{baseUrl}/login/oauth2/code/keycloak"
 
@@ -59,7 +59,7 @@ management:
 
 info:
   name: Servico de roteamento (API Gateway) para os demais servicos presentes no ecossistema da aplicacao.
-  author: Jardel Oliveira
+  author: Grupo 03
   severity: Alto
 
 logging:

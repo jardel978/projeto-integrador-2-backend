@@ -1,5 +1,5 @@
 server:
-  port: 8084
+  port: ${PORT_MS_USERS:8084}
 
 eureka:
   instance:
@@ -14,6 +14,11 @@ eureka:
 spring:
   application:
     name: ms-users
+  config:
+    import: optional:configserver:http://localhost:8888
+  cloud:
+    config:
+      profile: ${MS_GATEWEAY_PROFILE:dev}
   security:
     oauth2:
       client:
@@ -23,20 +28,20 @@ spring:
             client-id: ms-users-client
             scope: openid
             authorization-grant-type: client_credentials
-            client-secret: segredo
+            client-secret: ${KCK_USER_CLIENT_SECRET:4VkJb1ZOgAMItGEDDhtRFPi89TzFU7cL}
         provider:
           keycloak-provider:
-            token-uri: http://localhost:8080/realms/umReino/protocol/openid-connect/token
+            token-uri: http://localhost:8080/realms/dmhRealm/protocol/openid-connect/token
       resource-server:
         jwt:
-          issuer-uri: http://localhost:8080/realms/umReino/protocol/openid-connect/certs
+          issuer-uri: http://localhost:8080/realms/dmhRealm/protocol/openid-connect/certs
 
-dh:
+dmh:
   keycloak:
     server-url: http://localhost:8080/
-    realm: umReino
+    realm: dmhRealm
     client-id: ms-users-client
-    client-secret: segredo
+    client-secret: ${KCK_USER_CLIENT_SECRET:4VkJb1ZOgAMItGEDDhtRFPi89TzFU7cL}
 
 management:
   info:
@@ -49,8 +54,8 @@ management:
 
 info:
   name: Servico de usuários.
-  author: Jardel Oliveira
-  severity: medio
+  author: Grupo 03
+  severity: Alto
 
 logging:
   level:
