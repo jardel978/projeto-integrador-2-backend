@@ -1,6 +1,7 @@
 package com.dmh.msusers.configuration;
 
 import lombok.extern.slf4j.Slf4j;
+import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.keycloak.OAuth2Constants;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.KeycloakBuilder;
@@ -26,28 +27,29 @@ public class KeycloakClientConfig {
     @Bean
     public Keycloak getInstance() {
 
-        Keycloak keycloak = KeycloakBuilder.builder() //
-                .serverUrl(serverURL) //
-                .realm(realm) //
-                .grantType(OAuth2Constants.PASSWORD) //
-                .clientId(clientId) //
-                .clientSecret(clientSecret) //
-                .username("admin") //
-                .password("admin") //
-                .build();
+//        Keycloak keycloak = KeycloakBuilder.builder() //
+//                .serverUrl(serverURL) //
+//                .realm(realm) //
+//                .grantType(OAuth2Constants.PASSWORD) //
+//                .clientId(clientId) //
+//                .clientSecret(clientSecret) //
+//                .username("admin") //
+//                .password("admin") //
+//                .build();
 
-//        Keycloak keycloak = KeycloakBuilder.builder()
-//                .serverUrl(serverURL)
-//                .realm(realm)
-//                .clientId(clientId)
-//                .clientSecret(clientSecret)
-//                .grantType(OAuth2Constants.CLIENT_CREDENTIALS)
-//                .resteasyClient(new ResteasyClientBuilder().connectionPoolSize(10).build()).build();
+        Keycloak keycloak = KeycloakBuilder.builder()
+                .serverUrl(serverURL)
+                .realm(realm)
+                .clientId(clientId)
+                .clientSecret(clientSecret)
+                .grantType(OAuth2Constants.CLIENT_CREDENTIALS)
+                .resteasyClient(new ResteasyClientBuilder().connectionPoolSize(10).build()).build();
 
 
-//        log.info("serverURL" + " " + serverURL);
-//        log.info("clientSecret" + " " + clientSecret);
-//        log.info("keycloak" + keycloak.toString());
+        log.info("Token" + " " + keycloak.tokenManager().getAccessToken().getToken());
+        log.info("serverURL" + " " + serverURL);
+        log.info("clientSecret" + " " + clientSecret);
+        log.info("keycloak" + keycloak.toString());
 
         return keycloak;
     }
