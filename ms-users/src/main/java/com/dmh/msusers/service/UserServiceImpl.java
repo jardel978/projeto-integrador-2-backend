@@ -19,12 +19,7 @@ public class UserServiceImpl implements IUserService {
     private ModelMapper mapper;
 
     public UserDTOResponse findById(String userId) {
-        User userModel = userRepository.findById(userId).orElseThrow(() ->
-                new DataNotFoundException("Usuário não encontrado.")
-        );
-//        mapper.typeMap(User.class, UserDTOResponse.class).addMappings(
-//                mp -> mp.skip(UserDTOResponse::setPassword)
-//        );
+        User userModel = userRepository.findById(userId);
         return mapper.map(userModel, UserDTOResponse.class);
     }
 

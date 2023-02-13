@@ -1,5 +1,6 @@
 package com.dmh.msusers.repository;
 
+import com.dmh.msusers.exceptions.DataNotFoundException;
 import com.dmh.msusers.model.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Repository;
 
+import javax.ws.rs.NotFoundException;
 import java.util.*;
 
 @Slf4j
@@ -74,14 +76,16 @@ public class KeycloakUserRepository implements IUserRepository {
     }
 
     @Override
-    public Optional<User> findById(String id) {
-        UserResource userResource = keycloak
-                .realm("dmhRealm")
-                .users().get(id);
-        log.info("findById");
-        log.info("userResource", userResource);
-        UserRepresentation userRepresentation = userResource.toRepresentation();
-        return Optional.of(fromRepresentation(userRepresentation));
+    public User findById(String id) {
+        try {
+            UserResource userResource = keycloak
+                    .realm(realm)
+                    .users().get(id);
+            UserRepresentation userRepresentation = userResource.toRepresentation();
+            return fromRepresentation(userRepresentation);
+        } catch (NotFoundException e) {
+            throw new DataNotFoundException("Usuário não encontrado.");
+        }
     }
 
 }

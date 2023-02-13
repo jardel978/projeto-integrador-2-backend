@@ -1,7 +1,6 @@
 package com.dmh.msusers.configuration;
 
 import lombok.extern.slf4j.Slf4j;
-import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.keycloak.OAuth2Constants;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.KeycloakBuilder;
@@ -23,33 +22,38 @@ public class KeycloakClientConfig {
     private String clientId;
     @Value("${dmh.keycloak.client-secret}")
     private String clientSecret;
+    @Value("${dmh.keycloak.username}")
+    private String keycloakUsername;
+    @Value("${dmh.keycloak.password}")
+    private String keycloakPassword;
 
     @Bean
     public Keycloak getInstance() {
 
-//        Keycloak keycloak = KeycloakBuilder.builder() //
-//                .serverUrl(serverURL) //
-//                .realm(realm) //
-//                .grantType(OAuth2Constants.PASSWORD) //
-//                .clientId(clientId) //
-//                .clientSecret(clientSecret) //
-//                .username("admin") //
-//                .password("admin") //
-//                .build();
-
         Keycloak keycloak = KeycloakBuilder.builder()
                 .serverUrl(serverURL)
-                .realm(realm)
-                .clientId(clientId)
-                .clientSecret(clientSecret)
-                .grantType(OAuth2Constants.CLIENT_CREDENTIALS)
-                .resteasyClient(new ResteasyClientBuilder().connectionPoolSize(10).build()).build();
+                .realm("master")
+                .grantType(OAuth2Constants.PASSWORD)
+                .clientId("admin-cli")
+                .username(keycloakUsername)
+                .password(keycloakPassword)
+                .build();
 
+//        Keycloak keycloak = KeycloakBuilder.builder()
+//                .serverUrl("http://localhost:8080/")
+//                .grantType(OAuth2Constants.CLIENT_CREDENTIALS)
+//                .realm(realm)
+//                .clientId(clientId)
+//                .clientSecret(clientSecret)
+//                .scope(OAuth2Constants.SCOPE_OPENID)
+//                .resteasyClient(
+//                        new ResteasyClientBuilder()
+//                                .connectionPoolSize(10).build()
+//                ).build();
 
-        log.info("Token" + " " + keycloak.tokenManager().getAccessToken().getToken());
-        log.info("serverURL" + " " + serverURL);
-        log.info("clientSecret" + " " + clientSecret);
-        log.info("keycloak" + keycloak.toString());
+//        keycloak.realm(realm).clients().findAll().forEach(clientRepresentation -> {
+//            log.info("keycloak (realm:" + " " + realm + " " + ")" + " " + clientRepresentation.getClientId());
+//        });
 
         return keycloak;
     }

@@ -12,7 +12,7 @@ public class SecurityConfiguration {
     public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
         http
                 .authorizeExchange()
-                .pathMatchers("/actuator/**", "/users/**", "/users/registration").permitAll()
+                .pathMatchers("/actuator/**", "/users/registration").permitAll()
                 .and()
                 .authorizeExchange()
                 .anyExchange()

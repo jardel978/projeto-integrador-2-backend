@@ -25,7 +25,7 @@ public class OAuth2ResourceServerSecurityConfiguration extends WebSecurityConfig
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers(HttpMethod.GET, "/actuator/**", "/users/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/actuator/**", "/users/registration").permitAll()
                 .anyRequest().authenticated();  // todas as requisições devem ser autenticadas
         http.oauth2ResourceServer()
                 .jwt()
