@@ -3,10 +3,8 @@ package com.dmh.msusers.configuration.oauth;
 import com.dmh.msusers.exceptions.CustomAccessDeniedHandler;
 import com.dmh.msusers.exceptions.CustomAuthenticationEntryPoint;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
-import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -25,8 +23,9 @@ public class OAuth2ResourceServerSecurityConfiguration extends WebSecurityConfig
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers(HttpMethod.GET, "/actuator/**", "/users/registration").permitAll()
-                .anyRequest().authenticated();  // todas as requisições devem ser autenticadas
+                .antMatchers(HttpMethod.GET, "/actuator/**").permitAll();
+        http.authorizeRequests().antMatchers(HttpMethod.POST, "/users/registration", "/users/login").permitAll();
+        http.authorizeRequests().anyRequest().authenticated();  // todas as requisições devem ser autenticadas
         http.oauth2ResourceServer()
                 .jwt()
                 .jwtAuthenticationConverter(new KeyCloakJwtAuthenticationConverter());

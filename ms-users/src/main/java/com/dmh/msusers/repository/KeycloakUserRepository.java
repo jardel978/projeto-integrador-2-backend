@@ -1,18 +1,25 @@
 package com.dmh.msusers.repository;
 
 import com.dmh.msusers.exceptions.DataNotFoundException;
+import com.dmh.msusers.exceptions.KeycloakException;
+import com.dmh.msusers.exceptions.TokenException;
+import com.dmh.msusers.exceptions.UserAlreadyExistException;
 import com.dmh.msusers.model.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.keycloak.admin.client.Keycloak;
+import org.keycloak.admin.client.KeycloakBuilder;
 import org.keycloak.admin.client.resource.UserResource;
+import org.keycloak.representations.AccessTokenResponse;
 import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Repository;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.NotFoundException;
+import javax.ws.rs.core.Response;
 import java.util.*;
 
 @Slf4j
@@ -21,10 +28,15 @@ import java.util.*;
 @ConfigurationProperties(prefix = "dmh.keycloak")
 public class KeycloakUserRepository implements IUserRepository {
 
-    private final Keycloak keycloak;
-
+    @Value("${dmh.keycloak.server-url}")
+    private String serverURL;
     @Value("${dmh.keycloak.realm}")
     private String realm;
+    @Value("${dmh.keycloak.client-id}")
+    private String clientId;
+    @Value("${dmh.keycloak.client-secret}")
+    private String clientSecret;
+    private final Keycloak keycloak;
 
     private User fromRepresentation(UserRepresentation userRepresentation) {
         return User.builder()
@@ -54,7 +66,7 @@ public class KeycloakUserRepository implements IUserRepository {
         userAttributes.put("cpf", cpfList);
         userAttributes.put("phone", phoneList);
         UserRepresentation userRepresentation = new UserRepresentation();
-//        userRepresentation.setUsername(user.getName());
+        userRepresentation.setUsername(user.getEmail());
         userRepresentation.setFirstName(user.getName());
         userRepresentation.setLastName(user.getLastName());
         userRepresentation.setAttributes(userAttributes);
@@ -72,7 +84,16 @@ public class KeycloakUserRepository implements IUserRepository {
 
     @Override
     public User create(User user) {
-        return (User) keycloak.realm(realm).users().create(toUserRepresentation(user)).getEntity();
+        Response response = keycloak.realm(realm).users().create(toUserRepresentation(user));
+        int statusId = response.getStatus();
+        if (statusId == 201) {
+            String userId = response.getLocation().getPath().replaceAll(".*/([^/]+)$", "$1");
+            return findById(userId);
+        } else if (statusId == 409) {
+            throw new UserAlreadyExistException("user already exist.");
+        } else {
+            throw new KeycloakException("user cannot create.");
+        }
     }
 
     @Override
@@ -84,8 +105,27 @@ public class KeycloakUserRepository implements IUserRepository {
             UserRepresentation userRepresentation = userResource.toRepresentation();
             return fromRepresentation(userRepresentation);
         } catch (NotFoundException e) {
-            throw new DataNotFoundException("Usuário não encontrado.");
+            throw new DataNotFoundException("User not found.");
         }
     }
 
+    @Override
+    public AccessTokenResponse login(String email, String password) {
+        Keycloak keycloakGatewayApp = KeycloakBuilder.builder().serverUrl(serverURL)
+                .realm(realm).clientSecret(clientSecret).username(email).password(password)
+                .clientId(clientId).build();
+
+        return keycloakGatewayApp.tokenManager().getAccessToken();
+    }
+
+    @Override
+    public void logout(HttpServletRequest request, String token) {
+        try {
+//            keycloak.tokenManager().invalidate(token);
+            keycloak.realm(realm).deleteSession(token);
+            request.logout();
+        } catch (Exception exception) {
+            throw new TokenException(exception.getMessage());
+        }
+    }
 }

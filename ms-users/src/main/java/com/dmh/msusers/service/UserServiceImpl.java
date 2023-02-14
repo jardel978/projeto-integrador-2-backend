@@ -1,13 +1,16 @@
 package com.dmh.msusers.service;
 
-import com.dmh.msusers.exceptions.DataNotFoundException;
 import com.dmh.msusers.model.User;
 import com.dmh.msusers.model.dto.UserDTORequest;
 import com.dmh.msusers.model.dto.UserDTOResponse;
 import com.dmh.msusers.repository.KeycloakUserRepository;
+import org.keycloak.representations.AccessTokenResponse;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
 
 @Service
 public class UserServiceImpl implements IUserService {
@@ -28,6 +31,16 @@ public class UserServiceImpl implements IUserService {
         User userModel = mapper.map(userDTO, User.class);
         User userSaved = userRepository.create(userModel);
         return mapper.map(userSaved, UserDTOResponse.class);
+    }
+
+    @Override
+    public AccessTokenResponse login(String email, String password) {
+        return userRepository.login(email, password);
+    }
+
+    @Override
+    public void logout(HttpServletRequest request, String token) {
+        userRepository.logout(request, token);
     }
 
     // TODO validar email (caso necessário e não possílvel via keycloak): userRepresentation.setEnabled(true);

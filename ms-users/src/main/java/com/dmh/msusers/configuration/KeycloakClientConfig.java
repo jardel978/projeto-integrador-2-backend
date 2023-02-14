@@ -16,12 +16,12 @@ public class KeycloakClientConfig {
 
     @Value("${dmh.keycloak.server-url}")
     private String serverURL;
-    @Value("${dmh.keycloak.realm}")
-    private String realm;
-    @Value("${dmh.keycloak.client-id}")
-    private String clientId;
-    @Value("${dmh.keycloak.client-secret}")
-    private String clientSecret;
+//    @Value("${dmh.keycloak.realm}")
+//    private String realm;
+//    @Value("${dmh.keycloak.client-id}")
+//    private String clientId;
+//    @Value("${dmh.keycloak.client-secret}")
+//    private String clientSecret;
     @Value("${dmh.keycloak.username}")
     private String keycloakUsername;
     @Value("${dmh.keycloak.password}")

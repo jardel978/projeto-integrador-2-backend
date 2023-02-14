@@ -3,13 +3,14 @@ package com.dmh.msusers.model.dto;
 import lombok.*;
 
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 
 @Getter
 @Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserDTORequest {
+public class UserDTORequest implements Serializable {
 
     private String id;
     @NotNull(message = "\"name\" is required.")
