@@ -14,6 +14,6 @@ public interface IUserService {
 
     AccessTokenResponse login(String email, String password);
 
-    void logout(HttpServletRequest request, String token);
+    void logout(HttpServletRequest request, String id);
 
 }

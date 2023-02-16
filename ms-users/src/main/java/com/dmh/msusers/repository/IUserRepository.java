@@ -4,7 +4,6 @@ import com.dmh.msusers.model.User;
 import org.keycloak.representations.AccessTokenResponse;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Map;
 
 public interface IUserRepository {
 
@@ -14,6 +13,6 @@ public interface IUserRepository {
 
     AccessTokenResponse login(String email, String password);
 
-    void logout(HttpServletRequest request, String token);
+    void logout(HttpServletRequest request, String id);
 
 }

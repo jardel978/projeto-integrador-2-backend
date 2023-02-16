@@ -7,12 +7,15 @@ import com.dmh.msusers.exceptions.UserAlreadyExistException;
 import com.dmh.msusers.model.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
+import org.keycloak.OAuth2Constants;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.KeycloakBuilder;
 import org.keycloak.admin.client.resource.UserResource;
 import org.keycloak.representations.AccessTokenResponse;
 import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
+import org.keycloak.representations.idm.UserSessionRepresentation;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Repository;
@@ -119,13 +122,19 @@ public class KeycloakUserRepository implements IUserRepository {
     }
 
     @Override
-    public void logout(HttpServletRequest request, String token) {
+    public void logout(HttpServletRequest servletRequest, String id) {
         try {
-//            keycloak.tokenManager().invalidate(token);
-            keycloak.realm(realm).deleteSession(token);
-            request.logout();
+            List<UserSessionRepresentation> userSessionRepresentation = keycloak
+                    .realm(realm)
+                    .users().get(id).getUserSessions();
+            userSessionRepresentation.forEach(session -> {
+                log.info("session: " + session.getId());
+                keycloak.realm(realm).deleteSession(session.getId());
+            });
+            servletRequest.logout();
         } catch (Exception exception) {
             throw new TokenException(exception.getMessage());
         }
     }
+
 }

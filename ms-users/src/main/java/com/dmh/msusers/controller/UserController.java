@@ -47,9 +47,10 @@ public class UserController {
                 HttpStatus.OK, "successfully logged.");
     }
 
-    @PostMapping("/logout/{token}")
-    public ResponseEntity<Object> logout(HttpServletRequest request, @PathVariable("token") String token) {
-        userService.logout(request, token);
+    @PostMapping("/logout/{id}")
+    public ResponseEntity<Object> logout(@PathVariable("id") String id,
+                                         HttpServletRequest request) {
+        userService.logout(request, id);
         return responseHandler.build(null, HttpStatus.OK, "successfully logout.");
     }
 

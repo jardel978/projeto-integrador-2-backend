@@ -41,6 +41,12 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return buildResponseEntity(error);
     }
 
+    @ExceptionHandler(LogoutException.class)
+    protected ResponseEntity<Object> logoutException(LogoutException exception, HttpServletRequest request) {
+        ApiError error = buildApiError(HttpStatus.BAD_REQUEST, exception, request);
+        return buildResponseEntity(error);
+    }
+
     @ExceptionHandler(UserAlreadyExistException.class)
     protected ResponseEntity<Object> userAlreadyExistException(UserAlreadyExistException exception,
                                                                HttpServletRequest request) {

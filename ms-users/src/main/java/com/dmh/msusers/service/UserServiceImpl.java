@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Map;
 
 @Service
 public class UserServiceImpl implements IUserService {
@@ -39,8 +38,8 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public void logout(HttpServletRequest request, String token) {
-        userRepository.logout(request, token);
+    public void logout(HttpServletRequest request, String id) {
+        userRepository.logout(request, id);
     }
 
     // TODO validar email (caso necessário e não possílvel via keycloak): userRepresentation.setEnabled(true);
