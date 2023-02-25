@@ -3,6 +3,11 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/grupo-3.iml" filepath="$PROJECT_DIR$/.idea/grupo-3.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ms-accounts/ms-accounts.iml" filepath="$PROJECT_DIR$/ms-accounts/ms-accounts.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ms-config-server/ms-config-server.iml" filepath="$PROJECT_DIR$/ms-config-server/ms-config-server.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ms-discovery/ms-discovery.iml" filepath="$PROJECT_DIR$/ms-discovery/ms-discovery.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ms-gateway/ms-gateway.iml" filepath="$PROJECT_DIR$/ms-gateway/ms-gateway.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ms-users/ms-users.iml" filepath="$PROJECT_DIR$/ms-users/ms-users.iml" />
     </modules>
   </component>
 </project>
