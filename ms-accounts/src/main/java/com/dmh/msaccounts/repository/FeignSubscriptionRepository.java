@@ -15,5 +15,6 @@ public interface FeignSubscriptionRepository {
 
     @RequestMapping(method = RequestMethod.GET,value = "/subscription/find")
     ResponseEntity<SubscriptionDTO> findByUserId(@RequestParam Integer userId);
+
 }
 
