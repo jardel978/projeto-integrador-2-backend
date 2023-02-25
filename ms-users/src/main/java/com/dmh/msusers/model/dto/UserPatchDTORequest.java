@@ -2,6 +2,7 @@ package com.dmh.msusers.model.dto;
 
 import lombok.*;
 
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 @Getter
@@ -9,13 +10,12 @@ import java.io.Serializable;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserDTOResponse implements Serializable {
+public class UserPatchDTORequest implements Serializable {
 
-    private String id;
     private String name;
     private String lastName;
-    private String cpf;
     private String email;
     private String phone;
+    private String password;
 
 }
