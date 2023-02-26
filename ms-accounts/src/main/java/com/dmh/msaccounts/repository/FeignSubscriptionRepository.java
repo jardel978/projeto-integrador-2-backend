@@ -9,10 +9,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-@FeignClient(name= "ms-users")
+@FeignClient(name= "ms-users", url = "http://localhost:8084")
 @LoadBalancerClient(name = "ms-users", configuration = ConfigLoadBalancer.class)
 public interface FeignSubscriptionRepository {
-
 
     @RequestMapping(method = RequestMethod.GET,value = "/users/{id}")
     ResponseEntity<AccountsDTOResponse> findByUserId(@RequestParam Integer userId);
