@@ -13,7 +13,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 @LoadBalancerClient(name = "ms-users", configuration = ConfigLoadBalancer.class)
 public interface FeignSubscriptionRepository {
 
+
     @RequestMapping(method = RequestMethod.GET,value = "/users/{id}")
     ResponseEntity<AccountsDTOResponse> findByUserId(@RequestParam Integer userId);
+
+
 }
 

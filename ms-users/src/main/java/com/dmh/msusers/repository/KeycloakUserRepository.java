@@ -7,8 +7,6 @@ import com.dmh.msusers.exceptions.UserAlreadyExistException;
 import com.dmh.msusers.model.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
-import org.keycloak.OAuth2Constants;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.KeycloakBuilder;
 import org.keycloak.admin.client.resource.UserResource;
@@ -16,8 +14,10 @@ import org.keycloak.representations.AccessTokenResponse;
 import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.keycloak.representations.idm.UserSessionRepresentation;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
 
 import javax.servlet.http.HttpServletRequest;
@@ -41,14 +41,22 @@ public class KeycloakUserRepository implements IUserRepository {
     private String clientSecret;
     private final Keycloak keycloak;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     private User fromRepresentation(UserRepresentation userRepresentation) {
+        String password = userRepresentation.getCredentials().get(0).getSecretData();
+        log.info("password: " + password);
+        log.info("password encryptada: " + passwordEncoder.encode(password));
+
         return User.builder()
                 .id(userRepresentation.getId())
                 .name(userRepresentation.getFirstName())
                 .lastName(userRepresentation.getLastName())
                 .cpf(userRepresentation.getAttributes().get("cpf").get(0))
                 .email(userRepresentation.getEmail())
-                .phone(userRepresentation.getAttributes().get("phone").get(0)).build();
+                .phone(userRepresentation.getAttributes().get("phone").get(0))
+                .password(password).build();
     }
 
     private UserRepresentation toUserRepresentation(User user) {
@@ -111,6 +119,17 @@ public class KeycloakUserRepository implements IUserRepository {
             throw new DataNotFoundException("User not found.");
         }
     }
+
+    @Override
+    public boolean updateById(String id, User user) {
+        try {
+            keycloak.realm(realm).users().get(id).update(toUserRepresentation(user));
+            return true;
+        } catch (NotFoundException e) {
+            throw new DataNotFoundException("User not found.");
+        }
+    }
+
 
     @Override
     public AccessTokenResponse login(String email, String password) {
