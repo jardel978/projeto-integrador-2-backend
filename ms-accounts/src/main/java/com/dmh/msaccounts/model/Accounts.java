@@ -5,6 +5,6 @@ import java.util.List;
 public class Accounts {
     private String id;
     private String account;
-    private String user;
+    private User user;
     private List<Cards> cards;
 }

@@ -1,7 +1,7 @@
 package com.dmh.msaccounts.repository;
 
 import com.dmh.msaccounts.configuration.ConfigLoadBalancer;
-import com.dmh.msaccounts.model.dto.AccountsDTOResponse;
+import com.dmh.msaccounts.model.User;
 import org.springframework.cloud.loadbalancer.annotation.LoadBalancerClient;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
@@ -11,10 +11,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @FeignClient(name= "ms-users", url = "http://localhost:8084")
 @LoadBalancerClient(name = "ms-users", configuration = ConfigLoadBalancer.class)
-public interface FeignSubscriptionRepository {
+public interface FeignUserRepository {
 
     @RequestMapping(method = RequestMethod.GET,value = "/users/{id}")
-    ResponseEntity<AccountsDTOResponse> findByUserId(@RequestParam Integer userId);
+    ResponseEntity<User> findByUserId(@RequestParam Integer userId);
 
 
 }

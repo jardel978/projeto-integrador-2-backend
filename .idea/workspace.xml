@@ -5,8 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b2648121-b96e-4e30-8d26-65c02937de41" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/ms-accounts/src/main/java/com/dmh/msaccounts/model/User.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ms-accounts/src/main/java/com/dmh/msaccounts/repository/FeignSubscriptionRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/ms-accounts/src/main/java/com/dmh/msaccounts/repository/FeignSubscriptionRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ms-accounts/src/main/java/com/dmh/msaccounts/model/Accounts.java" beforeDir="false" afterPath="$PROJECT_DIR$/ms-accounts/src/main/java/com/dmh/msaccounts/model/Accounts.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ms-accounts/src/main/java/com/dmh/msaccounts/repository/FeignSubscriptionRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/ms-accounts/src/main/java/com/dmh/msaccounts/repository/FeignUserRepository.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
