@@ -45,9 +45,9 @@ public class KeycloakUserRepository implements IUserRepository {
     private PasswordEncoder passwordEncoder;
 
     private User fromRepresentation(UserRepresentation userRepresentation) {
-        String password = userRepresentation.getCredentials().get(0).getSecretData();
-        log.info("password: " + password);
-        log.info("password encryptada: " + passwordEncoder.encode(password));
+//        String password = userRepresentation.getCredentials().get(0).getSecretData();
+//        log.info("password: " + password);
+//        log.info("password encryptada: " + passwordEncoder.encode(password));
 
         return User.builder()
                 .id(userRepresentation.getId())
@@ -56,7 +56,7 @@ public class KeycloakUserRepository implements IUserRepository {
                 .cpf(userRepresentation.getAttributes().get("cpf").get(0))
                 .email(userRepresentation.getEmail())
                 .phone(userRepresentation.getAttributes().get("phone").get(0))
-                .password(password).build();
+                .build(); //.password(password)
     }
 
     private UserRepresentation toUserRepresentation(User user) {

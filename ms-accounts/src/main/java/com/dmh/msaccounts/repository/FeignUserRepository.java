@@ -9,12 +9,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-@FeignClient(name= "ms-users", url = "http://localhost:8084")
+@FeignClient(name= "ms-users", url = "MS-USERS:8761/users")
 @LoadBalancerClient(name = "ms-users", configuration = ConfigLoadBalancer.class)
 public interface FeignUserRepository {
 
     @RequestMapping(method = RequestMethod.GET,value = "/users/{id}")
-    ResponseEntity<User> findByUserId(@RequestParam Integer userId);
+    ResponseEntity<User> findByUserId(@RequestParam String userId);
 
 
 }

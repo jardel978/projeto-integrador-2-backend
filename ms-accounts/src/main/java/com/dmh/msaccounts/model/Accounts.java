@@ -1,10 +1,26 @@
 package com.dmh.msaccounts.model;
 
-import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
-public class Accounts {
+import java.io.Serializable;
+import java.util.Set;
+
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@Document(collection = "accounts")
+public class Accounts  implements Serializable {
+
+    @Id
     private String id;
     private String account;
-    private User user;
-    private List<Cards> cards;
+    private String userId;
+    private Set<Cards> cards;
+
 }
