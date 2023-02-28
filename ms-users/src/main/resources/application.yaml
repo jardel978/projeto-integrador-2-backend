@@ -18,4 +18,4 @@ spring:
     import: optional:configserver:http://localhost:8888
   cloud:
     config:
-      profile: ${MS_GATEWEAY_PROFILE:dev}
+      profile: ${MS_USERS_PROFILE:dev}

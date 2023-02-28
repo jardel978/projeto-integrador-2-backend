@@ -21,6 +21,4 @@ public class AccountsDTORequest implements Serializable {
     private String userId;
     private Set<Cards> cards;
 
-
-
 }

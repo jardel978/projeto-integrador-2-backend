@@ -27,9 +27,9 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public boolean updateById(String id, UserPatchDTORequest userPatch) {
-
-        return true;
+    public void updateById(String id, UserPatchDTORequest userPatch) {
+        User userModel = mapper.map(userPatch, User.class);
+        userRepository.updateById(id, userModel);
     }
 
     @Override

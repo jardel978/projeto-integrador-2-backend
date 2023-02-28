@@ -13,6 +13,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.BadRequestException;
 import java.time.LocalDateTime;
 
 @ControllerAdvice
@@ -70,6 +71,13 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return buildResponseEntity(error);
     }
 
+
+    @ExceptionHandler(BadRequestException.class)
+    protected ResponseEntity<Object> badRequestException(BadRequestException exception, HttpHeaders headers,
+                                                         HttpStatus status, WebRequest request) {
+        ApiError error = buildApiError(HttpStatus.BAD_REQUEST, exception, (HttpServletRequest) request);
+        return buildResponseEntity(error);
+    }
 
     @Override
     protected ResponseEntity<Object> handleHttpRequestMethodNotSupported(HttpRequestMethodNotSupportedException exception,

@@ -13,7 +13,7 @@ public interface IUserService {
 
     UserDTOResponse findById(String userId);
 
-    boolean updateById(String id, UserPatchDTORequest userPatch);
+    void updateById(String id, UserPatchDTORequest userPatch);
 
     AccessTokenResponse login(String email, String password);
 

@@ -14,7 +14,7 @@ import java.util.Set;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class AccountsDTOResponse  implements Serializable {
+public class AccountsDTOResponse implements Serializable {
 
     private String id;
     private String account;

@@ -3,6 +3,7 @@ package com.dmh.msusers.controller;
 import com.dmh.msusers.exceptions.InvalidFieldException;
 import com.dmh.msusers.model.dto.LoginCredentialsDTO;
 import com.dmh.msusers.model.dto.UserDTORequest;
+import com.dmh.msusers.model.dto.UserPatchDTORequest;
 import com.dmh.msusers.response.ResponseHandler;
 import com.dmh.msusers.service.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +39,13 @@ public class UserController {
         return responseHandler.build(userService.findById(id), HttpStatus.OK, "user found.");
     }
 
-    @PostMapping("/login")
+    @PatchMapping("/{id}")
+    public ResponseEntity<Object> updateById(@PathVariable("id") String id, @RequestBody UserPatchDTORequest userPatch) {
+        userService.updateById(id, userPatch);
+        return responseHandler.build(null, HttpStatus.OK, "user updated.");
+    }
+
+        @PostMapping("/login")
     public ResponseEntity<Object> login(@Valid @RequestBody LoginCredentialsDTO loginCredentials, BindingResult result) {
         if (result.hasErrors())
             throw new InvalidFieldException(result.getAllErrors().get(0).getDefaultMessage());

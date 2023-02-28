@@ -12,7 +12,7 @@ public interface IUserRepository {
 
     User findById(String id);
 
-    boolean updateById(String id, User user);
+    void updateById(String id, User user);
 
     AccessTokenResponse login(String email, String password);
 

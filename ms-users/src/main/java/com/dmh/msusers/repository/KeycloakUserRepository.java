@@ -72,7 +72,7 @@ public class KeycloakUserRepository implements IUserRepository {
         passwordRepresentation.setValue(user.getPassword());
 
         List<String> requiredActions = new ArrayList<>();
-        requiredActions.add("verify email");
+        requiredActions.add("VERIFY_EMAIL");
 
         userAttributes.put("cpf", cpfList);
         userAttributes.put("phone", phoneList);
@@ -121,22 +121,33 @@ public class KeycloakUserRepository implements IUserRepository {
     }
 
     @Override
-    public boolean updateById(String id, User user) {
+    public void updateById(String id, User user) {
         try {
-            keycloak.realm(realm).users().get(id).update(toUserRepresentation(user));
-            return true;
+            UserResource userResource = keycloak.realm(realm).users().get(id);
+            User userModel = fromRepresentation(userResource.toRepresentation());
+            log.info("user: " + user.toString());
+            if (!user.getName().isBlank())
+                if (!user.getName().equals(userModel.getName())) userModel.setName(user.getName());
+            if (!user.getLastName().isBlank())
+                if (!user.getLastName().equals(userModel.getLastName())) userModel.setLastName(user.getLastName());
+            if (!user.getEmail().isBlank())
+                if (!user.getName().equals(userModel.getName())) userModel.setEmail(user.getEmail());
+            if (!user.getPhone().isBlank())
+                if (!user.getName().equals(userModel.getName())) userModel.setPhone(user.getPhone());
+            if (!user.getPassword().isBlank())
+                if (!user.getName().equals(userModel.getName())) userModel.setPassword(user.getPassword());
+            userResource.update(toUserRepresentation(userModel));
         } catch (NotFoundException e) {
             throw new DataNotFoundException("User not found.");
         }
     }
-
 
     @Override
     public AccessTokenResponse login(String email, String password) {
         Keycloak keycloakGatewayApp = KeycloakBuilder.builder().serverUrl(serverURL)
                 .realm(realm).clientSecret(clientSecret).username(email).password(password)
                 .clientId(clientId).build();
-
+        log.info("AccessTokenResponse", keycloakGatewayApp.tokenManager().getAccessToken());
         return keycloakGatewayApp.tokenManager().getAccessToken();
     }
 

@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.io.Serializable;
 import java.util.Set;
@@ -15,12 +16,14 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @Document(collection = "accounts")
-public class Accounts  implements Serializable {
+public class Accounts implements Serializable {
 
     @Id
     private String id;
     private String account;
+    @Field(name = "user_id")
     private String userId;
+    //    @DBRef
     private Set<Cards> cards;
 
 }
