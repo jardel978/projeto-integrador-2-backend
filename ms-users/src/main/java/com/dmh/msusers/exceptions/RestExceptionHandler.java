@@ -14,6 +14,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.BadRequestException;
+import javax.ws.rs.NotAuthorizedException;
 import java.time.LocalDateTime;
 
 @ControllerAdvice
@@ -71,11 +72,17 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return buildResponseEntity(error);
     }
 
+    @ExceptionHandler(LoginException.class)
+    protected ResponseEntity<Object> notAuthorizedException(InvalidFieldException exception,
+                                                            HttpServletRequest request) {
+        ApiError error = buildApiError(HttpStatus.UNAUTHORIZED, exception, request);
+        return buildResponseEntity(error);
+    }
 
     @ExceptionHandler(BadRequestException.class)
-    protected ResponseEntity<Object> badRequestException(BadRequestException exception, HttpHeaders headers,
-                                                         HttpStatus status, WebRequest request) {
-        ApiError error = buildApiError(HttpStatus.BAD_REQUEST, exception, (HttpServletRequest) request);
+    protected ResponseEntity<Object> badRequestException(InvalidFieldException exception,
+                                                         HttpServletRequest request) {
+        ApiError error = buildApiError(HttpStatus.BAD_REQUEST, exception, request);
         return buildResponseEntity(error);
     }
 
