@@ -45,7 +45,7 @@ public class UserController {
         return responseHandler.build(null, HttpStatus.OK, "user updated.");
     }
 
-        @PostMapping("/login")
+    @PostMapping("/login")
     public ResponseEntity<Object> login(@Valid @RequestBody LoginCredentialsDTO loginCredentials, BindingResult result) {
         if (result.hasErrors())
             throw new InvalidFieldException(result.getAllErrors().get(0).getDefaultMessage());
