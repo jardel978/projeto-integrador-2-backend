@@ -36,10 +36,4 @@ public class ApplicationConfiguration {
         return new CustomAccessDeniedHandler();
     }
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-        return encoder;
-    }
-
 }

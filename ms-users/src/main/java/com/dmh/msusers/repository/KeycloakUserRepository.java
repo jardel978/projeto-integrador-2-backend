@@ -18,7 +18,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
 
-import javax.security.auth.login.FailedLoginException;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.NotFoundException;
@@ -41,14 +40,7 @@ public class KeycloakUserRepository implements IUserRepository {
     private String clientSecret;
     private final Keycloak keycloak;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
     private User fromRepresentation(UserRepresentation userRepresentation) {
-//        String password = userRepresentation.getCredentials().get(0).getSecretData();
-//        log.info("password: " + password);
-//        log.info("password encryptada: " + passwordEncoder.encode(password));
-
         return User.builder()
                 .id(userRepresentation.getId())
                 .name(userRepresentation.getFirstName())
@@ -56,7 +48,7 @@ public class KeycloakUserRepository implements IUserRepository {
                 .cpf(userRepresentation.getAttributes().get("cpf").get(0))
                 .email(userRepresentation.getEmail())
                 .phone(userRepresentation.getAttributes().get("phone").get(0))
-                .build(); //.password(password)
+                .build();
     }
 
     private UserRepresentation toUserRepresentation(User user) {
@@ -124,20 +116,31 @@ public class KeycloakUserRepository implements IUserRepository {
     public void updateById(String id, User user) {
         try {
             UserResource userResource = keycloak.realm(realm).users().get(id);
-            User userModel = fromRepresentation(userResource.toRepresentation());
+            UserRepresentation userRepresentation = userResource.toRepresentation();
+            User userModel = fromRepresentation(userRepresentation);
             if (!StringUtils.equals(null, user.getName()))
-                if (!user.getName().equals(userModel.getName())) userModel.setName(user.getName());
+                if (!user.getName().equals(userModel.getName())) userRepresentation.setFirstName(user.getName());
             if (!StringUtils.equals(null, user.getLastName()))
-                if (!user.getLastName().equals(userModel.getLastName())) userModel.setLastName(user.getLastName());
+                if (!user.getLastName().equals(userModel.getLastName()))
+                    userRepresentation.setLastName(user.getLastName());
             if (!StringUtils.equals(null, user.getEmail()))
-                if (!user.getEmail().equals(userModel.getEmail())) userModel.setEmail(user.getEmail());
+                if (!user.getEmail().equals(userModel.getEmail())) {
+                    userRepresentation.setUsername(user.getEmail());
+                    userRepresentation.setEmail(user.getEmail());
+                }
             if (!StringUtils.equals(null, user.getPhone()))
-                if (!user.getPhone().equals(userModel.getPhone())) userModel.setPhone(user.getPhone());
-            if (!StringUtils.equals(null, user.getPassword()))
-                if (!user.getPassword().equals(userModel.getPassword())) userModel.setPassword(user.getPassword());
-            UserRepresentation userRepresentation = toUserRepresentation(userModel);
-            userRepresentation.setEmailVerified(true);
-            userRepresentation.setEnabled(true);
+                if (!user.getPhone().equals(userModel.getPhone())) {
+                    List<String> userPhoneAttributes = userRepresentation.getAttributes().get("phone");
+                    userPhoneAttributes.clear();
+                    userPhoneAttributes.add(user.getPhone());
+                }
+            if (!StringUtils.equals(null, user.getPassword())) {
+                CredentialRepresentation passwordRepresentation = new CredentialRepresentation();
+                passwordRepresentation.setTemporary(false);
+                passwordRepresentation.setType(CredentialRepresentation.PASSWORD);
+                passwordRepresentation.setValue(user.getPassword());
+                userRepresentation.setCredentials(Collections.singletonList(passwordRepresentation));
+            }
             userResource.update(userRepresentation);
         } catch (NotFoundException e) {
             throw new DataNotFoundException("User not found.");

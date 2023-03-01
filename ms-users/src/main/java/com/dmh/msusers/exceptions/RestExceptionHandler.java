@@ -73,14 +73,14 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(LoginException.class)
-    protected ResponseEntity<Object> notAuthorizedException(InvalidFieldException exception,
+    protected ResponseEntity<Object> notAuthorizedException(LoginException exception,
                                                             HttpServletRequest request) {
         ApiError error = buildApiError(HttpStatus.UNAUTHORIZED, exception, request);
         return buildResponseEntity(error);
     }
 
     @ExceptionHandler(BadRequestException.class)
-    protected ResponseEntity<Object> badRequestException(InvalidFieldException exception,
+    protected ResponseEntity<Object> badRequestException(BadRequestException exception,
                                                          HttpServletRequest request) {
         ApiError error = buildApiError(HttpStatus.BAD_REQUEST, exception, request);
         return buildResponseEntity(error);
