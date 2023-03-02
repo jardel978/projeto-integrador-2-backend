@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Set;
 
 @Data
@@ -17,8 +18,9 @@ import java.util.Set;
 public class AccountsDTOResponse implements Serializable {
 
     private String id;
-    private String account;
     private String userId;
-    private Set<Cards> cards;
+    private String account;
+    private BigDecimal ammount;
+    private Set<CardsDTO> cards;
 
 }

@@ -16,9 +16,8 @@ import java.util.Set;
 @AllArgsConstructor
 public class AccountsDTORequest implements Serializable {
 
-    private String account;
     @NotNull(message = "\"UserId\" is required.")
     private String userId;
-    private Set<Cards> cards;
+    private Set<CardsDTO> cards;
 
 }

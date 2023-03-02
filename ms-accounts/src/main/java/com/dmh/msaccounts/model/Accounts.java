@@ -9,6 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Set;
 
 @Data
@@ -23,6 +24,7 @@ public class Accounts implements Serializable {
     private String account;
     @Field(name = "user_id")
     private String userId;
+    private BigDecimal ammount;
     //    @DBRef
     private Set<Cards> cards;
 

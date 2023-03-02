@@ -8,6 +8,6 @@ public interface IAccountService {
 
     AccountsDTOResponse createAccount(AccountsDTORequest accountsDTORequest);
     AccountsDTOResponse findAccountById(String id);
-    boolean updateAccount(AccountsPatchDTORequest accountsPatchDTORequest, String id);
+    void updateAccount(AccountsPatchDTORequest accountsPatchDTORequest, String id);
 
 }

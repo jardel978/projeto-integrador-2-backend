@@ -15,8 +15,8 @@ import java.util.Set;
 @AllArgsConstructor
 public class AccountsPatchDTORequest implements Serializable {
 
-    private String account;
-    private String userId;
-    private Set<Cards> cards;
+    //    private String userId;
+    private String id;
+    private Set<CardsDTO> cards;
 
 }

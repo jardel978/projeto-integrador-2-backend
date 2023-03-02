@@ -15,7 +15,8 @@ import org.springframework.security.oauth2.client.registration.ClientRegistratio
 
 @Configuration
 public class OauthFeignConfiguration {
-    private static final String KEYCLOAK_REGISTRATION_ID = "keycloak";
+
+    private static final String KEYCLOAK_REGISTRATION_ID = "ms-accounts-client";
 
     private final OAuth2AuthorizedClientService clientService;
     private final ClientRegistrationRepository registrationRepository;

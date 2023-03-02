@@ -20,7 +20,6 @@ public class ApplicationConfiguration {
         return modelMapper;
     }
 
-
     @Bean
     public ResponseHandler responseHandler() {
         return new ResponseHandler();

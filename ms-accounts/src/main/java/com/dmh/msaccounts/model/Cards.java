@@ -10,6 +10,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 @Data
 @Builder
@@ -25,6 +26,9 @@ public class Cards implements Serializable {
     private String cvc;
     private String name;
     private String accountId;
+    private BigDecimal ammount;
+//    @Field(name = "is_external")
+    private boolean isExternal;
     @Field(name = "card_type")
     private CardsTypeEnum cardType;
 }
