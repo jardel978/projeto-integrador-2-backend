@@ -27,7 +27,7 @@ services:
       - KC_DB_USERNAME=keycloak
       - KC_DB_PASSWORD=password
     ports:
-      - "8080:8080"
+      - $${KCK_PORT:"8080:8080"}
     command: start-dev
     depends_on:
       - mysql
