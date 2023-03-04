@@ -3,9 +3,11 @@ package com.dmh.msaccounts.service;
 
 import com.dmh.msaccounts.exception.DataNotFoundException;
 import com.dmh.msaccounts.model.Accounts;
+import com.dmh.msaccounts.model.Cards;
 import com.dmh.msaccounts.model.dto.AccountsDTORequest;
 import com.dmh.msaccounts.model.dto.AccountsDTOResponse;
 import com.dmh.msaccounts.model.dto.AccountsPatchDTORequest;
+import com.dmh.msaccounts.model.dto.CardsDTO;
 import com.dmh.msaccounts.repository.FeignUserRepository;
 import com.dmh.msaccounts.repository.IAccountsRepository;
 import com.dmh.msaccounts.repository.ICardsRepository;
@@ -18,6 +20,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 @Slf4j
@@ -72,4 +75,15 @@ public class AccountServiceImpl implements IAccountService {
 //        accountsRepository.save(accountsDB);
     }
 
+//    Task 12, 13 e 14
+    @Override
+    public AccountsDTORequest findAccountCardsById(String accountId, String cardId){
+
+//        TODO criar findAccountCardsById no Repository
+
+        AccountsDTORequest card = accountsRepository.findAccountCardsById(accountId, cardId).orElseThrow(() -> {
+            throw new DataNotFoundException("Card not found");
+        });
+        return mapper.map(card, AccountsDTORequest.class);
+    }
 }

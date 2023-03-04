@@ -2,8 +2,6 @@ package com.dmh.msaccounts.controller;
 
 import com.dmh.msaccounts.exception.InvalidFieldException;
 import com.dmh.msaccounts.model.dto.AccountsDTORequest;
-import com.dmh.msaccounts.model.dto.AccountsDTOResponse;
-import com.dmh.msaccounts.model.dto.AccountsPatchDTORequest;
 import com.dmh.msaccounts.response.ResponseHandler;
 import com.dmh.msaccounts.service.AccountServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,5 +43,17 @@ public class AccountController {
 //        accountService.updateAccount(accountsPatchDTORequest, id);
 //        return responseHandler.build(null, HttpStatus.OK, "Account updated.");
 //    }
+
+
+//    TASK 12, 13 e 14
+    @GetMapping("/{accountId}/cards")
+    public ResponseEntity<Object> findCardsByAccount(@PathVariable("accountId") String accountId){
+        return responseHandler.build(accountService.findAccountById(accountId), HttpStatus.OK, "Cards found");
+    }
+
+    @GetMapping("/{accountId}/cards/{cardId}")
+    public ResponseEntity<Object> findCardOfAccountById(@PathVariable("accountId") String accountId, @PathVariable("cardId") String cardId){
+        return responseHandler.build(accountService.findAccountCardsById(accountId, cardId), HttpStatus.OK, "Card found");
+    }
 
 }
