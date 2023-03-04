@@ -116,6 +116,7 @@
                     </excludes>
                     <finalName>ms-accounts</finalName>
                 </configuration>
+
             </plugin>
         </plugins>
     </build>
