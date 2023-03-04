@@ -7,7 +7,6 @@ import com.dmh.msaccounts.model.Cards;
 import com.dmh.msaccounts.model.dto.AccountsDTORequest;
 import com.dmh.msaccounts.model.dto.AccountsDTOResponse;
 import com.dmh.msaccounts.model.dto.AccountsPatchDTORequest;
-import com.dmh.msaccounts.model.dto.CardsDTO;
 import com.dmh.msaccounts.repository.FeignUserRepository;
 import com.dmh.msaccounts.repository.IAccountsRepository;
 import com.dmh.msaccounts.repository.ICardsRepository;
@@ -20,7 +19,6 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
-import java.util.Optional;
 import java.util.UUID;
 
 @Slf4j
@@ -85,5 +83,18 @@ public class AccountServiceImpl implements IAccountService {
             throw new DataNotFoundException("Card not found");
         });
         return mapper.map(card, AccountsDTORequest.class);
+    }
+
+    @Override
+    public AccountsDTORequest deleteCardOfAccountById(String accountId, String cardId) {
+        Accounts accounts = accountsRepository.findById(accountId)
+                .orElseThrow(() -> new DataNotFoundException("Account not found with id " + accountId));
+        Cards cards = accounts.getCards().stream()
+                .filter(c -> c.getId().equals(cardId))
+                .findFirst()
+                .orElseThrow(() -> new DataNotFoundException("Card not found with id " + cardId));
+        accounts.getCards().remove(cards);
+        accountsRepository.save(accounts);
+        return null;
     }
 }

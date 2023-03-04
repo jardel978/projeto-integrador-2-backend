@@ -13,4 +13,6 @@ public interface IAccountService {
     AccountsDTOResponse findAccountById(String id);
     void updateAccount(AccountsPatchDTORequest accountsPatchDTORequest, String id);
     AccountsDTORequest findAccountCardsById(String accountId, String cardId);
+    AccountsDTORequest deleteCardOfAccountById(String accountId, String cardId);
+
 }

@@ -56,4 +56,9 @@ public class AccountController {
         return responseHandler.build(accountService.findAccountCardsById(accountId, cardId), HttpStatus.OK, "Card found");
     }
 
+    @DeleteMapping("/{accountId}/cards/{cardId}")
+    public ResponseEntity<Object> deleteCardOfAccountById(@PathVariable("accountId") String accountId, @PathVariable("cardId") String cardId) {
+        return responseHandler.build(accountService.deleteCardOfAccountById(accountId, cardId), HttpStatus.OK, "Card deleted");
+    }
+
 }
