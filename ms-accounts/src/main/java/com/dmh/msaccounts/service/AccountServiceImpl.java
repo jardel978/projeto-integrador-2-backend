@@ -1,12 +1,11 @@
 package com.dmh.msaccounts.service;
 
 
+import com.dmh.msaccounts.exception.DataAlreadyExistsException;
 import com.dmh.msaccounts.exception.DataNotFoundException;
 import com.dmh.msaccounts.model.Accounts;
 import com.dmh.msaccounts.model.Cards;
-import com.dmh.msaccounts.model.dto.AccountsDTORequest;
-import com.dmh.msaccounts.model.dto.AccountsDTOResponse;
-import com.dmh.msaccounts.model.dto.AccountsPatchDTORequest;
+import com.dmh.msaccounts.model.dto.*;
 import com.dmh.msaccounts.repository.FeignUserRepository;
 import com.dmh.msaccounts.repository.IAccountsRepository;
 import com.dmh.msaccounts.repository.ICardsRepository;
@@ -17,9 +16,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -49,7 +50,42 @@ public class AccountServiceImpl implements IAccountService {
         String accountNumber = Long.toString(uuid.getMostSignificantBits()).substring(0, 5);
         accountsModel.setAccount(accountNumber);
         accountsModel.setAmmount(new BigDecimal(0));
+
+        if (!accountsModel.getCards().isEmpty()) {
+
+            accountsModel.getCards().stream().map(cards -> {
+                return cardsRepository.save(cards);
+            }).collect(Collectors.toSet());
+
+        }
+
         return mapper.map(accountsRepository.save(accountsModel), AccountsDTOResponse.class);
+    }
+
+    @Override
+    public CardsDTO createCardByAccount(String accountId, CardsDTORequest cardsDTORequest) {
+        Accounts accounts = accountsRepository.findById(accountId)
+                .orElseThrow(() -> new DataNotFoundException("Account not found with id " + accountId));
+        accounts.getCards().forEach(c -> {
+            if (c.getNumber().equals(cardsDTORequest.getNumber())) {
+                throw new DataAlreadyExistsException("Card already exists");
+            }
+        });
+
+        Cards cards = mapper.map(cardsDTORequest, Cards.class);
+
+        cards.setAccountId(accountId);
+
+        if (cardsDTORequest.getAmmount() == null | cardsDTORequest.getAmmount().compareTo(new BigDecimal(0)) == -1) {
+            cards.setAmmount(new BigDecimal(0));
+        }
+
+        cards = cardsRepository.save(cards);
+        accounts.getCards().add(cards);
+
+        accountsRepository.save(accounts);
+
+        return mapper.map(cards, CardsDTO.class);
     }
 
     @Override

@@ -1,9 +1,6 @@
 package com.dmh.msaccounts.service;
 
-import com.dmh.msaccounts.model.dto.AccountsDTORequest;
-import com.dmh.msaccounts.model.dto.AccountsDTOResponse;
-import com.dmh.msaccounts.model.dto.AccountsPatchDTORequest;
-import com.dmh.msaccounts.model.dto.CardsDTO;
+import com.dmh.msaccounts.model.dto.*;
 
 import java.util.Optional;
 
@@ -14,5 +11,6 @@ public interface IAccountService {
     void updateAccount(AccountsPatchDTORequest accountsPatchDTORequest, String id);
     AccountsDTORequest findAccountCardsById(String accountId, String cardId);
     AccountsDTORequest deleteCardOfAccountById(String accountId, String cardId);
+    CardsDTO createCardByAccount(String accountId, CardsDTORequest card);
 
 }

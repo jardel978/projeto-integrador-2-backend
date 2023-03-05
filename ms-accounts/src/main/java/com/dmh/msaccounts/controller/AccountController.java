@@ -2,6 +2,8 @@ package com.dmh.msaccounts.controller;
 
 import com.dmh.msaccounts.exception.InvalidFieldException;
 import com.dmh.msaccounts.model.dto.AccountsDTORequest;
+import com.dmh.msaccounts.model.dto.CardsDTO;
+import com.dmh.msaccounts.model.dto.CardsDTORequest;
 import com.dmh.msaccounts.response.ResponseHandler;
 import com.dmh.msaccounts.service.AccountServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,6 +51,11 @@ public class AccountController {
     @GetMapping("/{accountId}/cards")
     public ResponseEntity<Object> findCardsByAccount(@PathVariable("accountId") String accountId){
         return responseHandler.build(accountService.findAccountById(accountId), HttpStatus.OK, "Cards found");
+    }
+
+    @PostMapping("/{accountId}/cards")
+    public ResponseEntity<Object> createCardByAccount(@PathVariable("accountId") String accountId, @RequestBody CardsDTORequest cardsDTORequest){
+        return responseHandler.build(accountService.createCardByAccount(accountId, cardsDTORequest), HttpStatus.CREATED, "Card associated");
     }
 
     @GetMapping("/{accountId}/cards/{cardId}")
