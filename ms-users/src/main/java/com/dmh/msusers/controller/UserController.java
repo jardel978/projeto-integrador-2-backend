@@ -34,7 +34,7 @@ public class UserController {
         return responseHandler.build(userService.create(userDTO), HttpStatus.CREATED, "user created successfully.");
     }
 
-    @GetMapping("/{id}") // http://localhost:8080/users/7
+    @GetMapping("/{id}")
     public ResponseEntity<Object> findById(@PathVariable("id") String id) {
         return responseHandler.build(userService.findById(id), HttpStatus.OK, "user found.");
     }
