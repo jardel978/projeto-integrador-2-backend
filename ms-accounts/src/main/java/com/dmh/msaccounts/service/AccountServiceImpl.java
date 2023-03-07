@@ -97,28 +97,30 @@ public class AccountServiceImpl implements IAccountService {
         return mapper.map(accountsModel, AccountsDTOResponse.class);
     }
 
-    @Override
-    public void updateAccount(AccountsPatchDTORequest accountsPatchDTORequest, String id) {
-        Accounts accountsDB = accountsRepository.findById(id).orElseThrow(() -> {
-            throw new DataNotFoundException("Account not found.");
-        });
-        Accounts accountsModel = mapper.map(accountsPatchDTORequest, Accounts.class);
-
-        // TODO validar uso de Alias
-
-//        accountsRepository.save(accountsDB);
-    }
+//    @Override
+//    public void updateAccount(AccountsPatchDTORequest accountsPatchDTORequest, String id) {
+//        Accounts accountsDB = accountsRepository.findById(id).orElseThrow(() -> {
+//            throw new DataNotFoundException("Account not found.");
+//        });
+//        Accounts accountsModel = mapper.map(accountsPatchDTORequest, Accounts.class);
+//
+//        // TODO validar uso de Alias
+//
+////        accountsRepository.save(accountsDB);
+//    }
 
 //    Task 12, 13 e 14
     @Override
-    public AccountsDTORequest findAccountCardsById(String accountId, String cardId){
+    public CardsDTO findAccountCardsById(String accountId, String cardId){
 
-//        TODO criar findAccountCardsById no Repository
+        Accounts accounts = accountsRepository.findById(accountId)
+                .orElseThrow(() -> new DataNotFoundException("Account not found with id " + accountId));
+        Cards cards = accounts.getCards().stream()
+                .filter(c -> c.getId().equals(cardId))
+                .findFirst()
+                .orElseThrow(() -> new DataNotFoundException("Card not found with id " + cardId));
 
-        AccountsDTORequest card = accountsRepository.findAccountCardsById(accountId, cardId).orElseThrow(() -> {
-            throw new DataNotFoundException("Card not found");
-        });
-        return mapper.map(card, AccountsDTORequest.class);
+        return mapper.map(cards, CardsDTO.class);
     }
 
     @Override

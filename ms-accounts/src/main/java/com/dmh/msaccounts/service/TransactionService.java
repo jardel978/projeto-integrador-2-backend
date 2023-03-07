@@ -4,13 +4,15 @@ import com.dmh.msaccounts.exception.DataNotFoundException;
 import com.dmh.msaccounts.model.Accounts;
 import com.dmh.msaccounts.model.Transactions;
 import com.dmh.msaccounts.model.dto.AccountsDTOResponse;
+import com.dmh.msaccounts.model.dto.TransactionDTO;
 import com.dmh.msaccounts.repository.IAccountsRepository;
+import com.dmh.msaccounts.repository.ITransactionRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.Date;
 
 @Slf4j
 @Service
@@ -20,11 +22,17 @@ public class TransactionService {
     AccountServiceImpl accountService;
 
     @Autowired
-    IAccountsRepository repository;
+    IAccountsRepository accountsRepository;
 
-    public Transactions transferirValor(Transactions transaction) throws DataNotFoundException {
+    @Autowired
+    ITransactionRepository transactionRepository;
 
-        Accounts accountData = repository.findById(transaction.getAccountId()).orElseThrow(() -> new DataNotFoundException("Account not found my son!"));
+    @Autowired
+    private ModelMapper mapper;
+
+    public TransactionDTO transferirValor(Transactions transaction) throws DataNotFoundException {
+
+        Accounts accountData = accountsRepository.findById(transaction.getAccountId()).orElseThrow(() -> new DataNotFoundException("Account not found my son!"));
 
         BigDecimal initialAmmount = accountData.getAmmount();
         BigDecimal transValue = transaction.getValue();
@@ -36,8 +44,8 @@ public class TransactionService {
         accountData.setAmmount(newAmmount);
 
 //      gravar novo saldo no account
-        repository.save(accountData);
+        accountsRepository.save(accountData);
 
-        return transaction;
+        return mapper.map(transactionRepository.save(transaction), TransactionDTO.class);
     };
 }

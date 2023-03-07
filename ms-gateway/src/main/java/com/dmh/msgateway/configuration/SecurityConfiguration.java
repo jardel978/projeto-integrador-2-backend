@@ -16,7 +16,7 @@ public class SecurityConfiguration {
                 .pathMatchers(HttpMethod.GET, "/actuator/**").permitAll()
                 .and()
                 .authorizeExchange()
-                .pathMatchers(HttpMethod.POST, "/ms_users/users/users/registration", "/ms_users/users/users/login").permitAll()
+                .pathMatchers(HttpMethod.POST, "/users/registration", "/users/login").permitAll()
                 .and()
                 .authorizeExchange()
                 .anyExchange()
