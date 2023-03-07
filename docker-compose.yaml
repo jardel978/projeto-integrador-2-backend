@@ -39,6 +39,7 @@ services:
 
   ms-discovery:
     build: ms-discovery
+      dockerfile: Dokerfile
     container_name: ms-discovery
     restart: always
     depends_on:
@@ -48,6 +49,7 @@ services:
 
   ms-config-server:
     build: ms-config-server
+      dockerfile: Dokerfile
     container_name: ms-config-server
     restart: always
     depends_on:
@@ -57,6 +59,7 @@ services:
 
 #  ms-gateway:
 #    build: ms-gateway
+#      dockerfile: Dokerfile
 #    container_name: ms-gateway
 #    restart: always
 #    depends_on:
@@ -66,6 +69,7 @@ services:
 #
 #  ms-users:
 #    build: ms-users
+#      dockerfile: Dokerfile
 #    container_name: ms-users
 #    restart: always
 #    depends_on:
@@ -75,6 +79,7 @@ services:
 #
 #  ms-accounts:
 #    build: ms-accounts
+#      dockerfile: Dokerfile
 #    container_name: ms-accounts
 #    restart: always
 #    depends_on:
