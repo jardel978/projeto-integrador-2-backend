@@ -38,7 +38,8 @@ services:
       test: "curl -f http://localhost:8080/admin || exit 1"
 
   ms-discovery:
-    build: ms-discovery
+    build: .
+      context: ms-discovery
       dockerfile: Dokerfile
     container_name: ms-discovery
     restart: always
@@ -48,7 +49,8 @@ services:
       - "8761:8761"
 
   ms-config-server:
-    build: ms-config-server
+    build: .
+      context: ms-config-server
       dockerfile: Dokerfile
     container_name: ms-config-server
     restart: always
@@ -58,7 +60,8 @@ services:
       - "8888:8888"
 
 #  ms-gateway:
-#    build: ms-gateway
+#    build: .
+#      context: ms-gateway
 #      dockerfile: Dokerfile
 #    container_name: ms-gateway
 #    restart: always
@@ -68,7 +71,8 @@ services:
 #      - "8090:8090"
 #
 #  ms-users:
-#    build: ms-users
+#    build: .
+#      context: ms-users
 #      dockerfile: Dokerfile
 #    container_name: ms-users
 #    restart: always
@@ -78,7 +82,8 @@ services:
 #      - "8084:8084"
 #
 #  ms-accounts:
-#    build: ms-accounts
+#    build: .
+#      context: ms-accounts
 #      dockerfile: Dokerfile
 #    container_name: ms-accounts
 #    restart: always
