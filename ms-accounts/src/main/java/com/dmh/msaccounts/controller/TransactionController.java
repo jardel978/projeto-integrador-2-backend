@@ -2,7 +2,6 @@ package com.dmh.msaccounts.controller;
 
 import com.dmh.msaccounts.model.Transactions;
 import com.dmh.msaccounts.model.dto.TransactionDtoRequest;
-import com.dmh.msaccounts.model.enums.CardsTypeEnum;
 import com.dmh.msaccounts.response.ResponseHandler;
 import com.dmh.msaccounts.service.IAccountService;
 import com.dmh.msaccounts.service.TransactionService;
@@ -13,8 +12,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-import java.math.BigDecimal;
 import java.util.Date;
 
 @RestController
@@ -35,8 +32,8 @@ public class TransactionController {
                                               @Valid @RequestBody TransactionDtoRequest transactionDtoRequest,
                                               BindingResult bindingResult) throws Exception {
 
-        if (bindingResult.hasErrors()){
-            throw new Exception(String.valueOf(bindingResult.getAllErrors().get(0)));
+        if (bindingResult.hasErrors()) {
+            throw new Exception(String.valueOf(bindingResult.getAllErrors().get(0).getDefaultMessage()));
         }
 
         String accountId = accountService.findAccountById(id).getAccount();
