@@ -13,7 +13,9 @@ eureka:
 
 spring:
   application:
-    name: ms-account
+    name: ms-accounts
+#    services:
+#      - mysql
   config:
     import: optional:configserver:http://localhost:8888
   cloud:

@@ -6,6 +6,8 @@ import com.dmh.msusers.model.dto.UserDTORequest;
 import com.dmh.msusers.model.dto.UserPatchDTORequest;
 import com.dmh.msusers.response.ResponseHandler;
 import com.dmh.msusers.service.UserServiceImpl;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +19,7 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/users")
+@SecurityRequirement(name = "Bearer Authentication")
 public class UserController {
 
     @Autowired
@@ -24,6 +27,13 @@ public class UserController {
 
     @Autowired
     private ResponseHandler responseHandler;
+
+    /**
+     * Qualquer coisa aí
+     * @param userDTO
+     * @param result
+     * @return
+     */
 
     @PostMapping("/registration")
     public ResponseEntity<Object> create(@Valid @RequestBody UserDTORequest userDTO, BindingResult result) {
@@ -34,17 +44,20 @@ public class UserController {
         return responseHandler.build(userService.create(userDTO), HttpStatus.CREATED, "user created successfully.");
     }
 
+    @Operation(summary = "Get user", description = "Get user")
     @GetMapping("/{id}") // http://localhost:8080/users/7
     public ResponseEntity<Object> findById(@PathVariable("id") String id) {
         return responseHandler.build(userService.findById(id), HttpStatus.OK, "user found.");
     }
 
+    @Operation(summary = "Update user", description = "Update user")
     @PatchMapping("/{id}")
     public ResponseEntity<Object> updateById(@PathVariable("id") String id, @RequestBody UserPatchDTORequest userPatch) {
         userService.updateById(id, userPatch);
         return responseHandler.build(null, HttpStatus.OK, "user updated.");
     }
 
+    @Operation(summary = "login", description = "login")
     @PostMapping("/login")
     public ResponseEntity<Object> login(@Valid @RequestBody LoginCredentialsDTO loginCredentials, BindingResult result) {
         if (result.hasErrors())
@@ -54,6 +67,7 @@ public class UserController {
                 HttpStatus.OK, "successfully logged.");
     }
 
+    @Operation(summary = "logout", description = "logout")
     @PostMapping("/logout/{id}")
     public ResponseEntity<Object> logout(@PathVariable("id") String id,
                                          HttpServletRequest request) {

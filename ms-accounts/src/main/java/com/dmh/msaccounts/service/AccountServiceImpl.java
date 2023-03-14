@@ -16,7 +16,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.UUID;
@@ -74,7 +73,7 @@ public class AccountServiceImpl implements IAccountService {
 
         Cards cards = mapper.map(cardsDTORequest, Cards.class);
 
-        cards.setAccountId(accountId);
+        cards.setAccount(accounts);
 
         if (cardsDTORequest.getAmmount() == null | cardsDTORequest.getAmmount().compareTo(new BigDecimal(0)) == -1) {
             cards.setAmmount(new BigDecimal(0));
@@ -116,7 +115,7 @@ public class AccountServiceImpl implements IAccountService {
         Accounts accounts = accountsRepository.findById(accountId)
                 .orElseThrow(() -> new DataNotFoundException("Account not found with id " + accountId));
         Cards cards = accounts.getCards().stream()
-                .filter(c -> c.getId().equals(cardId))
+                .filter(c -> c.getCardId().equals(cardId))
                 .findFirst()
                 .orElseThrow(() -> new DataNotFoundException("Card not found with id " + cardId));
 
@@ -128,7 +127,7 @@ public class AccountServiceImpl implements IAccountService {
         Accounts accounts = accountsRepository.findById(accountId)
                 .orElseThrow(() -> new DataNotFoundException("Account not found with id " + accountId));
         Cards cards = accounts.getCards().stream()
-                .filter(c -> c.getId().equals(cardId))
+                .filter(c -> c.getCardId().equals(cardId))
                 .findFirst()
                 .orElseThrow(() -> new DataNotFoundException("Card not found with id " + cardId));
         accounts.getCards().remove(cards);

@@ -13,7 +13,8 @@ public class SecurityConfiguration {
     public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
         http
                 .authorizeExchange()
-                .pathMatchers(HttpMethod.GET, "/actuator/**").permitAll()
+                .pathMatchers(HttpMethod.GET, "/actuator/**", "/users/v3/api-docs/**",
+                        "/users/swagger-ui/**", "/users/swagger-ui.html", "/users/webjars/swagger-ui/**" ).permitAll()
                 .and()
                 .authorizeExchange()
                 .pathMatchers(HttpMethod.POST, "/users/registration", "/users/login").permitAll()
