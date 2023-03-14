@@ -1,14 +1,10 @@
 package com.dmh.msusers.repository;
 
-import com.dmh.msusers.exceptions.DataNotFoundException;
-import com.dmh.msusers.exceptions.KeycloakException;
-import com.dmh.msusers.exceptions.TokenException;
-import com.dmh.msusers.exceptions.UserAlreadyExistException;
+import com.dmh.msusers.exceptions.*;
 import com.dmh.msusers.model.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
-import org.keycloak.OAuth2Constants;
+import org.apache.commons.lang.StringUtils;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.KeycloakBuilder;
 import org.keycloak.admin.client.resource.UserResource;
@@ -16,11 +12,14 @@ import org.keycloak.representations.AccessTokenResponse;
 import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.keycloak.representations.idm.UserSessionRepresentation;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.NotAuthorizedException;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.core.Response;
 import java.util.*;
@@ -48,7 +47,8 @@ public class KeycloakUserRepository implements IUserRepository {
                 .lastName(userRepresentation.getLastName())
                 .cpf(userRepresentation.getAttributes().get("cpf").get(0))
                 .email(userRepresentation.getEmail())
-                .phone(userRepresentation.getAttributes().get("phone").get(0)).build();
+                .phone(userRepresentation.getAttributes().get("phone").get(0))
+                .build();
     }
 
     private UserRepresentation toUserRepresentation(User user) {
@@ -64,7 +64,7 @@ public class KeycloakUserRepository implements IUserRepository {
         passwordRepresentation.setValue(user.getPassword());
 
         List<String> requiredActions = new ArrayList<>();
-        requiredActions.add("verify email");
+        requiredActions.add("VERIFY_EMAIL");
 
         userAttributes.put("cpf", cpfList);
         userAttributes.put("phone", phoneList);
@@ -113,12 +113,50 @@ public class KeycloakUserRepository implements IUserRepository {
     }
 
     @Override
-    public AccessTokenResponse login(String email, String password) {
-        Keycloak keycloakGatewayApp = KeycloakBuilder.builder().serverUrl(serverURL)
-                .realm(realm).clientSecret(clientSecret).username(email).password(password)
-                .clientId(clientId).build();
+    public void updateById(String id, User user) {
+        try {
+            UserResource userResource = keycloak.realm(realm).users().get(id);
+            UserRepresentation userRepresentation = userResource.toRepresentation();
+            User userModel = fromRepresentation(userRepresentation);
+            if (!StringUtils.equals(null, user.getName()))
+                if (!user.getName().equals(userModel.getName())) userRepresentation.setFirstName(user.getName());
+            if (!StringUtils.equals(null, user.getLastName()))
+                if (!user.getLastName().equals(userModel.getLastName()))
+                    userRepresentation.setLastName(user.getLastName());
+            if (!StringUtils.equals(null, user.getEmail()))
+                if (!user.getEmail().equals(userModel.getEmail())) {
+                    userRepresentation.setUsername(user.getEmail());
+                    userRepresentation.setEmail(user.getEmail());
+                }
+            if (!StringUtils.equals(null, user.getPhone()))
+                if (!user.getPhone().equals(userModel.getPhone())) {
+                    List<String> userPhoneAttributes = userRepresentation.getAttributes().get("phone");
+                    userPhoneAttributes.clear();
+                    userPhoneAttributes.add(user.getPhone());
+                }
+            if (!StringUtils.equals(null, user.getPassword())) {
+                CredentialRepresentation passwordRepresentation = new CredentialRepresentation();
+                passwordRepresentation.setTemporary(false);
+                passwordRepresentation.setType(CredentialRepresentation.PASSWORD);
+                passwordRepresentation.setValue(user.getPassword());
+                userRepresentation.setCredentials(Collections.singletonList(passwordRepresentation));
+            }
+            userResource.update(userRepresentation);
+        } catch (NotFoundException e) {
+            throw new DataNotFoundException("User not found.");
+        }
+    }
 
-        return keycloakGatewayApp.tokenManager().getAccessToken();
+    @Override
+    public AccessTokenResponse login(String email, String password) {
+        try {
+            Keycloak keycloakGatewayApp = KeycloakBuilder.builder().serverUrl(serverURL)
+                    .realm(realm).clientSecret(clientSecret).username(email).password(password)
+                    .clientId(clientId).build();
+            return keycloakGatewayApp.tokenManager().getAccessToken();
+        } catch (NotAuthorizedException e) {
+            throw new LoginException("Login failed. Check your credentials.");
+        }
     }
 
     @Override

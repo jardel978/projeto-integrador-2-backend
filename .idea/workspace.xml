@@ -6,10 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="b2648121-b96e-4e30-8d26-65c02937de41" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ms-discovery/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/ms-discovery/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ms-discovery/src/main/java/com/dmh/msdiscovery/MsDiscoveryApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/ms-discovery/src/main/java/com/dmh/msdiscovery/MsDiscoveryApplication.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ms-discovery/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/ms-discovery/src/main/resources/application.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ms-users/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/ms-users/pom.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -19,6 +15,15 @@
   <component name="CodeStyleSettingsInfer">
     <option name="done" value="true" />
   </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Interface" />
+        <option value="Enum" />
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
@@ -27,20 +32,106 @@
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="GitToolBoxStore">
+    <option name="recentBranches">
+      <RecentBranches>
+        <option name="branchesForRepo">
+          <list>
+            <RecentBranchesForRepo>
+              <option name="branches">
+                <list>
+                  <RecentBranch>
+                    <option name="branchName" value="feature/task10" />
+                    <option name="lastUsedInstant" value="1677338927" />
+                  </RecentBranch>
+                  <RecentBranch>
+                    <option name="branchName" value="main" />
+                    <option name="lastUsedInstant" value="1677338926" />
+                  </RecentBranch>
+                </list>
+              </option>
+              <option name="repositoryRootUrl" value="file://$PROJECT_DIR$" />
+            </RecentBranchesForRepo>
+          </list>
+        </option>
+      </RecentBranches>
+    </option>
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
   <component name="ProjectCodeStyleSettingsMigration">
     <option name="version" value="2" />
   </component>
   <component name="ProjectId" id="2LWgTLeIVkfrdr4nLNKJCNvEEwF" />
-  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">
-    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
-    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
-    <property name="settings.editor.selected.configurable" value="reference.settings.project.maven.repository.indices" />
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "last_opened_file_path": "C:/Users/giova/Documents/CTD/PI2",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "show.run.dashboard.notification": "false"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CreateClassDialog.RecentsKey">
+      <recent name="com.dmh.msaccounts.model.enums" />
+      <recent name="com.dmh.msaccounts.model.enum" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Spring Boot.MsAccountsApplication">
+    <configuration name="MsAccountsApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+      <module name="ms-accounts" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.dmh.msaccounts.MsAccountsApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="MsGatewayApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" temporary="true" nameIsGenerated="true">
+      <option name="ACTIVE_PROFILES" />
+      <envs>
+        <env name="KCK_GATEWAY_CLIENT_SECRETS" value="hHbH677h7E8J0gRoaRUDWWXvm1XPkhAg" />
+      </envs>
+      <module name="ms-gateway" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.dmh.msgateway.MsGatewayApplication" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.dmh.msgateway.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="MsUsersApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" temporary="true" nameIsGenerated="true">
+      <option name="ACTIVE_PROFILES" />
+      <envs>
+        <env name="KCK_USERS_CLIENT_SECRET" value="xCAYpQR33IsawdHQ630Itb3ExrgSpYwE" />
+      </envs>
+      <module name="ms-users" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.dmh.msusers.MsUsersApplication" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.dmh.msusers.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -50,8 +141,19 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1675992258588</updated>
+      <workItem from="1677294233429" duration="6009000" />
+      <workItem from="1677331874508" duration="2966000" />
+      <workItem from="1677334862963" duration="2106000" />
+      <workItem from="1677519269058" duration="95000" />
+      <workItem from="1677519378586" duration="322000" />
+      <workItem from="1677519711712" duration="5986000" />
+      <workItem from="1677540617597" duration="40000" />
+      <workItem from="1677540731776" duration="48000" />
     </task>
     <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
@@ -63,6 +165,8 @@
         </entry>
       </map>
     </option>
-    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
   </component>
 </project>

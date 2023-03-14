@@ -3,6 +3,7 @@ package com.dmh.msusers.service;
 import com.dmh.msusers.model.User;
 import com.dmh.msusers.model.dto.UserDTORequest;
 import com.dmh.msusers.model.dto.UserDTOResponse;
+import com.dmh.msusers.model.dto.UserPatchDTORequest;
 import com.dmh.msusers.repository.KeycloakUserRepository;
 import org.keycloak.representations.AccessTokenResponse;
 import org.modelmapper.ModelMapper;
@@ -23,6 +24,12 @@ public class UserServiceImpl implements IUserService {
     public UserDTOResponse findById(String userId) {
         User userModel = userRepository.findById(userId);
         return mapper.map(userModel, UserDTOResponse.class);
+    }
+
+    @Override
+    public void updateById(String id, UserPatchDTORequest userPatch) {
+        User userModel = mapper.map(userPatch, User.class);
+        userRepository.updateById(id, userModel);
     }
 
     @Override

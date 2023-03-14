@@ -15,6 +15,7 @@ spring:
   application:
     name: ms-gateway
   config:
+#    import: optional:configserver:http://3.15.7.235:8888
     import: optional:configserver:http://localhost:8888
   cloud:
     config:
