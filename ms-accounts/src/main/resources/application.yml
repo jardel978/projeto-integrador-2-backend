@@ -1,5 +1,5 @@
 server:
-  port: ${PORT_MS_ACCOUNT:8085}
+  port: ${PORT_MS_ACCOUNTS:8085}
 
 eureka:
   instance:
@@ -13,9 +13,9 @@ eureka:
 
 spring:
   application:
-    name: ms-account
+    name: ms-accounts
   config:
     import: optional:configserver:http://localhost:8888
   cloud:
     config:
-      profile: ${MS_ACCOUNT_PROFILE:dev}
+      profile: ${MS_ACCOUNTS_PROFILE:dev}

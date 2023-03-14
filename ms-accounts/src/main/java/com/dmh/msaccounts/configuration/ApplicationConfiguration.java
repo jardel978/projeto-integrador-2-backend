@@ -1,5 +1,6 @@
 package com.dmh.msaccounts.configuration;
 
+import com.dmh.msaccounts.configuration.feign.OauthFeignConfiguration;
 import com.dmh.msaccounts.response.ResponseHandler;
 import feign.Capability;
 import org.modelmapper.ModelMapper;
@@ -11,8 +12,14 @@ import org.springframework.cloud.openfeign.CachingCapability;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+
 @Configuration
 public class ApplicationConfiguration {
+
+    @Bean
+    public OauthFeignConfiguration oauthFeignConfiguration(){
+        return new OauthFeignConfiguration(registrationRepository);
+    }
 
     @Bean
     public ModelMapper modelMapper() {

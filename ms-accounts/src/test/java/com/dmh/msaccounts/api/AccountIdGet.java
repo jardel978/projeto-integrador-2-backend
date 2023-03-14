@@ -1,17 +1,20 @@
-package com.dmh.msusers.api;
+package com.dmh.msaccounts.api;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
+import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import static io.restassured.RestAssured.given;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class TestApiDelete {
-
+public class AccountIdGet {
     private Object token;
 
     @BeforeEach
@@ -36,20 +39,18 @@ public class TestApiDelete {
 
     }
 
-/*    @Test
-    @Tag("DELETE User by ID Test")
-    @DisplayName("DELETE User by ID")
-    public void givenUserIdInformation_whenReceived_thenDeleteUserFromDatabase() {
+    @Test
 
+    @DisplayName("Get Account by ID")
+    public void givenAccountIdInformation_whenReceived_thenReturnsRequestedAccountData() {
         //given
-        Response response = RestAssured.delete("http://localhost:8080/ms_users/users/users/1");
+        Response response = RestAssured.get("http://localhost:8090/users/9df2efb8-9b31-4fde-8f98-d25a0d6a661c"); // --->>>> CONFIRMAR O ID DO ACCOUNT E ENDPOINT DE GET
 
         //when
-        String body = response.getBody().asString();
-        System.out.println(body);
+        int statusCode = response.getStatusCode();
+        System.out.println("Status code : " + statusCode);
 
-        //then
-        assertEquals("ok", body);}
-*/
+        assertEquals(HttpStatus.SC_OK, statusCode);
+    }
 
 }

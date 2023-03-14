@@ -12,16 +12,21 @@ import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 
-
 @Configuration
 public class OauthFeignConfiguration {
 
     private static final String KEYCLOAK_REGISTRATION_ID = "ms-accounts-client";
 
-    private final OAuth2AuthorizedClientService clientService;
-    private final ClientRegistrationRepository registrationRepository;
+    public OauthFeignConfiguration(ClientRegistrationRepository registrationRepository) {
+
+        this.registrationRepository = registrationRepository;
+    }
 
     @Autowired
+    private final OAuth2AuthorizedClientService clientService;
+    @Autowired
+    private final ClientRegistrationRepository registrationRepository;
+
     public OauthFeignConfiguration(OAuth2AuthorizedClientService clientService, ClientRegistrationRepository registrationRepository) {
         this.clientService = clientService;
         this.registrationRepository = registrationRepository;
