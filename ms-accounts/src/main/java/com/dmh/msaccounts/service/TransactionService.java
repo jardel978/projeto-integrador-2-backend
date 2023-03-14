@@ -2,10 +2,12 @@ package com.dmh.msaccounts.service;
 
 import com.dmh.msaccounts.exception.DataNotFoundException;
 import com.dmh.msaccounts.model.Accounts;
+import com.dmh.msaccounts.model.Cards;
 import com.dmh.msaccounts.model.Transactions;
-import com.dmh.msaccounts.model.dto.AccountsDTOResponse;
 import com.dmh.msaccounts.model.dto.TransactionDTO;
+import com.dmh.msaccounts.model.dto.TransactionDtoRequest;
 import com.dmh.msaccounts.repository.IAccountsRepository;
+import com.dmh.msaccounts.repository.ICardsRepository;
 import com.dmh.msaccounts.repository.ITransactionRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -13,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 @Slf4j
 @Service
@@ -25,26 +28,45 @@ public class TransactionService {
     IAccountsRepository accountsRepository;
 
     @Autowired
+    ICardsRepository cardsRepository;
+
+    @Autowired
     ITransactionRepository transactionRepository;
 
     @Autowired
     private ModelMapper mapper;
 
-    public TransactionDTO transferirValor(Transactions transaction) throws DataNotFoundException {
+    public TransactionDTO transferirValor(TransactionDtoRequest transactionDTO) throws DataNotFoundException {
 
-        Accounts accountData = accountsRepository.findById(transaction.getAccountId()).orElseThrow(() -> new DataNotFoundException("Account not found my son!"));
+        Accounts accounts = accountsRepository.findById(transactionDTO.getAccountId()).orElseThrow(() -> new DataNotFoundException("Account not found my son!"));
 
-        BigDecimal initialAmmount = accountData.getAmmount();
-        BigDecimal transValue = transaction.getValue();
+        Cards cards = cardsRepository.findById(transactionDTO.getCardId()).orElseThrow(() -> {
+            throw new DataNotFoundException("Card not found.");
+        });
+
+
+        BigDecimal initialAmmount = accounts.getAmmount();
+        BigDecimal transValue = transactionDTO.getValue();
 
         if(transValue.doubleValue() < 0.0){
             throw new IllegalArgumentException("Not a valid transaction value");
         };
         BigDecimal newAmmount = initialAmmount.add(transValue);
-        accountData.setAmmount(newAmmount);
+        accounts.setAmmount(newAmmount);
 
+        Transactions transaction = Transactions.builder()
+                .cardType(transactionDTO.getCardType())
+                .value(transactionDTO.getValue())
+                .dateTransaction(new Date())
+                .transactionType("cash deposit")
+                .description(transactionDTO.getDescription())
+                .account(accounts)
+                .cards(cards).build();
+
+        accounts.getTransactions().add(transaction);
 //      gravar novo saldo no account
-        accountsRepository.save(accountData);
+        accountsRepository.save(accounts);
+        transactionRepository.save(transaction);
 
         return mapper.map(transactionRepository.save(transaction), TransactionDTO.class);
     };

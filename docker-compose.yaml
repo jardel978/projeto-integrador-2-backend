@@ -26,10 +26,8 @@ services:
       - KC_DB_URL_DATABASE=keycloak
       - KC_DB_USERNAME=keycloak
       - KC_DB_PASSWORD=password
-      - KC_HOSTNAME_STRICT=false
-      - KC_HOSTNAME_STRICT_HTTPS=false
-      - KC_HTTP_ENABLED=true
     ports:
+#      - KCK_PORT:8080:8080
       - "8080:8080"
     command: start-dev
     depends_on:
@@ -37,43 +35,17 @@ services:
     healthcheck:
       test: "curl -f http://localhost:8080/admin || exit 1"
 
-  ms-discovery:
-    build: .
-      context: ms-discovery
-      dockerfile: Dokerfile
-    container_name: ms-discovery
-    restart: always
-    depends_on:
-      - keycloak
-    ports:
-      - "8761:8761"
-
-  ms-config-server:
-    build: .
-      context: ms-config-server
-      dockerfile: Dokerfile
-    container_name: ms-config-server
-    restart: always
-    depends_on:
-      - ms-discovery
-    ports:
-      - "8888:8888"
-
-#  ms-gateway:
-#    build: .
-#      context: ms-gateway
-#      dockerfile: Dokerfile
-#    container_name: ms-gateway
+#  eureka-service:
+#    build: ms-discovery
+#    container_name: eureka-server
 #    restart: always
 #    depends_on:
-#      - ms-config-server
+#      - keycloak
 #    ports:
-#      - "8090:8090"
+#      - "8761:8761"
 #
-#  ms-users:
-#    build: .
-#      context: ms-users
-#      dockerfile: Dokerfile
+#  users-service:
+#    build: ms-users
 #    container_name: ms-users
 #    restart: always
 #    depends_on:
@@ -81,25 +53,22 @@ services:
 #    ports:
 #      - "8084:8084"
 #
-#  ms-accounts:
-#    build: .
-#      context: ms-accounts
-#      dockerfile: Dokerfile
-#    container_name: ms-accounts
+#  api-gateway:
+#    build: ms-gateway
+#    container_name: ms-gateway
 #    restart: always
 #    depends_on:
-#      - ms-users
+#      - users-service
 #    ports:
-#      - "8085:8085"
-
+#      - "8090:8090"
   accounts-db:
     image: mongo:4.4.2
     container_name: "accounts-db"
     restart: always
     environment:
       MONGO_INITDB_DATABASE: mongo-account-db
-      MONGO_INITDB_ROOT_USERNAME: $${MONGO_USERNAME:accounts}
-      MONGO_INITDB_ROOT_PASSWORD: $${MONGO_PASSWORD:1234}
+      MONGO_INITDB_ROOT_USERNAME: accounts
+      MONGO_INITDB_ROOT_PASSWORD: 1234
     volumes:
 #      - ./dbScript:/docker-entrypoint-initdb.d/mongo-serie-init.js:ro
       - ../mongo-account-volume:/data/db

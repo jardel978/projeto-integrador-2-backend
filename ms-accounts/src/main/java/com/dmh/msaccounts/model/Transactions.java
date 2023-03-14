@@ -5,9 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
 
+import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -16,15 +15,25 @@ import java.util.Date;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Document(collection = "transactions")
+@Entity
+@Table(name = "transactions")
 public class Transactions implements Serializable {
 
-    @Field(name = "card_type")
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private String transactionsId;
+    @Column(name = "card_type")
     private CardsTypeEnum cardType;
-    private String accountId;
     private BigDecimal value;
     private Date dateTransaction;
     private String transactionType;
     private String description;
+
+    @ManyToOne
+    private Accounts account;
+
+    @ManyToOne
+    private Cards cards;
+
 
 }

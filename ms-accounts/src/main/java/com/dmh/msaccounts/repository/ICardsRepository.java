@@ -1,7 +1,7 @@
 package com.dmh.msaccounts.repository;
 
 import com.dmh.msaccounts.model.Cards;
-import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface ICardsRepository extends MongoRepository<Cards, String> {
+public interface ICardsRepository extends JpaRepository<Cards, String> {
 }

@@ -5,30 +5,39 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
 
+import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Document(collection = "cards")
+@Entity
+@Table(name = "cards")
 public class Cards implements Serializable {
 
     @Id
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "cards_id")
+    private String cardId;
     private String number;
     private String expirationDate;
     private String cvc;
     private String name;
-    private String accountId;
     private BigDecimal ammount;
-//    @Field(name = "is_external")
+    @Column(name = "is_external")
     private boolean isExternal;
-    @Field(name = "card_type")
+    @Column(name = "card_type")
     private CardsTypeEnum cardType;
+
+    @ManyToOne
+    private Accounts account;
+
+    @OneToMany
+    @JoinColumn(name = "cards_id")
+    private Set<Transactions> transactions = new HashSet<>() ;
 }
