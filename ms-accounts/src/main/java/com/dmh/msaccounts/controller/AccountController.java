@@ -51,8 +51,6 @@ public class AccountController {
 //        return responseHandler.build(null, HttpStatus.OK, "Account updated.");
 //    }
 
-
-//    TASK 12, 13 e 14
     @Operation(summary = "Get all cards", description = "Get all cards")
     @GetMapping("/{accountId}/cards")
     public ResponseEntity<Object> findCardsByAccount(@PathVariable("accountId") Long accountId){
