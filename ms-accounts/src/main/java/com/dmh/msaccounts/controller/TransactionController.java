@@ -24,7 +24,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 @RestController
-@RequestMapping("/accounts")
+@RequestMapping("/accountsss")
 @SecurityRequirement(name = "Bearer Authentication")
 public class TransactionController {
 
