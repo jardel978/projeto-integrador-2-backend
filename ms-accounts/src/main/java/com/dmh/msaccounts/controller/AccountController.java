@@ -6,6 +6,8 @@ import com.dmh.msaccounts.model.dto.CardsDTO;
 import com.dmh.msaccounts.model.dto.CardsDTORequest;
 import com.dmh.msaccounts.response.ResponseHandler;
 import com.dmh.msaccounts.service.AccountServiceImpl;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +18,7 @@ import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/accounts")
+@SecurityRequirement(name = "Bearer Authentication")
 public class AccountController {
 
     @Autowired
@@ -34,12 +37,14 @@ public class AccountController {
                 "created.");
     }
 
+    @Operation(summary = "Get account", description = "Get account")
     @GetMapping("/{id}")
     public ResponseEntity<Object> findAccountById(@PathVariable("id") Long id) {
         return responseHandler.build(accountService.findAccountById(id), HttpStatus.OK, "Account found.");
     }
 
 //    @PatchMapping("/{id}")
+//    @Operation(summary = "Update account", description = "Update account")
 //    public ResponseEntity<Object> updateAccount(@RequestBody AccountsPatchDTORequest accountsPatchDTORequest,
 //                                                @PathVariable("id") Long id) {
 //        accountService.updateAccount(accountsPatchDTORequest, id);
@@ -48,6 +53,7 @@ public class AccountController {
 
 
 //    TASK 12, 13 e 14
+    @Operation(summary = "Get all cards", description = "Get all cards")
     @GetMapping("/{accountId}/cards")
     public ResponseEntity<Object> findCardsByAccount(@PathVariable("accountId") Long accountId){
         return responseHandler.build(accountService.findAccountById(accountId), HttpStatus.OK, "Cards found");
@@ -58,11 +64,13 @@ public class AccountController {
         return responseHandler.build(accountService.createCardByAccount(accountId, cardsDTORequest), HttpStatus.CREATED, "Card associated");
     }
 
+    @Operation(summary = "Get card", description = "Get card")
     @GetMapping("/{accountId}/cards/{cardId}")
     public ResponseEntity<Object> findCardOfAccountById(@PathVariable("accountId") Long accountId, @PathVariable("cardId") Long cardId){
         return responseHandler.build(accountService.findAccountCardsById(accountId, cardId), HttpStatus.OK, "Card found");
     }
 
+    @Operation(summary = "Delete card", description = "Delete card")
     @DeleteMapping("/{accountId}/cards/{cardId}")
     public ResponseEntity<Object> deleteCardOfAccountById(@PathVariable("accountId") Long accountId, @PathVariable("cardId") Long cardId) {
         return responseHandler.build(accountService.deleteCardOfAccountById(accountId, cardId), HttpStatus.OK, "Card deleted");
