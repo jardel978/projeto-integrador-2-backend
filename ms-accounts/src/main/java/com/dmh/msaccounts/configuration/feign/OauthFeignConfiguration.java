@@ -1,7 +1,6 @@
 package com.dmh.msaccounts.configuration.feign;
 
 import feign.RequestInterceptor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.oauth2.client.*;
@@ -13,14 +12,8 @@ public class OauthFeignConfiguration {
 
     private static final String KEYCLOAK_REGISTRATION_ID = "ms-accounts-client";
 
-    public OauthFeignConfiguration(ClientRegistrationRepository registrationRepository) {
-
-        this.registrationRepository = registrationRepository;
-    }
-
-    @Autowired
     private final OAuth2AuthorizedClientService clientService;
-    @Autowired
+
     private final ClientRegistrationRepository registrationRepository;
 
     public OauthFeignConfiguration(OAuth2AuthorizedClientService clientService, ClientRegistrationRepository registrationRepository) {

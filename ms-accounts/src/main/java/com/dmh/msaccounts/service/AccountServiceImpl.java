@@ -40,7 +40,7 @@ public class AccountServiceImpl implements IAccountService {
     @Override
     public AccountsDTOResponse createAccount(AccountsDTORequest accountsDTORequest) {
         Accounts accountsModel = mapper.map(accountsDTORequest, Accounts.class);
-        ResponseEntity<Map<String, Object>> response = (ResponseEntity<Map<String, Object>>) feignUserRepository.findByUserId(accountsDTORequest.getUserId());
+        ResponseEntity<Map<Long, Object>> response = (ResponseEntity<Map<Long, Object>>) feignUserRepository.findByUserId(accountsDTORequest.getUserId());
         log.info("response: " + response.getBody().toString());
         if (response.getBody().containsKey("error")) {
             throw new DataNotFoundException("User not found.");
@@ -62,7 +62,7 @@ public class AccountServiceImpl implements IAccountService {
     }
 
     @Override
-    public CardsDTO createCardByAccount(String accountId, CardsDTORequest cardsDTORequest) {
+    public CardsDTO createCardByAccount(Long accountId, CardsDTORequest cardsDTORequest) {
         Accounts accounts = accountsRepository.findById(accountId)
                 .orElseThrow(() -> new DataNotFoundException("Account not found with id " + accountId));
         accounts.getCards().forEach(c -> {
@@ -88,7 +88,7 @@ public class AccountServiceImpl implements IAccountService {
     }
 
     @Override
-    public AccountsDTOResponse findAccountById(String id) {
+    public AccountsDTOResponse findAccountById(Long id) {
         Accounts accountsModel = accountsRepository.findById(id).orElseThrow(() -> {
             throw new DataNotFoundException("Account not found.");
         });
@@ -110,12 +110,12 @@ public class AccountServiceImpl implements IAccountService {
 
 //    Task 12, 13 e 14
     @Override
-    public CardsDTO findAccountCardsById(String accountId, String cardId){
+    public CardsDTO findAccountCardsById(Long accountId, Long cardId){
 
         Accounts accounts = accountsRepository.findById(accountId)
                 .orElseThrow(() -> new DataNotFoundException("Account not found with id " + accountId));
         Cards cards = accounts.getCards().stream()
-                .filter(c -> c.getCardId().equals(cardId))
+                .filter(c -> c.getId().equals(cardId))
                 .findFirst()
                 .orElseThrow(() -> new DataNotFoundException("Card not found with id " + cardId));
 
@@ -123,11 +123,11 @@ public class AccountServiceImpl implements IAccountService {
     }
 
     @Override
-    public AccountsDTORequest deleteCardOfAccountById(String accountId, String cardId) {
+    public AccountsDTORequest deleteCardOfAccountById(Long accountId, Long cardId) {
         Accounts accounts = accountsRepository.findById(accountId)
                 .orElseThrow(() -> new DataNotFoundException("Account not found with id " + accountId));
         Cards cards = accounts.getCards().stream()
-                .filter(c -> c.getCardId().equals(cardId))
+                .filter(c -> c.getId().equals(cardId))
                 .findFirst()
                 .orElseThrow(() -> new DataNotFoundException("Card not found with id " + cardId));
         accounts.getCards().remove(cards);

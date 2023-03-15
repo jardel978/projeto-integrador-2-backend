@@ -15,7 +15,7 @@ public class TransactionDTO implements Serializable {
 
     @NotNull(message = "Card Type is required.")
     private CardsTypeEnum cardType;
-    private String accountId;
+    private Long accountId;
     @NotNull(message = "Value is required.")
     private BigDecimal value;
     private Date dateTransaction;

@@ -22,8 +22,8 @@ public class Cards implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "cards_id")
-    private String cardId;
+    //@Column(name = "cards_id")
+    private Long id;
     private String number;
     private String expirationDate;
     private String cvc;
