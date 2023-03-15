@@ -35,13 +35,13 @@ public class AccountController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Object> findAccountById(@PathVariable("id") String id) {
+    public ResponseEntity<Object> findAccountById(@PathVariable("id") Long id) {
         return responseHandler.build(accountService.findAccountById(id), HttpStatus.OK, "Account found.");
     }
 
 //    @PatchMapping("/{id}")
 //    public ResponseEntity<Object> updateAccount(@RequestBody AccountsPatchDTORequest accountsPatchDTORequest,
-//                                                @PathVariable("id") String id) {
+//                                                @PathVariable("id") Long id) {
 //        accountService.updateAccount(accountsPatchDTORequest, id);
 //        return responseHandler.build(null, HttpStatus.OK, "Account updated.");
 //    }
@@ -49,22 +49,22 @@ public class AccountController {
 
 //    TASK 12, 13 e 14
     @GetMapping("/{accountId}/cards")
-    public ResponseEntity<Object> findCardsByAccount(@PathVariable("accountId") String accountId){
+    public ResponseEntity<Object> findCardsByAccount(@PathVariable("accountId") Long accountId){
         return responseHandler.build(accountService.findAccountById(accountId), HttpStatus.OK, "Cards found");
     }
 
     @PostMapping("/{accountId}/cards")
-    public ResponseEntity<Object> createCardByAccount(@PathVariable("accountId") String accountId, @RequestBody CardsDTORequest cardsDTORequest){
+    public ResponseEntity<Object> createCardByAccount(@PathVariable("accountId") Long accountId, @RequestBody CardsDTORequest cardsDTORequest){
         return responseHandler.build(accountService.createCardByAccount(accountId, cardsDTORequest), HttpStatus.CREATED, "Card associated");
     }
 
     @GetMapping("/{accountId}/cards/{cardId}")
-    public ResponseEntity<Object> findCardOfAccountById(@PathVariable("accountId") String accountId, @PathVariable("cardId") String cardId){
+    public ResponseEntity<Object> findCardOfAccountById(@PathVariable("accountId") Long accountId, @PathVariable("cardId") Long cardId){
         return responseHandler.build(accountService.findAccountCardsById(accountId, cardId), HttpStatus.OK, "Card found");
     }
 
     @DeleteMapping("/{accountId}/cards/{cardId}")
-    public ResponseEntity<Object> deleteCardOfAccountById(@PathVariable("accountId") String accountId, @PathVariable("cardId") String cardId) {
+    public ResponseEntity<Object> deleteCardOfAccountById(@PathVariable("accountId") Long accountId, @PathVariable("cardId") Long cardId) {
         return responseHandler.build(accountService.deleteCardOfAccountById(accountId, cardId), HttpStatus.OK, "Card deleted");
     }
 

@@ -15,7 +15,7 @@ import java.util.Set;
 public class AccountsPatchDTORequest implements Serializable {
 
     //    private String userId;
-    private String id;
+    private Long id;
     private Set<CardsDTO> cards;
 
 }

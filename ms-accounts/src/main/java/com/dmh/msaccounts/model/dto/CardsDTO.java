@@ -15,7 +15,7 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 public class CardsDTO implements Serializable {
 
-    private String id;
+    private Long id;
     private String number;
     private String expirationDate;
     private String cvc;

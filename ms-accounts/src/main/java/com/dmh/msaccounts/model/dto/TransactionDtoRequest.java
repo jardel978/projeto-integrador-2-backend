@@ -18,6 +18,6 @@ public class TransactionDtoRequest implements Serializable {
     @NotNull(message = "Value is required.")
     private BigDecimal value;
     private String description;
-    private String accountId;
-    private String cardId;
+    private Long accountId;
+    private Long cardId;
 }

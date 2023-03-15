@@ -21,7 +21,8 @@ public class Accounts implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String accountId;
+
+    private Long id;
     private String account;
     @Column(name = "user_id")
     private String userId;

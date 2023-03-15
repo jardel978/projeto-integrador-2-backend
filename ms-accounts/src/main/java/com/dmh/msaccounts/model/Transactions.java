@@ -21,7 +21,7 @@ public class Transactions implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String transactionsId;
+    private Long id;
     @Column(name = "card_type")
     private CardsTypeEnum cardType;
     private BigDecimal value;

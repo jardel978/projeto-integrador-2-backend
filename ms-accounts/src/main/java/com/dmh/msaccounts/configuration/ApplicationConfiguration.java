@@ -1,6 +1,5 @@
 package com.dmh.msaccounts.configuration;
 
-import com.dmh.msaccounts.configuration.feign.OauthFeignConfiguration;
 import com.dmh.msaccounts.response.ResponseHandler;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.info.Contact;
@@ -9,21 +8,12 @@ import io.swagger.v3.oas.annotations.info.License;
 import io.swagger.v3.oas.annotations.servers.Server;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.cache.interceptor.CacheInterceptor;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 
 @Configuration
 public class ApplicationConfiguration {
-
-    @Bean
-    public OauthFeignConfiguration oauthFeignConfiguration(){
-        return new OauthFeignConfiguration(registrationRepository);
-    }
 
     @Bean
     public ModelMapper modelMapper() {
