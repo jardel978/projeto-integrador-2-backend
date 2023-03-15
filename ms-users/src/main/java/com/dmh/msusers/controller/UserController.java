@@ -28,12 +28,7 @@ public class UserController {
     @Autowired
     private ResponseHandler responseHandler;
 
-    /**
-     * Qualquer coisa aí
-     * @param userDTO
-     * @param result
-     * @return
-     */
+
 
     @PostMapping("/registration")
     public ResponseEntity<Object> create(@Valid @RequestBody UserDTORequest userDTO, BindingResult result) {
