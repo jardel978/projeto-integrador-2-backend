@@ -40,7 +40,9 @@ public class AccountServiceImpl implements IAccountService {
 
     @Override
     public AccountsDTOResponse createAccount(AccountsDTORequest accountsDTORequest) {
-        Accounts accountsModel = mapper.map(accountsDTORequest, Accounts.class);
+        //Accounts accountsModel = mapper.map(accountsDTORequest, Accounts.class);
+        Accounts accountsModel = Accounts.builder()
+                .userId(accountsDTORequest.getUserId()).build();
         ResponseEntity<Map<String, Object>> response =
                 (ResponseEntity<Map<String, Object>>) feignUserRepository.findByUserId(accountsDTORequest.getUserId());
         log.info("response: " + response.getBody().toString());

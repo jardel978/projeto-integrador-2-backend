@@ -3,6 +3,7 @@ package com.dmh.msaccounts.configuration.feign;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.OAuth2AuthorizeRequest;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager;
@@ -48,7 +49,7 @@ public class Oauth2ClientCredentialsFeignManager {
 
             @Override
             public boolean isAuthenticated() {
-                return principal.isAuthenticated();
+                return this.isAuthenticated();
             }
 
             @Override
@@ -71,7 +72,7 @@ public class Oauth2ClientCredentialsFeignManager {
                     .withClientRegistrationId(clientRegistration.getRegistrationId())
                     .principal(principal)
                     .build();
-
+            log.info("Qualquer string para identificar ai" + oAuth2AuthorizeRequest.getPrincipal().getName());
             OAuth2AuthorizedClient client = manager.authorize(oAuth2AuthorizeRequest);
             log.info("Status do Client: " + client);
 
