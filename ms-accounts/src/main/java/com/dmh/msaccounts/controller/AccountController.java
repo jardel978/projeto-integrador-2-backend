@@ -34,7 +34,7 @@ public class AccountController {
             throw new InvalidFieldException(bdResult.getAllErrors().get(0).getDefaultMessage());
         }
         return responseHandler.build(accountService.createAccount(accountsDTORequest), HttpStatus.CREATED, "Account " +
-                "created.");
+                " created.");
     }
 
     @Operation(summary = "Get account", description = "Get account")
