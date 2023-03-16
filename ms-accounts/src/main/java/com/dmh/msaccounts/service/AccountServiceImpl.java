@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -40,22 +41,23 @@ public class AccountServiceImpl implements IAccountService {
     @Override
     public AccountsDTOResponse createAccount(AccountsDTORequest accountsDTORequest) {
         Accounts accountsModel = mapper.map(accountsDTORequest, Accounts.class);
-        ResponseEntity<Map<Long, Object>> response = (ResponseEntity<Map<Long, Object>>) feignUserRepository.findByUserId(accountsDTORequest.getUserId());
+        ResponseEntity<Map<String, Object>> response =
+                (ResponseEntity<Map<String, Object>>) feignUserRepository.findByUserId(accountsDTORequest.getUserId());
         log.info("response: " + response.getBody().toString());
         if (response.getBody().containsKey("error")) {
             throw new DataNotFoundException("User not found.");
         }
-        UUID uuid = UUID.nameUUIDFromBytes(accountsModel.getUserId().getBytes(StandardCharsets.UTF_8));
-        String accountNumber = Long.toString(uuid.getMostSignificantBits()).substring(0, 5);
+        UUID uuid = UUID.nameUUIDFromBytes((accountsModel.getUserId() + LocalDateTime.now().toString()).getBytes(StandardCharsets.UTF_8));
+        Long number = uuid.getMostSignificantBits();
+        if (number < 0) {
+            number = number * -1;
+        }
+        String accountNumber = Long.toString(number).substring(0, 5);
         accountsModel.setAccount(accountNumber);
         accountsModel.setAmmount(new BigDecimal(0));
 
         if (!accountsModel.getCards().isEmpty()) {
-
-            accountsModel.getCards().stream().map(cards -> {
-                return cardsRepository.save(cards);
-            }).collect(Collectors.toSet());
-
+            accountsModel.getCards().stream().map(cards -> cardsRepository.save(cards)).collect(Collectors.toSet());
         }
 
         return mapper.map(accountsRepository.save(accountsModel), AccountsDTOResponse.class);
