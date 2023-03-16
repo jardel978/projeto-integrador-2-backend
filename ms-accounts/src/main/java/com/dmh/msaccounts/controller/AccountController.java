@@ -2,12 +2,12 @@ package com.dmh.msaccounts.controller;
 
 import com.dmh.msaccounts.exception.InvalidFieldException;
 import com.dmh.msaccounts.model.dto.AccountsDTORequest;
-import com.dmh.msaccounts.model.dto.CardsDTO;
 import com.dmh.msaccounts.model.dto.CardsDTORequest;
 import com.dmh.msaccounts.response.ResponseHandler;
 import com.dmh.msaccounts.service.AccountServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +19,7 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping("/accounts")
 @SecurityRequirement(name = "Bearer Authentication")
+@Slf4j
 public class AccountController {
 
     @Autowired
@@ -40,6 +41,7 @@ public class AccountController {
     @Operation(summary = "Get account", description = "Get account")
     @GetMapping("/{id}")
     public ResponseEntity<Object> findAccountById(@PathVariable("id") Long id) {
+        log.info("qualquer string aí");
         return responseHandler.build(accountService.findAccountById(id), HttpStatus.OK, "Account found.");
     }
 
@@ -51,8 +53,6 @@ public class AccountController {
 //        return responseHandler.build(null, HttpStatus.OK, "Account updated.");
 //    }
 
-
-//    TASK 12, 13 e 14
     @Operation(summary = "Get all cards", description = "Get all cards")
     @GetMapping("/{accountId}/cards")
     public ResponseEntity<Object> findCardsByAccount(@PathVariable("accountId") Long accountId){

@@ -24,7 +24,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 @RestController
-@RequestMapping("/accounts")
+@RequestMapping("/accountsss")
 @SecurityRequirement(name = "Bearer Authentication")
 public class TransactionController {
 
@@ -45,5 +45,11 @@ public class TransactionController {
             throw new Exception(String.valueOf(bindingResult.getAllErrors().get(0)));
         }
         return responseHandler.build(transactionService.transferirValor(transactionDtoRequest), HttpStatus.OK, "Successfully transferred");
+    }
+
+    @GetMapping("/{id}/transactions")
+    public ResponseEntity<Object> getLastTransactions(@PathVariable("id") String accountId) {
+        return responseHandler.build(transactionService.getLast5Transactions(accountId), HttpStatus.OK, "Transactions" +
+                " found.");
     }
 }

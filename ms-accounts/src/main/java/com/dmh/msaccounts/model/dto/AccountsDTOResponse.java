@@ -16,7 +16,7 @@ import java.util.Set;
 public class AccountsDTOResponse implements Serializable {
 
     private Long id;
-    private Long userId;
+    private String userId;
     private String account;
     private BigDecimal ammount;
     private Set<CardsDTO> cards;
