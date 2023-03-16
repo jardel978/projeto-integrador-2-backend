@@ -46,4 +46,10 @@ public class TransactionController {
         }
         return responseHandler.build(transactionService.transferirValor(transactionDtoRequest), HttpStatus.OK, "Successfully transferred");
     }
+
+    @GetMapping("/{id}/transactions")
+    public ResponseEntity<Object> getLastTransactions(@PathVariable("id") String accountId) {
+        return responseHandler.build(transactionService.getLast5Transactions(accountId), HttpStatus.OK, "Transactions" +
+                " found.");
+    }
 }

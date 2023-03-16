@@ -16,6 +16,8 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -48,9 +50,10 @@ public class TransactionService {
         BigDecimal initialAmmount = accounts.getAmmount();
         BigDecimal transValue = transactionDTO.getValue();
 
-        if(transValue.doubleValue() < 0.0){
+        if (transValue.doubleValue() < 0.0) {
             throw new IllegalArgumentException("Not a valid transaction value");
-        };
+        }
+
         BigDecimal newAmmount = initialAmmount.add(transValue);
         accounts.setAmmount(newAmmount);
 
@@ -69,5 +72,16 @@ public class TransactionService {
         transactionRepository.save(transaction);
 
         return mapper.map(transactionRepository.save(transaction), TransactionDTO.class);
-    };
+    }
+
+    public List<TransactionDTO> getLast5Transactions(String accountId) {
+        // TODO É possivel adicionar e retirar valores da conta?
+        List<Transactions> transactionsList =
+                transactionRepository.findTop5ByAccountIdOrderByDateTransactionDesc(accountId);
+
+        return transactionsList.stream().map(transaction -> {
+            // TODO Transactions ou Transferences?
+            return mapper.map(transaction, TransactionDTO.class);
+        }).collect(Collectors.toList());
+    }
 }
