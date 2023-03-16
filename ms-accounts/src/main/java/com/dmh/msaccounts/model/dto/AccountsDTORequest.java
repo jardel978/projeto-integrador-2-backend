@@ -16,7 +16,7 @@ import java.util.Set;
 public class AccountsDTORequest implements Serializable {
 
     @NotNull(message = "\"UserId\" is required.")
-    private Long userId;
+    private String userId;
     private Set<CardsDTO> cards;
 
 }
