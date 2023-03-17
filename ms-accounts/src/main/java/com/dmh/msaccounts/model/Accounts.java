@@ -31,8 +31,8 @@ public class Accounts implements Serializable {
     @JoinColumn(name = "account_id")
     private Set<Cards> cards = new HashSet<>();
 
-    @OneToMany
-    @JoinColumn(name = "account_id")
-    private Set<Transactions> transactions = new HashSet<>();
+//    @OneToMany
+//    @JoinColumn(name = "account_id")
+//    private Set<Transactions> transactions = new HashSet<>();
 
 }

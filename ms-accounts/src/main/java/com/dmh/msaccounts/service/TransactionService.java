@@ -3,7 +3,9 @@ package com.dmh.msaccounts.service;
 import com.dmh.msaccounts.exception.DataNotFoundException;
 import com.dmh.msaccounts.model.Accounts;
 import com.dmh.msaccounts.model.Cards;
+import com.dmh.msaccounts.model.Deposit;
 import com.dmh.msaccounts.model.Transactions;
+import com.dmh.msaccounts.model.dto.DepositDTO;
 import com.dmh.msaccounts.model.dto.TransactionDTO;
 import com.dmh.msaccounts.model.dto.TransactionDtoRequest;
 import com.dmh.msaccounts.repository.IAccountsRepository;
@@ -57,7 +59,7 @@ public class TransactionService {
         BigDecimal newAmmount = initialAmmount.add(transValue);
         accounts.setAmmount(newAmmount);
 
-        Transactions transaction = Transactions.builder()
+        Deposit deposit = Deposit.builder()
                 .cardType(transactionDTO.getCardType())
                 .value(transactionDTO.getValue())
                 .dateTransaction(new Date())
@@ -66,12 +68,12 @@ public class TransactionService {
                 .account(accounts)
                 .cards(cards).build();
 
-        accounts.getTransactions().add(transaction);
+//      accounts.getTransactions().add(transaction);
 //      gravar novo saldo no account
         accountsRepository.save(accounts);
-        transactionRepository.save(transaction);
+        transactionRepository.save(deposit);
 
-        return mapper.map(transactionRepository.save(transaction), TransactionDTO.class);
+        return mapper.map(transactionRepository.save(deposit), DepositDTO.class);
     }
 
     public List<TransactionDTO> getLast5Transactions(String accountId) {
