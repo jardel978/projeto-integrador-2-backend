@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 import org.jboss.resteasy.spi.touri.MappedBy;
 
 import javax.persistence.*;
@@ -12,10 +13,14 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 @Data
-@Builder
+@SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
 @MappedSuperclass
+@Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "transact_type")
+@Table(name = "transactions")
 public class Transactions implements Serializable {
 
     @Id
@@ -27,6 +32,7 @@ public class Transactions implements Serializable {
     private String description;
 
     @ManyToOne
-    private Accounts accountsOrigin;
+    @JoinColumn(name = "account_origin_id")
+    private Accounts accountOrigin;
 
 }

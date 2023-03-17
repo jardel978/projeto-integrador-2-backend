@@ -13,9 +13,12 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "transferences")
+//@Table(name = "transferences")
+@DiscriminatorValue("transference")
 public class Transferences extends Transactions implements Serializable {
 
     @ManyToOne
+    @JoinColumn(name = "account_id", foreignKey = @ForeignKey(name = "fk_account_transference"))
     private Accounts accountsDestiny;
+
 }

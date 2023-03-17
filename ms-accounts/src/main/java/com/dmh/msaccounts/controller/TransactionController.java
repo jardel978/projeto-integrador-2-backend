@@ -1,6 +1,6 @@
 package com.dmh.msaccounts.controller;
 
-import com.dmh.msaccounts.model.dto.TransactionDtoRequest;
+import com.dmh.msaccounts.model.dto.DepositDTO;
 import com.dmh.msaccounts.response.ResponseHandler;
 import com.dmh.msaccounts.service.TransactionService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -26,13 +26,14 @@ public class TransactionController {
 
     @PostMapping("/{id}/transactions")
     public ResponseEntity<Object> transaction(@PathVariable("id") String accountId,
-                                              @Valid @RequestBody TransactionDtoRequest transactionDtoRequest,
+                                              @Valid @RequestBody DepositDTO depositDTO,
                                               BindingResult bindingResult) throws Exception {
 
         if (bindingResult.hasErrors()) {
             throw new Exception(String.valueOf(bindingResult.getAllErrors().get(0)));
         }
-        return responseHandler.build(transactionService.transferirValor(transactionDtoRequest), HttpStatus.OK, "Successfully transferred");
+        return responseHandler.build(transactionService.transferirValor(depositDTO), HttpStatus.OK, "Successfully " +
+                "transferred");
     }
 
     @GetMapping("/{id}/transactions")

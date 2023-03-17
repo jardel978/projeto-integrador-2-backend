@@ -6,6 +6,9 @@ import com.dmh.msaccounts.exception.DataNotFoundException;
 import com.dmh.msaccounts.model.Accounts;
 import com.dmh.msaccounts.model.Cards;
 import com.dmh.msaccounts.model.dto.*;
+import com.dmh.msaccounts.model.dto.requests.AccountsDTORequest;
+import com.dmh.msaccounts.model.dto.requests.CardsDTORequest;
+import com.dmh.msaccounts.model.dto.responses.AccountsDTOResponse;
 import com.dmh.msaccounts.repository.FeignUserRepository;
 import com.dmh.msaccounts.repository.IAccountsRepository;
 import com.dmh.msaccounts.repository.ICardsRepository;
@@ -67,28 +70,28 @@ public class AccountServiceImpl implements IAccountService {
 
     @Override
     public CardsDTO createCardByAccount(Long accountId, CardsDTORequest cardsDTORequest) {
-        Accounts accounts = accountsRepository.findById(accountId)
+        Accounts account = accountsRepository.findById(accountId)
                 .orElseThrow(() -> new DataNotFoundException("Account not found with id " + accountId));
-        accounts.getCards().forEach(c -> {
+        account.getCards().forEach(c -> {
             if (c.getNumber().equals(cardsDTORequest.getNumber())) {
                 throw new DataAlreadyExistsException("Card already exists");
             }
         });
 
-        Cards cards = mapper.map(cardsDTORequest, Cards.class);
+        Cards card = mapper.map(cardsDTORequest, Cards.class);
 
-        cards.setAccount(accounts);
+        card.setAccount(account);
 
         if (cardsDTORequest.getAmmount() == null | cardsDTORequest.getAmmount().compareTo(new BigDecimal(0)) == -1) {
-            cards.setAmmount(new BigDecimal(0));
+            card.setAmmount(new BigDecimal(0));
         }
 
-        cards = cardsRepository.save(cards);
-        accounts.getCards().add(cards);
+        card = cardsRepository.save(card);
+        account.getCards().add(card);
 
-        accountsRepository.save(accounts);
+        accountsRepository.save(account);
 
-        return mapper.map(cards, CardsDTO.class);
+        return mapper.map(card, CardsDTO.class);
     }
 
     @Override

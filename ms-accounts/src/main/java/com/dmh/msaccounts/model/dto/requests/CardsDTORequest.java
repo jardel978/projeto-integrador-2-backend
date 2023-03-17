@@ -1,4 +1,4 @@
-package com.dmh.msaccounts.model.dto;
+package com.dmh.msaccounts.model.dto.requests;
 
 import com.dmh.msaccounts.model.enums.CardsTypeEnum;
 import lombok.AllArgsConstructor;

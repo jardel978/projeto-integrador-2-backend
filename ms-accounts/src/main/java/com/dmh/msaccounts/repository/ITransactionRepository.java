@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface ITransactionRepository extends JpaRepository<Transactions, Long> {
-    List<Transactions> findTop5ByAccountIdOrderByDateTransactionDesc(String accountId);
+    List<Transactions> findTop5ByAccountOriginIdOrderByDateTransactionDesc(String accountId);
 }

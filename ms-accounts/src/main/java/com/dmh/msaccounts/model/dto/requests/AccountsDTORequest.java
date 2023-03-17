@@ -1,5 +1,6 @@
-package com.dmh.msaccounts.model.dto;
+package com.dmh.msaccounts.model.dto.requests;
 
+import com.dmh.msaccounts.model.dto.CardsDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,7 +16,7 @@ import java.util.Set;
 @AllArgsConstructor
 public class AccountsDTORequest implements Serializable {
 
-    @NotNull(message = "\"UserId\" is required.")
+    @NotNull(message = "\"userId\" is required.")
     private String userId;
     private Set<CardsDTO> cards;
 
