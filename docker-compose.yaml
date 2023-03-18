@@ -35,29 +35,47 @@ services:
     healthcheck:
       test: "curl -f http://localhost:8080/admin || exit 1"
 
-#  eureka-service:
-#    build: ms-discovery
-#    container_name: eureka-server
+  ms-discovery:
+    build: ms-discovery
+    container_name: ms-discovery
+    restart: always
+    depends_on:
+      - mysql
+    ports:
+      - "8761:8761"
+
+  config-server:
+    build: ms-config-server
+    container_name: ms-config-server
+    restart: always
+    depends_on:
+      - ms-discovery
+    ports:
+      - "8888:8888"
+
+  api-gateway:
+    build: ms-gateway
+    container_name: ms-gateway
+    restart: always
+    depends_on:
+      - config-server
+    ports:
+      - "8090:8090"
+
+  users-service:
+    build: ms-users
+    container_name: ms-users
+    restart: always
+    depends_on:
+      - api-gateway
+    ports:
+      - "8084:8084"
+
+#  accounts-service:
+#    build: ms-accounts
+#    container_name: ms-accounts
 #    restart: always
 #    depends_on:
-#      - keycloak
+#      - api-gateway
 #    ports:
-#      - "8761:8761"
-#
-#  users-service:
-#    build: ms-users
-#    container_name: ms-users
-#    restart: always
-#    depends_on:
-#      - bills-service
-#    ports:
-#      - "8084:8084"
-#
-#  api-gateway:
-#    build: ms-gateway
-#    container_name: ms-gateway
-#    restart: always
-#    depends_on:
-#      - users-service
-#    ports:
-#      - "8090:8090"
+#      - "8085:8085"

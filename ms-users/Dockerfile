@@ -1,4 +1,4 @@
-FROM adoptopenjdk/openjdk17:alpine-jre
+FROM openjdk:17-jdk-alpine
 ARG JAR_FILE=/target/ms-users.jar
 COPY ${JAR_FILE} ms-users.jar
 EXPOSE 8084
