@@ -37,8 +37,8 @@ public class TransactionController {
     }
 
     @GetMapping("/{id}/transactions")
-    public ResponseEntity<Object> getLastTransactions(@PathVariable("id") String accountId) {
-        return responseHandler.build(transactionService.getLast5Transactions(accountId), HttpStatus.OK, "Transactions" +
+    public ResponseEntity<Object> getLastTransactions(@PathVariable("id") Long accountId) {
+        return responseHandler.build(transactionService.getLast5Deposits(accountId), HttpStatus.OK, "Transactions" +
                 " found.");
     }
 }

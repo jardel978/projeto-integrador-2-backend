@@ -75,7 +75,7 @@ public class TransactionService {
         return mapper.map(transactionRepository.save(deposit), DepositDTO.class);
     }
 
-    public List<TransactionDTO> getLast5Transactions(String accountId) {
+    public List<TransactionDTO> getLast5Deposits(Long accountId) {
         List<Transactions> depositList =
                 transactionRepository.findTop5ByAccountOriginIdOrderByDateTransactionDesc(accountId);
 
@@ -83,4 +83,14 @@ public class TransactionService {
             return mapper.map(transaction, TransactionDTO.class);
         }).collect(Collectors.toList());
     }
+
+    public List<TransactionDTO> getLast5AccountsDetiny(Long accountId) {
+        List<Transactions> depositList =
+                transactionRepository.findTop5DistinctAccountsDestinyByAccountOriginId(accountId);
+
+        return depositList.stream().map(transaction -> {
+            return mapper.map(transaction, TransactionDTO.class);
+        }).collect(Collectors.toList());
+    }
+
 }
