@@ -38,6 +38,11 @@ public class KeycloakClientConfig {
                 .username(keycloakUsername)
                 .password(keycloakPassword)
                 .build();
+    var user = keycloak.realm("master").users().get("56de6eb6-3f4b-4587-9466-828d9600b514");
+
+    user.toRepresentation();
+
+    log.info(String.valueOf(user.toRepresentation()));
 
 //        Keycloak keycloak = KeycloakBuilder.builder()
 //                .serverUrl("http://localhost:8080/")
