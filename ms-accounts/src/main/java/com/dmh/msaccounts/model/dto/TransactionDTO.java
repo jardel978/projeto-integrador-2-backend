@@ -16,6 +16,7 @@ import java.util.Date;
 @NoArgsConstructor
 public class TransactionDTO implements Serializable {
 
+    private Long id;
     @NotNull(message = "\"value\" is required.")
     private BigDecimal value;
     private Date dateTransaction;

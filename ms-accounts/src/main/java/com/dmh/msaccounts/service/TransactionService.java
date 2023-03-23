@@ -1,15 +1,17 @@
 package com.dmh.msaccounts.service;
 
 import com.dmh.msaccounts.exception.DataNotFoundException;
-import com.dmh.msaccounts.model.Accounts;
-import com.dmh.msaccounts.model.Cards;
-import com.dmh.msaccounts.model.Deposit;
-import com.dmh.msaccounts.model.Transactions;
+import com.dmh.msaccounts.model.*;
 import com.dmh.msaccounts.model.dto.DepositDTO;
 import com.dmh.msaccounts.model.dto.TransactionDTO;
+import com.dmh.msaccounts.model.dto.responses.AccountTransferenceDTOResponse;
+import com.dmh.msaccounts.model.dto.responses.TransferenceDTOResponse;
+import com.dmh.msaccounts.repository.FeignUserRepository;
 import com.dmh.msaccounts.repository.IAccountsRepository;
 import com.dmh.msaccounts.repository.ICardsRepository;
 import com.dmh.msaccounts.repository.ITransactionRepository;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,16 +27,19 @@ import java.util.stream.Collectors;
 public class TransactionService {
 
     @Autowired
-    AccountServiceImpl accountService;
+    private AccountServiceImpl accountService;
 
     @Autowired
-    IAccountsRepository accountsRepository;
+    private IAccountsRepository accountsRepository;
 
     @Autowired
-    ICardsRepository cardsRepository;
+    private ICardsRepository cardsRepository;
 
     @Autowired
-    ITransactionRepository transactionRepository;
+    private ITransactionRepository transactionRepository;
+
+    @Autowired
+    private FeignUserRepository feignUserRepository;
 
     @Autowired
     private ModelMapper mapper;
@@ -75,22 +80,41 @@ public class TransactionService {
         return mapper.map(transactionRepository.save(deposit), DepositDTO.class);
     }
 
-    public List<TransactionDTO> getLast5Deposits(Long accountId) {
-        List<Transactions> depositList =
+    public List<TransactionDTO> getLast5Transactions(Long accountId) {
+        List<Transactions> transactions =
                 transactionRepository.findTop5ByAccountOriginIdOrderByDateTransactionDesc(accountId);
 
-        return depositList.stream().map(transaction -> {
-            return mapper.map(transaction, TransactionDTO.class);
+        return transactions.stream().map(transaction -> {
+            if (transaction.getClass().equals(Deposit.class))
+                return mapper.map(transaction, DepositDTO.class);
+            else
+                return mapper.map(transaction, TransferenceDTOResponse.class);
+
         }).collect(Collectors.toList());
     }
 
-    public List<TransactionDTO> getLast5AccountsDetiny(Long accountId) {
-        List<Transactions> depositList =
+    public List<AccountTransferenceDTOResponse> getLast5AccountsDetiny(Long accountId) {
+        List<Transferences> depositList =
                 transactionRepository.findTop5DistinctAccountsDestinyByAccountOriginId(accountId);
 
         return depositList.stream().map(transaction -> {
-            return mapper.map(transaction, TransactionDTO.class);
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+            User user = objectMapper.convertValue(feignUserRepository.findByUserId(transaction.getAccountsDestiny().getUserId()).getBody().get(
+                    "data"), User.class);
+            AccountTransferenceDTOResponse transferenceDTOResponse = AccountTransferenceDTOResponse.builder()
+                    .accountDestiny(transaction.getAccountsDestiny().getAccount())
+                    .recipient(user.getName() + " " + user.getLastName())
+                    .dateTransaction(transaction.getDateTransaction()).build();
+            return transferenceDTOResponse;
         }).collect(Collectors.toList());
+    }
+
+    public List<TransactionDTO> getLast10Transferences(Long accountId) {
+        List<Transactions> transferences =
+                transactionRepository.findByAccountOriginIdOrderByDateTransactionDescLimitedTo(accountId, 10);
+
+        return transferences.stream().map(transference -> mapper.map(transference, TransferenceDTOResponse.class)).collect(Collectors.toList());
     }
 
 }
