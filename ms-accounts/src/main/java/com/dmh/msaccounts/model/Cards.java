@@ -36,7 +36,7 @@ public class Cards implements Serializable {
     private Accounts account;
 
     @OneToMany(mappedBy = "card")
-    @JoinColumn(name = "card_id", foreignKey = @ForeignKey(name = "fk_transaction_card"))
+//    @JoinColumn(name = "card_id", foreignKey = @ForeignKey(name = "fk_transaction_card"))
     private Set<Deposit> transactions = new HashSet<>() ;
 
 }

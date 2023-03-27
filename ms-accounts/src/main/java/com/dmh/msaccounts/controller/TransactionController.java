@@ -48,7 +48,7 @@ public class TransactionController {
                 "Transferences found.");
     }
 
-    //  TODO  @GetMapping
+    @GetMapping("/{id}/transferences/accounts")
     public ResponseEntity<Object> getLastAccountsDestiny(@PathVariable("id") Long accountId) {
         return responseHandler.build(transactionService.getLast5AccountsDetiny(accountId), HttpStatus.OK, "Last 5 " +
                 "accounts destiny.");
