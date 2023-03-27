@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 public interface FeignUserRepository {
 
     @RequestMapping(method = RequestMethod.GET, value = "/{id}")
-    ResponseEntity<?> findByUserId(@RequestParam Long userId);
+    ResponseEntity<?> findByUserId(@RequestParam String userId);
 
 }
 

@@ -5,6 +5,8 @@ services:
   mysql:
     image: mysql:5.7.38
     container_name: mysql
+    networks:
+      rede_g3:
     ports:
       - "3307:3307"
     environment:
@@ -26,6 +28,8 @@ services:
       - KC_DB_URL_DATABASE=keycloak
       - KC_DB_USERNAME=keycloak
       - KC_DB_PASSWORD=password
+    networks:
+      rede_g3:
     ports:
 #      - KCK_PORT:8080:8080
       - "8080:8080"
@@ -35,7 +39,26 @@ services:
     healthcheck:
       test: "curl -f http://localhost:8080/admin || exit 1"
 
-#  eureka-service:
+  ms-discovery:
+    build: ./ms-discovery/
+    container_name: ms-discovery
+    networks:
+      rede_g3:
+        ipv4_address: 172.26.0.10
+    ports:
+      - "8761:8761"
+
+  ms-config-server:
+    build: ./ms-config-server
+    container_name: ms-config-server
+    networks:
+      rede_g3:
+        ipv4_address: 172.26.0.11
+    ports:
+      - "8888:8888"
+
+
+  #  eureka-service:
 #    build: ms-discovery
 #    container_name: eureka-server
 #    restart: always
@@ -87,3 +110,11 @@ services:
 #      - ME_CONFIG_MONGODB_ADMINPASSWORD: $${MONGO_PASSWORD:1234}
 #    ports:
 #      - "8081:8081"
+
+networks:
+  rede_g3:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.26.0.0/16
+          gateway: 172.26.0.1
