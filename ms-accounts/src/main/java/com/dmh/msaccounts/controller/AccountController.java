@@ -1,8 +1,8 @@
 package com.dmh.msaccounts.controller;
 
 import com.dmh.msaccounts.exception.InvalidFieldException;
-import com.dmh.msaccounts.model.dto.AccountsDTORequest;
-import com.dmh.msaccounts.model.dto.CardsDTORequest;
+import com.dmh.msaccounts.model.dto.requests.AccountsDTORequest;
+import com.dmh.msaccounts.model.dto.requests.CardsDTORequest;
 import com.dmh.msaccounts.response.ResponseHandler;
 import com.dmh.msaccounts.service.AccountServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;

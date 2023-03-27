@@ -1,4 +1,4 @@
-package com.dmh.msaccounts.api;
+package com.dmh.msaccounts.api.accounts;
 
 import com.google.gson.Gson;
 import io.restassured.RestAssured;

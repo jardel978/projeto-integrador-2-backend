@@ -1,4 +1,4 @@
-FROM adoptopenjdk/openjdk17:alpine-jre
+FROM openjdk:17-jdk-alpine
 ARG JAR_FILE=/target/ms-config-server.jar
 COPY ${JAR_FILE} ms-config-server.jar
 EXPOSE 8888

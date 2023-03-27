@@ -1,20 +1,18 @@
-package com.dmh.msaccounts.api;
+package com.dmh.msaccounts.api.accounts;
+
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
-import org.apache.http.HttpStatus;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import static io.restassured.RestAssured.given;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class AccountIdGet {
+public class CardDelete {
+
     private Object token;
 
     @BeforeEach
@@ -22,7 +20,7 @@ public class AccountIdGet {
         RestAssured.baseURI = "http://localhost:8090/users/login";
         Map<String, Object> data = new HashMap<>();
         data.put("email", "marcushissss@shipanu.com");
-        data.put("password","sinixitrumeiximu");
+        data.put("password", "sinixitrumeiximu");
 
         Response response = given()
                 .contentType(ContentType.JSON)
@@ -33,24 +31,25 @@ public class AccountIdGet {
                 .then()
                 .extract().response();
 
-        Map<String, Map<String, Object>> responseData =  response.getBody().as(Map.class);
+        Map<String, Map<String, Object>> responseData = response.getBody().as(Map.class);
         token = responseData.get("data").get("access_token");
         System.out.println("token: " + token);
 
     }
 
     @Test
+    @Tag("DELETE Card by ID Test")
+    @DisplayName("DELETE Card by ID")
+    public void givenCardIdInformation_whenReceived_thenDeleteCardFromDatabase() {
 
-    @DisplayName("Get Account by ID")
-    public void givenAccountIdInformation_whenReceived_thenReturnsRequestedAccountData() {
         //given
-        Response response = RestAssured.get("http://localhost:8090/users/9df2efb8-9b31-4fde-8f98-d25a0d6a661c"); // --->>>> CONFIRMAR O ID DO ACCOUNT E ENDPOINT DE GET
+        Response response = RestAssured.delete("http://localhost:8080/accounts/1/cards/1");
 
         //when
-        int statusCode = response.getStatusCode();
-        System.out.println("Status code : " + statusCode);
+        String body = response.getBody().asString();
+        System.out.println(body);
 
-        assertEquals(HttpStatus.SC_OK, statusCode);
+        //then
+        Assertions.assertEquals("ok", body);
     }
-
 }

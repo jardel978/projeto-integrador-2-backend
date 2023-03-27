@@ -1,5 +1,6 @@
-FROM adoptopenjdk/openjdk17:alpine-jre
+FROM openjdk:17-jdk-alpine
 ARG JAR_FILE=/target/ms-gateway.jar
 COPY ${JAR_FILE} ms-gateway.jar
+ENV KCK_GATEWAY_CLIENT_SECRET=AcATiYnH1uWYy9m7XMAgtoX1fKae3Lfw
 EXPOSE 8090
 ENTRYPOINT ["java","-jar","ms-gateway.jar"]

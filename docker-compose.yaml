@@ -15,6 +15,20 @@ services:
     healthcheck:
       test: "mysqladmin ping -u root -p$${MYSQL_ROOT_PASSWORD}"
 
+  dbAccounts:
+    image: mysql:latest
+    container_name: dbAccounts
+    command: --default-authentication-plugin=mysql_native_password
+    ports:
+      - "3308:3306"
+    environment:
+      - MYSQL_DATABASE=dbaccounts
+      - MYSQL_USER=msaccount
+      - MYSQL_PASSWORD=root
+      - MYSQL_ROOT_PASSWORD=root
+    healthcheck:
+      test: "mysqladmin ping -u root -p$${MYSQL_ROOT_PASSWORD}"
+
   keycloak:
     image: quay.io/keycloak/keycloak:18.0.0
     container_name: keycloak
@@ -35,29 +49,48 @@ services:
     healthcheck:
       test: "curl -f http://localhost:8080/admin || exit 1"
 
-#  eureka-service:
+#  ms-discovery:
 #    build: ms-discovery
-#    container_name: eureka-server
+#    container_name: ms-discovery
 #    restart: always
 #    depends_on:
-#      - keycloak
+#      - mysql
 #    ports:
 #      - "8761:8761"
 #
-#  users-service:
-#    build: ms-users
-#    container_name: ms-users
+#  config-server:
+#    build: ms-config-server
+#    container_name: ms-config-server
 #    restart: always
 #    depends_on:
-#      - bills-service
+#      - ms-discovery
 #    ports:
-#      - "8084:8084"
+#      - "8888:8888"
 #
 #  api-gateway:
 #    build: ms-gateway
 #    container_name: ms-gateway
 #    restart: always
 #    depends_on:
-#      - users-service
+#      - config-server
 #    ports:
 #      - "8090:8090"
+#
+#  users-service:
+#    build: ms-users
+#    container_name: ms-users
+#    restart: always
+#    depends_on:
+#      - api-gateway
+#    ports:
+#      - "8084:8084"
+
+#  accounts-service:
+#    build: ms-accounts
+#    container_name: ms-accounts
+#    restart: always
+#    depends_on:
+#      - dbAccounts
+#      - api-gateway
+#    ports:
+#      - "8085:8085"
