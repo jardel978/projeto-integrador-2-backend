@@ -22,22 +22,21 @@ public class Cards implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    //@Column(name = "cards_id")
     private Long id;
     private String number;
     private String expirationDate;
     private String cvc;
     private String name;
     private BigDecimal ammount;
-    @Column(name = "is_external")
-    private boolean isExternal;
     @Column(name = "card_type")
     private CardsTypeEnum cardType;
 
     @ManyToOne
+    @JoinColumn(name = "account_id", foreignKey = @ForeignKey(name = "fk_account_card"))
     private Accounts account;
 
-    @OneToMany
-    @JoinColumn(name = "cards_id")
-    private Set<Transactions> transactions = new HashSet<>() ;
+    @OneToMany(mappedBy = "card")
+    //@JoinColumn(name = "card_id", foreignKey = @ForeignKey(name = "fk_transaction_card"))
+    private Set<Deposit> transactions = new HashSet<>() ;
+
 }

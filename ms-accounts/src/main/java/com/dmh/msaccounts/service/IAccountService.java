@@ -1,8 +1,9 @@
 package com.dmh.msaccounts.service;
 
 import com.dmh.msaccounts.model.dto.*;
-
-import java.util.Optional;
+import com.dmh.msaccounts.model.dto.requests.AccountsDTORequest;
+import com.dmh.msaccounts.model.dto.requests.CardsDTORequest;
+import com.dmh.msaccounts.model.dto.responses.AccountsDTOResponse;
 
 public interface IAccountService {
 

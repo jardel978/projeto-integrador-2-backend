@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -21,7 +23,6 @@ public class Accounts implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-
     private Long id;
     private String account;
     @Column(name = "user_id")
@@ -29,11 +30,12 @@ public class Accounts implements Serializable {
     private BigDecimal ammount;
 
     @OneToMany
-    @JoinColumn(name = "account_id")
+    @JoinColumn(name = "account_id", foreignKey = @ForeignKey(name = "fk_card_account"))
     private Set<Cards> cards = new HashSet<>();
 
     @OneToMany
-    @JoinColumn(name = "account_id")
+//    @LazyCollection(LazyCollectionOption.TRUE)
+    @JoinColumn(name = "account_id", foreignKey = @ForeignKey(name = "fk_transaction_account"))
     private Set<Transactions> transactions = new HashSet<>();
 
 }

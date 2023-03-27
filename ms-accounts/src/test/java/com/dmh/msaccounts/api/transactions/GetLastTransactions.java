@@ -1,4 +1,4 @@
-package com.dmh.msaccounts.api;
+package com.dmh.msaccounts.api.transactions;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
@@ -14,42 +14,41 @@ import java.util.Map;
 import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class CardFind {
-    private Object token;
+public class GetLastTransactions {
 
     @BeforeEach
     public void setUp() throws InterruptedException {
         RestAssured.baseURI = "http://localhost:8090/users/login";
         Map<String, Object> data = new HashMap<>();
-        data.put("email", "marcushissss@shipanu.com");
-        data.put("password","sinixitrumeiximu");
+        data.put("email", "teste@teste.com");
+        data.put("password", "123456");
 
         Response response = given()
                 .contentType(ContentType.JSON)
                 .body(data)
                 .and()
                 .when()
-                .post("http://localhost:8090/users/login")     //confirmar a URL
+                .post("http://localhost:8090/users/login")
                 .then()
                 .extract().response();
 
-        Map<String, Map<String, Object>> responseData =  response.getBody().as(Map.class);
-        token = responseData.get("data").get("access_token");
-        System.out.println("token: " + token);
-
+        Map<String, Map<String, Object>> responseData = response.getBody().as(Map.class);
+        /* token = responseData.get("data").get("access_token");
+        System.out.println("token: " + token);*/
     }
 
     @Test
+    @DisplayName("Get Last 5 Transactions")
+    public void givenRequestingInformationAboutTransactions_whenIfAny_thenReturnsTheLastFiveTransactions() {
 
-    @DisplayName("Get Card by ID")
-    public void givenAccountIdInformation_whenReceived_thenReturnsRequestedCardData() {
-        //given
-        Response response = RestAssured.get("http://localhost:8090/account/1/cards/1"); // --->>>> CONFIRMAR O ID DO ACCOUNT E ENDPOINT DE GET
+        //GIVEN
+        Response response = RestAssured.get("http://localhost:8090/accounts/{id}/transactions");
 
-        //when
+        //WHEN
         int statusCode = response.getStatusCode();
-        System.out.println("Status code : " + statusCode);
+        System.out.println("Status code: " + statusCode);
 
         assertEquals(HttpStatus.SC_OK, statusCode);
     }
+
 }

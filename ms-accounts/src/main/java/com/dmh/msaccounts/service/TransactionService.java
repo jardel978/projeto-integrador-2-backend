@@ -1,11 +1,10 @@
 package com.dmh.msaccounts.service;
 
 import com.dmh.msaccounts.exception.DataNotFoundException;
-import com.dmh.msaccounts.model.Accounts;
-import com.dmh.msaccounts.model.Cards;
-import com.dmh.msaccounts.model.Transactions;
+import com.dmh.msaccounts.model.*;
+import com.dmh.msaccounts.model.dto.DepositDTO;
 import com.dmh.msaccounts.model.dto.TransactionDTO;
-import com.dmh.msaccounts.model.dto.TransactionDtoRequest;
+import com.dmh.msaccounts.model.dto.TransferenceDTO;
 import com.dmh.msaccounts.repository.IAccountsRepository;
 import com.dmh.msaccounts.repository.ICardsRepository;
 import com.dmh.msaccounts.repository.ITransactionRepository;
@@ -38,49 +37,81 @@ public class TransactionService {
     @Autowired
     private ModelMapper mapper;
 
-    public TransactionDTO transferirValor(TransactionDtoRequest transactionDTO) throws DataNotFoundException {
+    public TransactionDTO transferirValor(DepositDTO depositDTO) throws DataNotFoundException {
 
-        Accounts accounts = accountsRepository.findById(transactionDTO.getAccountId()).orElseThrow(() -> new DataNotFoundException("Account not found my son!"));
+        Accounts account = accountsRepository.findById(depositDTO.getAccountOriginId()).orElseThrow(() -> new DataNotFoundException(
+                "Account not found my son!"));
 
-        Cards cards = cardsRepository.findById(transactionDTO.getCardId()).orElseThrow(() -> {
+        Cards card = cardsRepository.findById(depositDTO.getCardId()).orElseThrow(() -> {
             throw new DataNotFoundException("Card not found.");
         });
 
 
-        BigDecimal initialAmmount = accounts.getAmmount();
-        BigDecimal transValue = transactionDTO.getValue();
+        BigDecimal initialAmmount = account.getAmmount();
+        BigDecimal transValue = depositDTO.getValue();
 
         if (transValue.doubleValue() < 0.0) {
             throw new IllegalArgumentException("Not a valid transaction value");
         }
 
         BigDecimal newAmmount = initialAmmount.add(transValue);
-        accounts.setAmmount(newAmmount);
+        account.setAmmount(newAmmount);
 
-        Transactions transaction = Transactions.builder()
-                .cardType(transactionDTO.getCardType())
-                .value(transactionDTO.getValue())
+        Deposit deposit = Deposit.builder()
+                .cardType(depositDTO.getCardType())
+                .value(depositDTO.getValue())
                 .dateTransaction(new Date())
                 .transactionType("cash deposit")
-                .description(transactionDTO.getDescription())
-                .account(accounts)
-                .cards(cards).build();
+                .description(depositDTO.getDescription())
+                .accountOrigin(account)
+                .card(card).build();
 
-        accounts.getTransactions().add(transaction);
+//      accounts.getTransactions().add(transaction);
 //      gravar novo saldo no account
-        accountsRepository.save(accounts);
-        transactionRepository.save(transaction);
+        accountsRepository.save(account);
 
-        return mapper.map(transactionRepository.save(transaction), TransactionDTO.class);
+        return mapper.map(transactionRepository.save(deposit), DepositDTO.class);
+    }
+
+    public TransactionDTO transferirValor(TransferenceDTO transferenceDTO) throws DataNotFoundException{
+        Accounts accountDestination = accountsRepository.findById(transferenceDTO.getAccountId()).orElseThrow(() -> new DataNotFoundException("Account of destiny not found, my consagrated"));
+
+        Accounts accountOrigin = accountsRepository.findById(transferenceDTO.getAccountOriginId()).orElseThrow(() -> new DataNotFoundException("Origin account not found."));
+
+
+
+
+        BigDecimal intialAmmount = accountOrigin.getAmmount();
+        BigDecimal transferenceValue = transferenceDTO.getValue();
+
+        if (transferenceValue.doubleValue() < 0.0) {
+            throw new IllegalArgumentException("Not a valid Transference value!");
+        }
+
+
+            BigDecimal newAmmount = intialAmmount.subtract(transferenceValue);
+            accountOrigin.setAmmount(newAmmount);
+
+            Transferences transference = Transferences.builder()
+                    .accountsDestiny(accountDestination)
+                    .value(transferenceDTO.getValue())
+                    .dateTransaction(transferenceDTO.getDateTransaction())
+                    .transactionType(transferenceDTO.getTransactionType())
+                    .description(transferenceDTO.getDescription())
+                    .accountOrigin(accountOrigin)
+                    .build();
+            accountsRepository.save(accountOrigin);
+
+            return mapper.map(transactionRepository.save(transference), TransferenceDTO.class);
+
+
     }
 
     public List<TransactionDTO> getLast5Transactions(String accountId) {
-        // TODO É possivel adicionar e retirar valores da conta?
-        List<Transactions> transactionsList =
-                transactionRepository.findTop5ByAccountIdOrderByDateTransactionDesc(accountId);
+        List<Transactions> depositList =
+                transactionRepository.findTop5ByAccountOriginIdOrderByDateTransactionDesc(accountId);
 
-        return transactionsList.stream().map(transaction -> {
-            // TODO Transactions ou Transferences?
+        return depositList.stream().map(transaction -> {
             return mapper.map(transaction, TransactionDTO.class);
         }).collect(Collectors.toList());
     }

@@ -1,5 +1,6 @@
-package com.dmh.msaccounts.model.dto;
+package com.dmh.msaccounts.model.dto.responses;
 
+import com.dmh.msaccounts.model.dto.CardsDTO;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

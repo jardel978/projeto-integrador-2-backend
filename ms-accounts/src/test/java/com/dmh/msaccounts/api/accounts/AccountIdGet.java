@@ -1,6 +1,5 @@
-package com.dmh.msaccounts.api;
+package com.dmh.msaccounts.api.accounts;
 
-import com.google.gson.Gson;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
@@ -15,7 +14,7 @@ import java.util.Map;
 import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class CardCreate {
+public class AccountIdGet {
     private Object token;
 
     @BeforeEach
@@ -42,29 +41,16 @@ public class CardCreate {
 
     @Test
 
-
-    @DisplayName("Create new Card test")
-    public void givenNewInformationToTheEndpoint_whenReceived_thenTheDataIsRegisteredInTheDatabaseNewCard() {
-        Map<String, Object> data = new HashMap<>();
-
-        data.put("userId","kvbnjvnvnj");
-
-        //Given
-        Response response = given()
-                .contentType(ContentType.JSON)
-                .body(new Gson().toJson(data))
-                .and()
-                .when()
-                .post("http://localhost:8090/account/1/cards/1")
-                .then()
-                .extract().response();
+    @DisplayName("Get Account by ID")
+    public void givenAccountIdInformation_whenReceived_thenReturnsRequestedAccountData() {
+        //given
+        Response response = RestAssured.get("http://localhost:8090/users/9df2efb8-9b31-4fde-8f98-d25a0d6a661c"); // --->>>> CONFIRMAR O ID DO ACCOUNT E ENDPOINT DE GET
 
         //when
         int statusCode = response.getStatusCode();
-        System.out.println(statusCode);
+        System.out.println("Status code: " + statusCode);
 
-        //then
-        assertEquals(HttpStatus.SC_CREATED, statusCode);
-
+        assertEquals(HttpStatus.SC_OK, statusCode);
     }
+
 }
