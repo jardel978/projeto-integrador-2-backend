@@ -80,7 +80,7 @@ public class ApplicationConfiguration {
         return new OpenAPI()
                 .info(new Info()
                         .title("DMH Users Documantation")
-                        .description("API desenvolvida para site de reservas da empresa Digital Booking")
+                        .description("API desenvolvida para site/app Digital Money House")
                         .version("1.0.0")
                         .license(new License()
                                 .name("Apache 2.0")

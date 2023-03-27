@@ -11,6 +11,7 @@ import com.dmh.msaccounts.repository.ICardsRepository;
 import com.dmh.msaccounts.response.ResponseHandler;
 import com.dmh.msaccounts.service.IAccountService;
 import com.dmh.msaccounts.service.TransactionService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +24,8 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 @RestController
-@RequestMapping("/accounts")
+@RequestMapping("/accountsss")
+@SecurityRequirement(name = "Bearer Authentication")
 public class TransactionController {
 
 
@@ -43,5 +45,11 @@ public class TransactionController {
             throw new Exception(String.valueOf(bindingResult.getAllErrors().get(0)));
         }
         return responseHandler.build(transactionService.transferirValor(transactionDtoRequest), HttpStatus.OK, "Successfully transferred");
+    }
+
+    @GetMapping("/{id}/transactions")
+    public ResponseEntity<Object> getLastTransactions(@PathVariable("id") String accountId) {
+        return responseHandler.build(transactionService.getLast5Transactions(accountId), HttpStatus.OK, "Transactions" +
+                " found.");
     }
 }

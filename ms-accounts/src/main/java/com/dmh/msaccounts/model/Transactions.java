@@ -35,5 +35,4 @@ public class Transactions implements Serializable {
     @ManyToOne
     private Cards cards;
 
-
 }
