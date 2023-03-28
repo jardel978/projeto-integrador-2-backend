@@ -5,7 +5,7 @@ spring:
   application:
     name: ms-users
   config:
-    import: optional:configserver:http://${CONFIG_SERVER_HOST:localhost}:8888
+    import: optional:configserver:http://${CONFIG_SERVER_HOST}:8888
   cloud:
     config:
       profile: ${MS_USERS_PROFILE:dev}
