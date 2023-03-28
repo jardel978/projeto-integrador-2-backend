@@ -50,8 +50,21 @@ public class TransactionController {
     }
 
     @GetMapping("/{id}/transactions")
-    public ResponseEntity<Object> getLastTransactions(@PathVariable("id") String accountId) {
+    public ResponseEntity<Object> getLastTransactions(@PathVariable("id") Long accountId) {
         return responseHandler.build(transactionService.getLast5Transactions(accountId), HttpStatus.OK, "Transactions" +
                 " found.");
     }
+
+    @GetMapping("/{id}/transferences")
+    public ResponseEntity<Object> getLast10Trasferences(@PathVariable("id") Long accountId) {
+        return responseHandler.build(transactionService.getLast10Transferences(accountId), HttpStatus.OK,
+                "Transferences found.");
+    }
+
+    @GetMapping("/{id}/transferences/accounts")
+    public ResponseEntity<Object> getLastAccountsDestiny(@PathVariable("id") Long accountId) {
+        return responseHandler.build(transactionService.getLast5AccountsDetiny(accountId), HttpStatus.OK, "Last 5 " +
+                "accounts destiny.");
+    }
+
 }

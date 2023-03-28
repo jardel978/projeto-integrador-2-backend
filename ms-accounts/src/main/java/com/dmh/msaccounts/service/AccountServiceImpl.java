@@ -46,8 +46,7 @@ public class AccountServiceImpl implements IAccountService {
         //Accounts accountsModel = mapper.map(accountsDTORequest, Accounts.class);
         Accounts accountsModel = Accounts.builder()
                 .userId(accountsDTORequest.getUserId()).build();
-        ResponseEntity<Map<String, Object>> response =
-                (ResponseEntity<Map<String, Object>>) feignUserRepository.findByUserId(accountsDTORequest.getUserId());
+        ResponseEntity<Map<String, Object>> response = feignUserRepository.findByUserId(accountsDTORequest.getUserId());
         log.info("response: " + response.getBody().toString());
         if (response.getBody().containsKey("error")) {
             throw new DataNotFoundException("User not found.");

@@ -1,5 +1,6 @@
-package com.dmh.msaccounts.model.dto;
+package com.dmh.msaccounts.model.dto.responses;
 
+import com.dmh.msaccounts.model.dto.TransactionDTO;
 import com.dmh.msaccounts.model.enums.CardsTypeEnum;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,11 +14,9 @@ import java.io.Serializable;
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-public class DepositDTO extends TransactionDTO implements Serializable {
+public class TransferenceDTOResponse extends TransactionDTO implements Serializable {
 
-    @NotNull(message = "\"cardType\" is required.")
-    private CardsTypeEnum cardType;
-    private Long cardId;
-    private String cardNumber;
+    private String accountOrigin;
+    private String accountDestiny;
 
 }
