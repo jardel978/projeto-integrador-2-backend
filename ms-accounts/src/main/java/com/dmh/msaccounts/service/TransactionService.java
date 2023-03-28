@@ -4,6 +4,7 @@ import com.dmh.msaccounts.exception.DataNotFoundException;
 import com.dmh.msaccounts.model.*;
 import com.dmh.msaccounts.model.dto.DepositDTO;
 import com.dmh.msaccounts.model.dto.TransactionDTO;
+import com.dmh.msaccounts.model.dto.TransferenceDTO;
 import com.dmh.msaccounts.model.dto.responses.AccountTransferenceDTOResponse;
 import com.dmh.msaccounts.model.dto.responses.TransferenceDTOResponse;
 import com.dmh.msaccounts.repository.FeignUserRepository;
@@ -78,6 +79,40 @@ public class TransactionService {
         accountsRepository.save(account);
 
         return mapper.map(transactionRepository.save(deposit), DepositDTO.class);
+    }
+
+    public TransactionDTO transferirValor(TransferenceDTO transferenceDTO) throws DataNotFoundException{
+        Accounts accountDestination = accountsRepository.findById(transferenceDTO.getAccountId()).orElseThrow(() -> new DataNotFoundException("Account of destiny not found, my consagrated"));
+
+        Accounts accountOrigin = accountsRepository.findById(transferenceDTO.getAccountOriginId()).orElseThrow(() -> new DataNotFoundException("Origin account not found."));
+
+
+
+
+        BigDecimal intialAmmount = accountOrigin.getAmmount();
+        BigDecimal transferenceValue = transferenceDTO.getValue();
+
+        if (transferenceValue.doubleValue() < 0.0) {
+            throw new IllegalArgumentException("Not a valid Transference value!");
+        }
+
+
+        BigDecimal newAmmount = intialAmmount.subtract(transferenceValue);
+        accountOrigin.setAmmount(newAmmount);
+
+        Transferences transference = Transferences.builder()
+                .accountsDestiny(accountDestination)
+                .value(transferenceDTO.getValue())
+                .dateTransaction(transferenceDTO.getDateTransaction())
+                .transactionType(transferenceDTO.getTransactionType())
+                .description(transferenceDTO.getDescription())
+                .accountOrigin(accountOrigin)
+                .build();
+        accountsRepository.save(accountOrigin);
+
+        return mapper.map(transactionRepository.save(transference), TransferenceDTO.class);
+
+
     }
 
     public List<TransactionDTO> getLast5Transactions(Long accountId) {
