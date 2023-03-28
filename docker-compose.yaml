@@ -41,7 +41,6 @@ services:
       - KC_DB_USERNAME=keycloak
       - KC_DB_PASSWORD=password
     ports:
-#      - KCK_PORT:8080:8080
       - "8080:8080"
     command: start-dev
     depends_on:
@@ -49,48 +48,60 @@ services:
     healthcheck:
       test: "curl -f http://localhost:8080/admin || exit 1"
 
-#  ms-discovery:
-#    build: ms-discovery
-#    container_name: ms-discovery
-#    restart: always
-#    depends_on:
-#      - mysql
-#    ports:
-#      - "8761:8761"
-#
-#  config-server:
-#    build: ms-config-server
-#    container_name: ms-config-server
-#    restart: always
-#    depends_on:
-#      - ms-discovery
-#    ports:
-#      - "8888:8888"
-#
-#  api-gateway:
-#    build: ms-gateway
-#    container_name: ms-gateway
-#    restart: always
-#    depends_on:
-#      - config-server
-#    ports:
-#      - "8090:8090"
-#
-#  users-service:
-#    build: ms-users
-#    container_name: ms-users
-#    restart: always
-#    depends_on:
-#      - api-gateway
-#    ports:
-#      - "8084:8084"
+  ms-discovery:
+    build: ms-discovery
+    container_name: ms-discovery
+    restart: always
+    depends_on:
+      - mysql
+    ports:
+      - "8761:8761"
 
-#  accounts-service:
-#    build: ms-accounts
-#    container_name: ms-accounts
-#    restart: always
-#    depends_on:
-#      - dbAccounts
-#      - api-gateway
-#    ports:
-#      - "8085:8085"
+  ms-config-server:
+    build: ms-config-server
+    container_name: ms-config-server
+    restart: always
+    depends_on:
+      - ms-discovery
+    ports:
+      - "8888:8888"
+
+  ms-gateway:
+    build: ms-gateway
+    container_name: ms-gateway
+    restart: always
+    depends_on:
+      - ms-config-server
+    ports:
+      - "8090:8090"
+    environment:
+      - KCK_GATEWAY_CLIENT_SECRET=2EsaCfgAhbQQrB45LyGHmyw9R3U1M7Uu
+      - MS_GATEWAY_PROFILE=dev
+      - CONFIG_SERVER_HOST=ms-config-server
+
+  ms-users:
+    build: ms-users
+    container_name: ms-users
+    restart: always
+    depends_on:
+      - ms-gateway
+    ports:
+      - "8084:8084"
+    environment:
+      - KCK_USERS_CLIENT_SECRET=0MF1GiXEtO6pn2Ky5UX4qUlZkwmxZVtX
+      - MS_USERS_PROFILE=dev
+      - CONFIG_SERVER_HOST=ms-config-server
+
+  ms-accounts:
+    build: ms-accounts
+    container_name: ms-accounts
+    restart: always
+    depends_on:
+      - dbAccounts
+      - ms-users
+    ports:
+      - "8085:8085"
+    environment:
+      - KCK_ACCOUNTS_CLIENT_SECRET=jqFQcdM5dKOXvcPeJk2xmfEavnhZHyP3
+      - MS_ACCOUNTS_PROFILE=dev
+      - CONFIG_SERVER_HOST=ms-config-server

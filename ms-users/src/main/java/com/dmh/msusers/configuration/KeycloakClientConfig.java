@@ -29,7 +29,7 @@ public class KeycloakClientConfig {
 
     @Bean
     public Keycloak getInstance() {
-
+        log.info("server-url: " + serverURL);
         Keycloak keycloak = KeycloakBuilder.builder()
                 .serverUrl(serverURL)
                 .realm("master")
@@ -38,11 +38,11 @@ public class KeycloakClientConfig {
                 .username(keycloakUsername)
                 .password(keycloakPassword)
                 .build();
-    var user = keycloak.realm("master").users().get("56de6eb6-3f4b-4587-9466-828d9600b514");
+    var user = keycloak.realm("DmhRealm").users().get("e6127497-4649-46a4-90ab-4479a476736d");
 
     user.toRepresentation();
 
-    log.info(String.valueOf(user.toRepresentation()));
+    log.info("user teste:" + user.toRepresentation().getEmail());
 
 //        Keycloak keycloak = KeycloakBuilder.builder()
 //                .serverUrl("http://localhost:8080/")

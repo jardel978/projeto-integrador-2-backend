@@ -1,24 +1,11 @@
 server:
   port:  ${PORT_MS_GATEWAY:8090}
 
-eureka:
-  instance:
-#    hostname: localhost
-    prefer-ip-address: true
-  client:
-    register-with-eureka: true
-    fetch-registry: true
-    serviceUrl:
-#      defaultZone: http://3.15.7.235:8761/eureka
-      defaultZone: http://localhost:8761/eureka
-#      defaultZone: http://3.15.7.235:8761/eureka
-
 spring:
   application:
     name: ms-gateway
   config:
-#    import: optional:configserver:http://3.15.7.235:8888
-    import: optional:configserver:http://localhost:8888
+    import: optional:configserver:http://${CONFIG_SERVER_HOST}:8888
   cloud:
     config:
       profile: ${MS_GATEWEAY_PROFILE:dev}
