@@ -14,7 +14,7 @@ import java.util.Map;
 import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class GetLastTransactions {
+public class TransferenceGetLast5Accunt {
 
     @BeforeEach
     public void setUp() throws InterruptedException {
@@ -38,11 +38,11 @@ public class GetLastTransactions {
     }
 
     @Test
-    @DisplayName("Get Last 5 Transactions")
-    public void givenRequestingInformationAboutTransactions_whenIfAny_thenReturnsTheLastFiveTransactions() {
+    @DisplayName("Get last 10 Transferences")
+    public void GivenInsertingTheDataCorrectly_whenIfEverythingIsCorrect_thenLookForTheTransfers() {
 
         //GIVEN
-        Response response = RestAssured.get("http://localhost:8090/accounts/{id}/transactions");
+        Response response = RestAssured.get("http://localhost:8090/accounts/{id}/transferences/accounts");
 
         //WHEN
         int statusCode = response.getStatusCode();

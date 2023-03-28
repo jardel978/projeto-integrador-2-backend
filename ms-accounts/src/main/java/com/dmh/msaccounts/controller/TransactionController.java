@@ -37,7 +37,7 @@ public class TransactionController {
                 "transferred");
     }
 
-    @PostMapping("/{Id}/transferences")
+    @PostMapping("/{id}/transferences")
     public ResponseEntity<Object> transferences(@PathVariable("id") String accountId,
                                                 @Valid @RequestBody TransferenceDTO transferenceDTO,
                                                 BindingResult bindingResult) throws Exception {

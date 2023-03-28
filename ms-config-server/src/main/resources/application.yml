@@ -15,7 +15,7 @@ spring:
 #          uri: file:///${user.home}/cloudConfigFiles
 eureka:
   instance:
-#    hostname: localhost
+    hostname: ms-config-server
     prefer-ip-address: true
   client:
     register-with-eureka: true
