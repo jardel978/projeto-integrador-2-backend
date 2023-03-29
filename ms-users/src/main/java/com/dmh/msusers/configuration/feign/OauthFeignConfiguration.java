@@ -1,4 +1,4 @@
-package com.dmh.msaccounts.configuration.feign;
+package com.dmh.msusers.configuration.feign;
 
 import feign.RequestInterceptor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,7 +13,7 @@ import org.springframework.security.oauth2.client.registration.ClientRegistratio
 @Slf4j
 public class OauthFeignConfiguration {
 
-    private static final String KEYCLOAK_REGISTRATION_ID = "keycloak-spring-accounts-client";
+    private static final String KEYCLOAK_REGISTRATION_ID = "oauth2-client-credentials";
 
     @Autowired
     private final OAuth2AuthorizedClientService clientService;
@@ -38,7 +38,7 @@ public class OauthFeignConfiguration {
     }
 
     @Bean
-    public OAuth2AuthorizedClientManager authorizedClientManager () {
+    public OAuth2AuthorizedClientManager authorizedClientManager() {
         OAuth2AuthorizedClientProvider authorizedClientProvider = OAuth2AuthorizedClientProviderBuilder
                 .builder()
                 .clientCredentials()
