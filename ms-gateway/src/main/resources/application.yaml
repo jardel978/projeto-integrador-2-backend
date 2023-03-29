@@ -8,4 +8,4 @@ spring:
     import: optional:configserver:http://${CONFIG_SERVER_HOST}:8888
   cloud:
     config:
-      profile: ${MS_GATEWEAY_PROFILE:dev}
+      profile: ${MS_GATEWAY_PROFILE:dev}
