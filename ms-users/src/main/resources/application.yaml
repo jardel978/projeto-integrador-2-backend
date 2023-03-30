@@ -10,5 +10,8 @@ spring:
     config:
       profile: ${MS_USERS_PROFILE:dev}
 
+feign:
+  circuitbreaker:
+    enabled: true
 #https://stackoverflow:
 #  com/questions/72421740/spring-micro-services-eureka-client-is-not-registering-with-eureka-server:

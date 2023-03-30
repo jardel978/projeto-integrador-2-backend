@@ -47,7 +47,7 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(CreateAccountException.class)
-    protected ResponseEntity<Object> createAccountException(UserAlreadyExistException exception,
+    protected ResponseEntity<Object> createAccountException(CreateAccountException exception,
                                                                HttpServletRequest request) {
         ApiError error = buildApiError(HttpStatus.BAD_REQUEST, exception, request);
         return buildResponseEntity(error);

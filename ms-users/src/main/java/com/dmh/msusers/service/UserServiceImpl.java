@@ -6,7 +6,7 @@ import com.dmh.msusers.model.dto.AccountDTORequest;
 import com.dmh.msusers.model.dto.UserDTORequest;
 import com.dmh.msusers.model.dto.UserDTOResponse;
 import com.dmh.msusers.model.dto.UserPatchDTORequest;
-import com.dmh.msusers.repository.IAccountsFeignRepository;
+import com.dmh.msusers.repository.feign.IAccountsFeignRepository;
 import com.dmh.msusers.repository.KeycloakUserRepository;
 import org.keycloak.representations.AccessTokenResponse;
 import org.modelmapper.ModelMapper;
@@ -48,7 +48,7 @@ public class UserServiceImpl implements IUserService {
                 accountsFeignRepository.createAccount(AccountDTORequest.builder().userId(userSaved.getId()).build(),
                         true);
         if (response.getBody().containsKey("error")) {
-            throw new CreateAccountException("Cannot create account. Because: " + response.getBody().get("error") +
+            throw new CreateAccountException("User created but cannot create account because: " + response.getBody().get("error") +
                     ". Try again in account service.");
         }
         return mapper.map(userSaved, UserDTOResponse.class);
