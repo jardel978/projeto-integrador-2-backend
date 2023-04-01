@@ -2,35 +2,36 @@ package com.dmh.msusers.api;
 
 import com.google.gson.Gson;
 import io.restassured.RestAssured;
-
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import org.apache.http.HttpStatus;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import static io.restassured.RestAssured.given;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class TestApiPost {
+public class CTestApiUpdate {
 
     private Object token;
 
     @BeforeEach
-    public void setUp() throws InterruptedException {
+    public void setUp() {
         RestAssured.baseURI = "http://localhost:8090/users/login";
         Map<String, Object> data = new HashMap<>();
-        data.put("email", "marcushissss@shipanu.com");
-        data.put("password","sinixitrumeiximu");
+        data.put("email", "teste@teste.com");
+        data.put("password","123456");
 
         Response response = given()
                 .contentType(ContentType.JSON)
                 .body(data)
                 .and()
                 .when()
-                .post("http://localhost:8090/users/login")     //confirmar a URL
+                .post("http://localhost:8090/users/login")
                 .then()
                 .extract().response();
 
@@ -41,34 +42,32 @@ public class TestApiPost {
     }
 
     @Test
-
-    @DisplayName("Create new user test")
-    public void givenNewInformationToTheEndpoint_whenReceived_thenTheDataIsRegisteredInTheDatabase() {
+    @DisplayName("Patch User by ID")
+    public void givenUpdatedInformation_WhenSentWithTheUserId_thenTheDataIsUpdatedInTheRegister() {
+        //given
         Map<String, Object> data = new HashMap<>();
-
-        data.put("name","Marcone");
-        data.put("lastName","Shipano");
-        data.put("phone","21 998877665");
-        data.put("cpf","12345678900");
-        data.put("email","marcansjfo@shipano.com");
-        data.put("password","sinishitru");
-
-        //Given
+        data.put("name", "Tester");
+        data.put("lastName", "QA");
+        data.put("phone", "11 70707070");
+        data.put("email", "tester@tester.com");
+        data.put("password", "123456");
         Response response = given()
+                .header("Authorization" , "Bearer " + token)
                 .contentType(ContentType.JSON)
-                .body(new Gson().toJson(data))
                 .and()
+                .body(new Gson().toJson(data))
                 .when()
-                .post("http://localhost:8090/users/registration")
+                .patch("http://localhost:8090/users/350995d5-9f31-4cd8-aef2-d79b52794a0") // --->>>> CONFIRMAR O ENDPOINT DE PATCH
                 .then()
                 .extract().response();
 
         //when
         int statusCode = response.getStatusCode();
-        System.out.println(statusCode);
+        System.out.println("status code: " + statusCode);
 
         //then
-        assertEquals(HttpStatus.SC_CREATED, statusCode);
+        assertEquals(HttpStatus.SC_OK, statusCode);
 
     }
+
 }
