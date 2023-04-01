@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Map;
 
-@FeignClient(name = "ms-accounts", url = "localhost:8085/accounts", configuration = OauthFeignConfiguration.class,
+@FeignClient(name = "ms-accounts", url = "ms-accounts:8085/accounts", configuration = OauthFeignConfiguration.class,
         fallback = AccountsFeignClientFallback.class)
 @LoadBalancerClient(name = "ms-accounts", configuration = ConfigLoadBalancer.class)
 public interface IAccountsFeignRepository {

@@ -1,5 +1,6 @@
 package com.dmh.msusers.api;
 
+import com.google.gson.Gson;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
@@ -14,7 +15,7 @@ import java.util.Map;
 import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class TestApiGet {
+public class BTestApiGet {
 
 
     private Object token;
@@ -23,15 +24,15 @@ public class TestApiGet {
     public void setUp() throws InterruptedException {
         RestAssured.baseURI = "http://localhost:8090/users/login";
         Map<String, Object> data = new HashMap<>();
-        data.put("email", "marcushissss@shipanu.com");
-        data.put("password","sinixitrumeiximu");
+        data.put("email", "teste@teste.com");
+        data.put("password","123456");
 
         Response response = given()
                 .contentType(ContentType.JSON)
                 .body(data)
                 .and()
                 .when()
-                .post("http://localhost:8090/users/login")     //confirmar a URL
+                .post("http://localhost:8090/users/login")
                 .then()
                 .extract().response();
 
@@ -58,11 +59,16 @@ public class TestApiGet {
 //    }
 
     @Test
-
     @DisplayName("Get User by ID")
     public void givenUserIdInformation_whenReceived_thenReturnsRequestedUserData() {
         //given
-        Response response = RestAssured.get("http://localhost:8090/users/9df2efb8-9b31-4fde-8f98-d25a0d6a661c"); // --->>>> CONFIRMAR O ENDPOINT DE GET
+        Response response = given()
+                .header("Authorization" , "Bearer " + token)
+                .when()
+                .get("http://localhost:8090/users/350995d5-9f31-4cd8-aef2-d79b52794a01")
+                .then()
+                .extract().response();
+
 
         //when
         int statusCode = response.getStatusCode();

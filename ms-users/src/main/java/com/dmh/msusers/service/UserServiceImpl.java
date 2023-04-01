@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
+import java.net.ConnectException;
 import java.util.Map;
 
 @Service
@@ -41,8 +42,10 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public UserDTOResponse create(UserDTORequest userDTO) {
-        User userModel = mapper.map(userDTO, User.class);
+    public UserDTOResponse create(UserDTORequest userDTO) throws CreateAccountException {
+        User userModel =
+                mapper.map
+                        (userDTO, User.class);
         User userSaved = userRepository.create(userModel);
         ResponseEntity<Map<String, Object>> response =
                 accountsFeignRepository.createAccount(AccountDTORequest.builder().userId(userSaved.getId()).build(),
@@ -51,7 +54,10 @@ public class UserServiceImpl implements IUserService {
             throw new CreateAccountException("User created but cannot create account because: " + response.getBody().get("error") +
                     ". Try again in account service.");
         }
-        return mapper.map(userSaved, UserDTOResponse.class);
+        return
+                mapper.map
+                        (userSaved, UserDTOResponse.class);
+
     }
 
     @Override
