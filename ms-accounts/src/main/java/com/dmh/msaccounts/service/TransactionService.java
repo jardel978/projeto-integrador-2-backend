@@ -13,12 +13,20 @@ import com.dmh.msaccounts.repository.ICardsRepository;
 import com.dmh.msaccounts.repository.ITransactionRepository;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.itextpdf.text.*;
+import com.itextpdf.text.pdf.PdfWriter;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FilterOutputStream;
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.net.MalformedURLException;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -54,7 +62,6 @@ public class TransactionService {
             throw new DataNotFoundException("Card not found.");
         });
 
-
         BigDecimal initialAmmount = account.getAmmount();
         BigDecimal transValue = depositDTO.getValue();
 
@@ -86,9 +93,6 @@ public class TransactionService {
 
         Accounts accountOrigin = accountsRepository.findById(transferenceDTO.getAccountOriginId()).orElseThrow(() -> new DataNotFoundException("Origin account not found."));
 
-
-
-
         BigDecimal intialAmmount = accountOrigin.getAmmount();
         BigDecimal transferenceValue = transferenceDTO.getValue();
 
@@ -110,9 +114,36 @@ public class TransactionService {
                 .build();
         accountsRepository.save(accountOrigin);
 
+        Document documentPDF = new Document(); //criando um documento vazio
+        LocalDate dataAtual = LocalDate.now();
+        try {
+            PdfWriter.getInstance(documentPDF, new FileOutputStream("../../../../../../Comprovante-" + accountOrigin.getId().toString() + dataAtual.toString() +".pdf"));
+            documentPDF.open(); //abrindo documento
+            documentPDF.setPageSize(PageSize.A6); //setando o tamanho do documento
+            Font font = FontFactory.getFont(FontFactory.COURIER, 11, BaseColor.BLACK);
+            Chunk chunk = new Chunk("Teste de doc PDF", font);
+            Image img = Image.getInstance("C:\\Users\\enois\\OneDrive\\Área de Trabalho\\PI2\\DMH-extrato.png");
+            documentPDF.add(img);
+            documentPDF.add(chunk);
+            documentPDF.add(new Paragraph("Conta de origem: " + accountOrigin.getAccount()));
+            documentPDF.add(new Paragraph("Conta de destino: " + accountDestination.getAccount()));
+            documentPDF.add(new Paragraph("Data da transferência: " + dataAtual.toString()));
+            documentPDF.add(new Paragraph("Valor: " + accountDestination.getAmmount()));
+            documentPDF.add(new Paragraph("Chave da Transação: " + accountOrigin.getAccount().toString() + accountDestination.getAccount().toString() + dataAtual.toString()));
+
+        } catch (DocumentException de) {
+            de.printStackTrace();
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } finally {
+            documentPDF.close();
+        }
+
         return mapper.map(transactionRepository.save(transference), TransferenceDTO.class);
-
-
     }
 
     public List<TransactionDTO> getLast5Transactions(Long accountId) {
