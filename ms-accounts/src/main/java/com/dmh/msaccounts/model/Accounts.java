@@ -1,9 +1,6 @@
 package com.dmh.msaccounts.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
@@ -13,7 +10,9 @@ import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
-@Data
+@Getter
+@Setter
+@ToString
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -31,11 +30,13 @@ public class Accounts implements Serializable {
 
     @OneToMany
     @JoinColumn(name = "account_id", foreignKey = @ForeignKey(name = "fk_card_account"))
+    @ToString.Exclude
     private Set<Cards> cards = new HashSet<>();
 
     @OneToMany
 //    @LazyCollection(LazyCollectionOption.TRUE)
     @JoinColumn(name = "account_id", foreignKey = @ForeignKey(name = "fk_transaction_account"))
+    @ToString.Exclude
     private Set<Transactions> transactions = new HashSet<>();
 
 }

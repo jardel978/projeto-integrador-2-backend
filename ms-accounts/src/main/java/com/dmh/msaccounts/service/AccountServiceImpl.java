@@ -74,11 +74,14 @@ public class AccountServiceImpl implements IAccountService {
     public CardsDTO createCardByAccount(Long accountId, CardsDTORequest cardsDTORequest) {
         Accounts account = accountsRepository.findById(accountId)
                 .orElseThrow(() -> new DataNotFoundException("Account not found with id " + accountId));
-        account.getCards().forEach(c -> {
-            if (c.getNumber().equals(cardsDTORequest.getNumber())) {
-                throw new DataAlreadyExistsException("Card already exists");
-            }
-        });
+
+        if (!account.getCards().isEmpty())
+            account.getCards().forEach(c -> {
+                log.info("tem cartão");
+                if (c.getNumber().equals(cardsDTORequest.getNumber())) {
+                    throw new DataAlreadyExistsException("Card already exists");
+                }
+            });
 
         Cards card = mapper.map(cardsDTORequest, Cards.class);
 
@@ -88,7 +91,7 @@ public class AccountServiceImpl implements IAccountService {
             card.setAmmount(new BigDecimal(0));
         }
 
-        card = cardsRepository.save(card);
+        card = cardsRepository.saveAndFlush(card);
         account.getCards().add(card);
 
         accountsRepository.save(account);

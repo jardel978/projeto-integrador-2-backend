@@ -28,8 +28,6 @@ public class UserController {
     @Autowired
     private ResponseHandler responseHandler;
 
-
-
     @PostMapping("/registration")
     public ResponseEntity<Object> create(@Valid @RequestBody UserDTORequest userDTO, BindingResult result) {
 

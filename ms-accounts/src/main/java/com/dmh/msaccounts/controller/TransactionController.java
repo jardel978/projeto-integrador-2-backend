@@ -1,7 +1,8 @@
 package com.dmh.msaccounts.controller;
 
-import com.dmh.msaccounts.model.dto.DepositDTO;
 import com.dmh.msaccounts.model.dto.TransferenceDTO;
+import com.dmh.msaccounts.model.dto.requests.DepositDTORequest;
+import com.dmh.msaccounts.model.dto.requests.TransferenceDTORequest;
 import com.dmh.msaccounts.response.ResponseHandler;
 import com.dmh.msaccounts.service.TransactionService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -14,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("/accountsss")
+@RequestMapping("/accounts")
 @SecurityRequirement(name = "Bearer Authentication")
 public class TransactionController {
 
@@ -26,26 +27,28 @@ public class TransactionController {
     ResponseHandler responseHandler;
 
     @PostMapping("/{id}/transactions")
-    public ResponseEntity<Object> transaction(@PathVariable("id") String accountId,
-                                              @Valid @RequestBody DepositDTO depositDTO,
+    public ResponseEntity<Object> depositingValue(@PathVariable("id") Long accountId,
+                                              @Valid @RequestBody DepositDTORequest depositDTORequest,
                                               BindingResult bindingResult) throws Exception {
 
         if (bindingResult.hasErrors()) {
             throw new Exception(String.valueOf(bindingResult.getAllErrors().get(0)));
         }
-        return responseHandler.build(transactionService.transferirValor(depositDTO), HttpStatus.OK, "Successfully " +
+        return responseHandler.build(transactionService.depositingValue(accountId, depositDTORequest), HttpStatus.OK,
+                "Successfully " +
                 "transferred");
     }
 
-    @PostMapping("/{Id}/transferences")
-    public ResponseEntity<Object> transferences(@PathVariable("id") String accountId,
-                                                @Valid @RequestBody TransferenceDTO transferenceDTO,
+    @PostMapping("/{id}/transferences")
+    public ResponseEntity<Object> transferences(@PathVariable("id") Long accountId,
+                                                @Valid @RequestBody TransferenceDTORequest transferenceDTORequest,
                                                 BindingResult bindingResult) throws Exception {
 
         if (bindingResult.hasErrors()) {
             throw new Exception(String.valueOf(bindingResult.getAllErrors().get(0)));
         }
-        return responseHandler.build(transactionService.transferirValor(transferenceDTO), HttpStatus.OK, "Successfully transferred transaction");
+        return responseHandler.build(transactionService.transferringValue(accountId, transferenceDTORequest), HttpStatus.OK,
+                "Successfully transferred transaction");
 
     }
 
