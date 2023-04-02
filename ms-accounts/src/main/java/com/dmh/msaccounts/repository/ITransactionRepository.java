@@ -12,7 +12,7 @@ public interface ITransactionRepository extends JpaRepository<Transactions, Long
 //    @Query("from Deposit")
     List<Transactions> findTop5ByAccountOriginIdOrderByDateTransactionDesc(Long accountId);
 
-    // TODO rever query: retorna não só as trasnferëncias destino
+    // TODO rever query: retorna não só as trasnferências destino
     @Query("from Transferences")
     List<Transferences> findTop5DistinctAccountsDestinyByAccountOriginIdIsNot(Long accountOriginId);
 
