@@ -19,6 +19,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -85,17 +87,46 @@ public class TransactionService {
         return mapper.map(transactionRepository.saveAndFlush(deposit), DepositDTO.class);
     }
 
-    public TransactionDTO transferringValue(Long accountOriginId, TransferenceDTORequest transferenceDTORequest) throws DataNotFoundException{
+    public List<TransactionDTO> findAll(Pageable pageable, Long accountOriginId) {
+        accountsRepository.findById(accountOriginId).orElseThrow(() -> {
+            throw new DataNotFoundException("Account not found.");
+        });
+        Page<Transactions> transactionsPage = transactionRepository.findAllByAccountOriginId(pageable, accountOriginId);
+        return transactionsPage.stream().map(transactions -> {
+            TransactionDTO transactionDTO = null;
+            if (transactions instanceof Deposit)
+                transactionDTO = mapper.map(transactions, DepositDTO.class);
+            if (transactions instanceof Transferences)
+                transactionDTO = mapper.map(transactions, TransferenceDTOResponse.class);
+
+            return transactionDTO;
+        }).collect(Collectors.toList());
+    }
+
+    public TransactionDTO findByAccountOriginIdAndTransactionId(Long accountOriginId, Long transactionId) {
+        Transactions transactionsModel = transactionRepository.findByAccountOriginIdAndTransactionId(accountOriginId,
+                transactionId).orElseThrow(() -> {
+            throw new DataNotFoundException("Transaction not found.");
+        });
+        if (transactionsModel instanceof Deposit)
+            return mapper.map(transactionsModel, DepositDTO.class);
+        if (transactionsModel instanceof Transferences)
+            return mapper.map(transactionsModel, TransferenceDTOResponse.class);
+
+        return null;
+    }
+
+    public TransactionDTO transferringValue(Long accountOriginId, TransferenceDTORequest transferenceDTORequest) throws DataNotFoundException {
         if (accountOriginId.equals(transferenceDTORequest.getAccountDestinyId()))
             throw new IllegalArgumentException("The source account must be different from the destination account.");
 
         Accounts accountOrigin =
                 accountsRepository.findById(accountOriginId).orElseThrow(() -> new DataNotFoundException(
-                "Origin account not found."));
+                        "Origin account not found."));
 
         Accounts accountDestination =
                 accountsRepository.findById(transferenceDTORequest.getAccountDestinyId()).orElseThrow(() -> new DataNotFoundException(
-                "Account of destiny not found, my consagrated"));
+                        "Account of destiny not found, my consagrated"));
 
         BigDecimal intialAmmountOrigin = accountOrigin.getAmmount();
         BigDecimal intialAmmountDestiny = accountDestination.getAmmount();

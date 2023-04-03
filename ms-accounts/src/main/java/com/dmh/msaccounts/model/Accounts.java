@@ -33,8 +33,7 @@ public class Accounts implements Serializable {
     @ToString.Exclude
     private Set<Cards> cards = new HashSet<>();
 
-    @OneToMany
-//    @LazyCollection(LazyCollectionOption.TRUE)
+    @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "account_id", foreignKey = @ForeignKey(name = "fk_transaction_account"))
     @ToString.Exclude
     private Set<Transactions> transactions = new HashSet<>();
