@@ -1,10 +1,7 @@
 package com.dmh.msaccounts.model;
 
 import com.dmh.msaccounts.model.enums.CardsTypeEnum;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -12,7 +9,9 @@ import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
-@Data
+@Getter
+@Setter
+@ToString
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -36,6 +35,7 @@ public class Cards implements Serializable {
     private Accounts account;
 
     @OneToMany(mappedBy = "card")
+    @ToString.Exclude
 //    @JoinColumn(name = "card_id", foreignKey = @ForeignKey(name = "fk_transaction_card"))
     private Set<Deposit> transactions = new HashSet<>() ;
 

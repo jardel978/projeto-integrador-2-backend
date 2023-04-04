@@ -16,7 +16,7 @@ import java.util.Date;
 @NoArgsConstructor
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "transact_type")
+@DiscriminatorColumn(name = "transact_type", discriminatorType = DiscriminatorType.STRING)
 @Table(name = "transactions")
 public class Transactions implements Serializable {
 

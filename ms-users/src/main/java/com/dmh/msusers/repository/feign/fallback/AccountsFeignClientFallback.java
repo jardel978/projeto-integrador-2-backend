@@ -17,7 +17,6 @@ public class AccountsFeignClientFallback implements IAccountsFeignRepository {
 
     @Override
     public ResponseEntity<Map<String, Object>> createAccount(AccountDTORequest accountDTORequest, boolean createUserWithAccount) {
-        log.info("create account fallback");
         throw new CreateAccountException("User created but cannot create account. Try again in account service.");
     }
 

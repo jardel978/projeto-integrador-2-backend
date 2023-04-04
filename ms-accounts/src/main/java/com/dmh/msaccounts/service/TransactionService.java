@@ -1,10 +1,13 @@
 package com.dmh.msaccounts.service;
 
 import com.dmh.msaccounts.exception.DataNotFoundException;
+import com.dmh.msaccounts.exception.InsufficientFundsException;
 import com.dmh.msaccounts.model.*;
 import com.dmh.msaccounts.model.dto.DepositDTO;
 import com.dmh.msaccounts.model.dto.TransactionDTO;
 import com.dmh.msaccounts.model.dto.TransferenceDTO;
+import com.dmh.msaccounts.model.dto.requests.DepositDTORequest;
+import com.dmh.msaccounts.model.dto.requests.TransferenceDTORequest;
 import com.dmh.msaccounts.model.dto.responses.AccountTransferenceDTOResponse;
 import com.dmh.msaccounts.model.dto.responses.TransferenceDTOResponse;
 import com.dmh.msaccounts.repository.FeignUserRepository;
@@ -18,12 +21,15 @@ import com.itextpdf.text.pdf.PdfWriter;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
 import java.math.BigDecimal;
 import java.net.MalformedURLException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -50,17 +56,18 @@ public class TransactionService {
     @Autowired
     private ModelMapper mapper;
 
-    public TransactionDTO transferirValor(DepositDTO depositDTO) throws DataNotFoundException {
+    public TransactionDTO depositingValue(Long accountId, DepositDTORequest depositDTORequest) throws DataNotFoundException {
 
-        Accounts account = accountsRepository.findById(depositDTO.getAccountOriginId()).orElseThrow(() -> new DataNotFoundException(
+        Accounts account = accountsRepository.findById(accountId).orElseThrow(() -> new DataNotFoundException(
                 "Account not found my son!"));
 
-        Cards card = cardsRepository.findById(depositDTO.getCardId()).orElseThrow(() -> {
+        Cards card = cardsRepository.findById(depositDTORequest.getCardId()).orElseThrow(() -> {
             throw new DataNotFoundException("Card not found.");
         });
 
+
         BigDecimal initialAmmount = account.getAmmount();
-        BigDecimal transValue = depositDTO.getValue();
+        BigDecimal transValue = depositDTORequest.getValue();
 
         if (transValue.doubleValue() < 0.0) {
             throw new IllegalArgumentException("Not a valid transaction value");
@@ -70,11 +77,11 @@ public class TransactionService {
         account.setAmmount(newAmmount);
 
         Deposit deposit = Deposit.builder()
-                .cardType(depositDTO.getCardType())
-                .value(depositDTO.getValue())
+                .cardType(card.getCardType())
+                .value(transValue)
                 .dateTransaction(new Date())
                 .transactionType("cash deposit")
-                .description(depositDTO.getDescription())
+                .description(depositDTORequest.getDescription())
                 .accountOrigin(account)
                 .card(card).build();
 
@@ -82,36 +89,85 @@ public class TransactionService {
 //      gravar novo saldo no account
         accountsRepository.save(account);
 
-        return mapper.map(transactionRepository.save(deposit), DepositDTO.class);
+        return mapper.map(transactionRepository.saveAndFlush(deposit), DepositDTO.class);
     }
 
-    public TransactionDTO transferirValor(TransferenceDTO transferenceDTO) throws DataNotFoundException{
-        Accounts accountDestination = accountsRepository.findById(transferenceDTO.getAccountId()).orElseThrow(() -> new DataNotFoundException("Account of destiny not found, my consagrated"));
+    public List<TransactionDTO> findAll(Pageable pageable, Long accountOriginId) {
+        accountsRepository.findById(accountOriginId).orElseThrow(() -> {
+            throw new DataNotFoundException("Account not found.");
+        });
+        Page<Transactions> transactionsPage = transactionRepository.findAllByAccountOriginId(pageable, accountOriginId);
+        return transactionsPage.stream().map(transactions -> {
+            TransactionDTO transactionDTO = null;
+            if (transactions instanceof Deposit)
+                transactionDTO = mapper.map(transactions, DepositDTO.class);
+            if (transactions instanceof Transferences)
+                transactionDTO = mapper.map(transactions, TransferenceDTOResponse.class);
 
-        Accounts accountOrigin = accountsRepository.findById(transferenceDTO.getAccountOriginId()).orElseThrow(() -> new DataNotFoundException("Origin account not found."));
+            return transactionDTO;
+        }).collect(Collectors.toList());
+    }
+
+    public TransactionDTO findByAccountOriginIdAndTransactionId(Long accountOriginId, Long transactionId) {
+        Transactions transactionsModel = transactionRepository.findByAccountOriginIdAndTransactionId(accountOriginId,
+                transactionId).orElseThrow(() -> {
+            throw new DataNotFoundException("Transaction not found.");
+        });
+        if (transactionsModel instanceof Deposit)
+            return mapper.map(transactionsModel, DepositDTO.class);
+        if (transactionsModel instanceof Transferences)
+            return mapper.map(transactionsModel, TransferenceDTOResponse.class);
+
+        return null;
+    }
 
         BigDecimal intialAmmount = accountOrigin.getAmmount();
         BigDecimal transferenceValue = transferenceDTO.getValue();
+    public TransactionDTO transferringValue(Long accountOriginId, TransferenceDTORequest transferenceDTORequest) throws DataNotFoundException {
+        if (accountOriginId.equals(transferenceDTORequest.getAccountDestinyId()))
+            throw new IllegalArgumentException("The source account must be different from the destination account.");
+
+        Accounts accountOrigin =
+                accountsRepository.findById(accountOriginId).orElseThrow(() -> new DataNotFoundException(
+                        "Origin account not found."));
+
+        Accounts accountDestination =
+                accountsRepository.findById(transferenceDTORequest.getAccountDestinyId()).orElseThrow(() -> new DataNotFoundException(
+                        "Account of destiny not found, my consagrated"));
+
+        BigDecimal intialAmmountOrigin = accountOrigin.getAmmount();
+        BigDecimal intialAmmountDestiny = accountDestination.getAmmount();
+        BigDecimal transferenceValue = transferenceDTORequest.getValue();
 
         if (transferenceValue.doubleValue() < 0.0) {
             throw new IllegalArgumentException("Not a valid Transference value!");
         }
 
+        if (accountOrigin.getAmmount().compareTo(transferenceValue) < 0)
+            throw new InsufficientFundsException("Insufficient balance for transfer.");
 
-        BigDecimal newAmmount = intialAmmount.subtract(transferenceValue);
-        accountOrigin.setAmmount(newAmmount);
+        BigDecimal newAmmountOrigin = intialAmmountOrigin.subtract(transferenceValue);
+        accountOrigin.setAmmount(newAmmountOrigin);
+        BigDecimal newAmmountDestiny = intialAmmountDestiny.add(transferenceValue);
+        accountDestination.setAmmount(newAmmountDestiny);
 
         Transferences transference = Transferences.builder()
                 .accountsDestiny(accountDestination)
-                .value(transferenceDTO.getValue())
-                .dateTransaction(transferenceDTO.getDateTransaction())
-                .transactionType(transferenceDTO.getTransactionType())
-                .description(transferenceDTO.getDescription())
+                .value(transferenceValue)
+                .dateTransaction(new Date())
+                .transactionType("bank transfer")
+                .description(transferenceDTORequest.getDescription())
                 .accountOrigin(accountOrigin)
+                .accountsDestiny(accountDestination)
                 .build();
-        accountsRepository.save(accountOrigin);
 
         return mapper.map(transactionRepository.save(transference), TransferenceDTO.class);
+        List<Accounts> accountsList = new ArrayList<>();
+        accountsList.add(accountOrigin);
+        accountsList.add(accountDestination);
+        accountsRepository.saveAll(accountsList);
+
+        return mapper.map(transactionRepository.saveAndFlush(transference), TransferenceDTO.class);
     }
 
     public List<TransactionDTO> getLast5Transactions(Long accountId) {
@@ -129,7 +185,7 @@ public class TransactionService {
 
     public List<AccountTransferenceDTOResponse> getLast5AccountsDetiny(Long accountId) {
         List<Transferences> depositList =
-                transactionRepository.findTop5DistinctAccountsDestinyByAccountOriginId(accountId);
+                transactionRepository.findTop5DistinctAccountsDestinyByAccountOriginIdIsNot(accountId);
 
         return depositList.stream().map(transaction -> {
             ObjectMapper objectMapper = new ObjectMapper();

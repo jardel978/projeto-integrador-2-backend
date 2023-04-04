@@ -33,34 +33,30 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(apiError, apiError.getStatus());
     }
 
-//    @ExceptionHandler(KeycloakException.class)
-//    protected ResponseEntity<Object> keycloakException(KeycloakException exception, HttpServletRequest request) {
-//        ApiError error = buildApiError(HttpStatus.BAD_REQUEST, exception, request);
-//        return buildResponseEntity(error);
-//    }
-//
-//    @ExceptionHandler(LogoutException.class)
-//    protected ResponseEntity<Object> logoutException(LogoutException exception, HttpServletRequest request) {
-//        ApiError error = buildApiError(HttpStatus.BAD_REQUEST, exception, request);
-//        return buildResponseEntity(error);
-//    }
-//
-//    @ExceptionHandler(UserAlreadyExistException.class)
-//    protected ResponseEntity<Object> userAlreadyExistException(UserAlreadyExistException exception,
-//                                                               HttpServletRequest request) {
-//        ApiError error = buildApiError(HttpStatus.BAD_REQUEST, exception, request);
-//        return buildResponseEntity(error);
-//    }
-//
-//    @ExceptionHandler(TokenException.class)
-//    protected ResponseEntity<Object> tokenException(TokenException exception, HttpServletRequest request) {
-//        ApiError error = buildApiError(HttpStatus.BAD_REQUEST, exception, request);
-//        return buildResponseEntity(error);
-//    }
-
     @ExceptionHandler(DataNotFoundException.class)
     protected ResponseEntity<Object> dataNotFoundException(DataNotFoundException exception, HttpServletRequest request) {
         ApiError error = buildApiError(HttpStatus.NOT_FOUND, exception, request);
+        return buildResponseEntity(error);
+    }
+
+    @ExceptionHandler(DataAlreadyExistsException.class)
+    protected ResponseEntity<Object> dataAlreadyExistsException(DataAlreadyExistsException exception,
+                                                                HttpServletRequest request) {
+        ApiError error = buildApiError(HttpStatus.BAD_REQUEST, exception, request);
+        return buildResponseEntity(error);
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    protected ResponseEntity<Object> illegalArgumentException(IllegalArgumentException exception,
+                                                                HttpServletRequest request) {
+        ApiError error = buildApiError(HttpStatus.BAD_REQUEST, exception, request);
+        return buildResponseEntity(error);
+    }
+
+    @ExceptionHandler(InsufficientFundsException.class)
+    protected ResponseEntity<Object> insufficientFundsException(InsufficientFundsException exception,
+                                                                HttpServletRequest request) {
+        ApiError error = buildApiError(HttpStatus.BAD_REQUEST, exception, request);
         return buildResponseEntity(error);
     }
 
