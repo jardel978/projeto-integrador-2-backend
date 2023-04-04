@@ -4,6 +4,7 @@ import com.dmh.msaccounts.model.dto.DepositDTO;
 import com.dmh.msaccounts.model.dto.TransferenceDTO;
 import com.dmh.msaccounts.response.ResponseHandler;
 import com.dmh.msaccounts.service.TransactionService;
+import com.itextpdf.text.Document;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,9 +13,10 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.lang.annotation.Documented;
 
 @RestController
-@RequestMapping("/accountsss")
+@RequestMapping("/accounts")
 @SecurityRequirement(name = "Bearer Authentication")
 public class TransactionController {
 
@@ -65,6 +67,12 @@ public class TransactionController {
     public ResponseEntity<Object> getLastAccountsDestiny(@PathVariable("id") Long accountId) {
         return responseHandler.build(transactionService.getLast5AccountsDetiny(accountId), HttpStatus.OK, "Last 5 " +
                 "accounts destiny.");
+    }
+
+    @GetMapping("/{id}/transferences/document")
+    public Document getVoucher(@PathVariable("id") Long tranferenceId) {
+        return transactionService.getVoucher(tranferenceId);
+
     }
 
 }

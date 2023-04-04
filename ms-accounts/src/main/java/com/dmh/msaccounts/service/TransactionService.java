@@ -20,10 +20,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FilterOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.math.BigDecimal;
 import java.net.MalformedURLException;
 import java.time.LocalDate;
@@ -114,35 +111,6 @@ public class TransactionService {
                 .build();
         accountsRepository.save(accountOrigin);
 
-        Document documentPDF = new Document(); //criando um documento vazio
-        LocalDate dataAtual = LocalDate.now();
-        try {
-            PdfWriter.getInstance(documentPDF, new FileOutputStream("../../../../../../Comprovante-" + accountOrigin.getId().toString() + dataAtual.toString() +".pdf"));
-            documentPDF.open(); //abrindo documento
-            documentPDF.setPageSize(PageSize.A6); //setando o tamanho do documento
-            Font font = FontFactory.getFont(FontFactory.COURIER, 11, BaseColor.BLACK);
-            Chunk chunk = new Chunk("Teste de doc PDF", font);
-            Image img = Image.getInstance("C:\\Users\\enois\\OneDrive\\Área de Trabalho\\PI2\\DMH-extrato.png");
-            documentPDF.add(img);
-            documentPDF.add(chunk);
-            documentPDF.add(new Paragraph("Conta de origem: " + accountOrigin.getAccount()));
-            documentPDF.add(new Paragraph("Conta de destino: " + accountDestination.getAccount()));
-            documentPDF.add(new Paragraph("Data da transferência: " + dataAtual.toString()));
-            documentPDF.add(new Paragraph("Valor: " + accountDestination.getAmmount()));
-            documentPDF.add(new Paragraph("Chave da Transação: " + accountOrigin.getAccount().toString() + accountDestination.getAccount().toString() + dataAtual.toString()));
-
-        } catch (DocumentException de) {
-            de.printStackTrace();
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        } catch (MalformedURLException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } finally {
-            documentPDF.close();
-        }
-
         return mapper.map(transactionRepository.save(transference), TransferenceDTO.class);
     }
 
@@ -182,5 +150,57 @@ public class TransactionService {
 
         return transferences.stream().map(transference -> mapper.map(transference, TransferenceDTOResponse.class)).collect(Collectors.toList());
     }
+
+    public Document getVoucher(Long transferenceId) {
+
+
+        Transferences transferences = (Transferences) transactionRepository.findById(transferenceId).orElseThrow(() -> new DataNotFoundException("Transference not found."));
+        Accounts accountDestination = accountsRepository.findById(transferences.getAccountsDestiny().getId()).orElseThrow(() -> new DataNotFoundException("Account of destiny not found, my consagrated"));
+        Accounts accountOrigin = accountsRepository.findById(transferences.getAccountOrigin().getId()).orElseThrow(() -> new DataNotFoundException("Origin account not found."));
+        User userOrigem = findUser(accountOrigin.getUserId());
+        User userDestiny = findUser(accountDestination.getUserId());
+
+        Document documentPDF = new Document(); //criando um documento vazio
+        LocalDate dataAtual = LocalDate.now();
+        try {
+            PdfWriter.getInstance(documentPDF, new FileOutputStream("../../../../../../Comprovante-" + accountOrigin.getId().toString() + dataAtual.toString() + ".pdf"));
+            documentPDF.open(); //abrindo documento
+            documentPDF.setPageSize(PageSize.A6); //setando o tamanho do documento
+            Font font = FontFactory.getFont(FontFactory.COURIER, 11, BaseColor.BLACK);
+            Chunk chunk = new Chunk("Teste de doc PDF", font);
+            Image img = Image.getInstance("C:\\Users\\enois\\OneDrive\\Área de Trabalho\\PI2\\DMH-extrato.png");
+            documentPDF.add(img);
+            documentPDF.add(chunk);
+            documentPDF.add(new Paragraph("Titular da Conta: " + userOrigem.getName() + " " + userOrigem.getLastName()));
+            documentPDF.add(new Paragraph("Conta de origem: " + accountOrigin.getAccount()));
+            documentPDF.add(new Paragraph("Titular de destino: " + userDestiny.getName() + " " + userOrigem.getLastName()));
+            documentPDF.add(new Paragraph("Conta de destino: " + accountDestination.getAccount()));
+            documentPDF.add(new Paragraph("Data da transferência: " + dataAtual.toString()));
+            documentPDF.add(new Paragraph("Valor: " + accountDestination.getAmmount()));
+            documentPDF.add(new Paragraph("Chave da Transação: " + accountOrigin.getAccount().toString() + accountDestination.getAccount().toString() + dataAtual.toString()));
+
+        } catch (DocumentException de) {
+            de.printStackTrace();
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } finally {
+            documentPDF.close();
+        }
+        return documentPDF; //TODO errado
+    }
+
+    private User findUser(String userId) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        User user = objectMapper.convertValue(feignUserRepository.findByUserId(userId).getBody().get(
+                "data"), User.class);
+
+        return user;
+    }
+
 
 }
