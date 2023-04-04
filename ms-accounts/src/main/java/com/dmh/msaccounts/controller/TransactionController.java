@@ -1,5 +1,6 @@
 package com.dmh.msaccounts.controller;
 
+import com.dmh.msaccounts.model.Transferences;
 import com.dmh.msaccounts.model.dto.TransactionDTO;
 import com.dmh.msaccounts.model.dto.requests.DepositDTORequest;
 import com.dmh.msaccounts.model.dto.requests.TransferenceDTORequest;
@@ -51,6 +52,16 @@ public class TransactionController {
             message = "No transaction found.";
         }
         return responseHandler.build(transactionDTOList, HttpStatus.OK, message);
+    }
+
+    @GetMapping("/transferences")
+    public ResponseEntity<Object> findAllTransferencesByRangeValue(@PathVariable Long startValue, @PathVariable Long endValue){
+        String message = "Found transactions.";
+        List<TransactionDTO> transactions = transactionService.findAllTransferenceByValueRange(startValue, endValue);
+        if (transactions.isEmpty()){
+            message = "No transactions found";
+        }
+        return responseHandler.build(transactions, HttpStatus.OK, message);
     }
 
     @GetMapping("/{id}/activity/{transactId}")

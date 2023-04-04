@@ -289,4 +289,8 @@ public class TransactionService {
         return user;
     }
 
+    public List<TransactionDTO> findAllTransferenceByValueRange(Long startValue, Long endValue){
+        List<Transactions> transactionsList = transactionRepository.findAllTransferenceByValueRange(startValue, endValue);
+        return transactionsList.stream().map(transaction -> mapper.map(transaction, TransactionDTO.class)).collect(Collectors.toList());
+    }
 }
