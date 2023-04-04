@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.Map;
 
-@FeignClient(name = "ms-users", url = "localhost:8090/users", configuration = OauthFeignConfiguration.class)
+@FeignClient(name = "ms-users", url = "ms-users:8084/users", configuration = OauthFeignConfiguration.class)
 @LoadBalancerClient(name = "ms-users", configuration = ConfigLoadBalancer.class)
 public interface FeignUserRepository {
 

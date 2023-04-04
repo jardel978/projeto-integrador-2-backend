@@ -15,19 +15,17 @@ services:
     healthcheck:
       test: "mysqladmin ping -u root -p$${MYSQL_ROOT_PASSWORD}"
 
-  dbAccounts:
-    image: mysql:latest
-    container_name: dbAccounts
+  db-accounts:
+    image: mysql:8.0.32
+    container_name: db-accounts
     command: --default-authentication-plugin=mysql_native_password
+    environment:
+      - MYSQL_DATABASE=db_accounts
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_USER=accounts
+      - MYSQL_PASSWORD=password
     ports:
       - "3308:3306"
-    environment:
-      - MYSQL_DATABASE=dbaccounts
-      - MYSQL_USER=msaccount
-      - MYSQL_PASSWORD=root
-      - MYSQL_ROOT_PASSWORD=root
-    healthcheck:
-      test: "mysqladmin ping -u root -p$${MYSQL_ROOT_PASSWORD}"
 
   keycloak:
     image: quay.io/keycloak/keycloak:18.0.0
@@ -41,7 +39,6 @@ services:
       - KC_DB_USERNAME=keycloak
       - KC_DB_PASSWORD=password
     ports:
-#      - KCK_PORT:8080:8080
       - "8080:8080"
     command: start-dev
     depends_on:
@@ -49,48 +46,67 @@ services:
     healthcheck:
       test: "curl -f http://localhost:8080/admin || exit 1"
 
-#  ms-discovery:
-#    build: ms-discovery
-#    container_name: ms-discovery
-#    restart: always
-#    depends_on:
-#      - mysql
-#    ports:
-#      - "8761:8761"
-#
-#  config-server:
-#    build: ms-config-server
-#    container_name: ms-config-server
-#    restart: always
-#    depends_on:
-#      - ms-discovery
-#    ports:
-#      - "8888:8888"
-#
-#  api-gateway:
-#    build: ms-gateway
-#    container_name: ms-gateway
-#    restart: always
-#    depends_on:
-#      - config-server
-#    ports:
-#      - "8090:8090"
-#
-#  users-service:
-#    build: ms-users
-#    container_name: ms-users
-#    restart: always
-#    depends_on:
-#      - api-gateway
-#    ports:
-#      - "8084:8084"
+  ms-discovery:
+    build: ms-discovery
+    container_name: ms-discovery
+    restart: always
+    depends_on:
+      - mysql
+    ports:
+      - "8761:8761"
 
-#  accounts-service:
-#    build: ms-accounts
-#    container_name: ms-accounts
-#    restart: always
-#    depends_on:
-#      - dbAccounts
-#      - api-gateway
-#    ports:
-#      - "8085:8085"
+  ms-config-server:
+    build: ms-config-server
+    container_name: ms-config-server
+    restart: always
+    depends_on:
+      - ms-discovery
+    ports:
+      - "8888:8888"
+
+  ms-gateway:
+    build: ms-gateway
+    container_name: ms-gateway
+    restart: always
+    depends_on:
+      - ms-config-server
+    ports:
+      - "8090:8090"
+    env_file:
+      - ./ms-gateway/.env
+
+  ms-users:
+    build: ms-users
+    container_name: ms-users
+    restart: always
+    depends_on:
+      - ms-gateway
+    ports:
+      - "8084:8084"
+    env_file:
+      - ./ms-users/.env
+
+  ms-accounts:
+    build: ms-accounts
+    container_name: ms-accounts
+    restart: always
+    depends_on:
+      - db-accounts
+      - ms-users
+    ports:
+      - "8085:8085"
+    env_file:
+      - ./ms-accounts/.env
+
+  phpmyadmin-db-accounts:
+    image: phpmyadmin/phpmyadmin:4.8.5
+    restart: always
+    depends_on:
+      - db-accounts
+    environment:
+      - PMA_HOST=db-accounts
+      - PMA_PORT=3306
+      - PMA_USER=accounts
+      - PMA_PASSWORD=password
+    ports:
+      - "3001:80"

@@ -66,17 +66,11 @@ public class Oauth2ClientCredentialsFeignManager {
 
     public String getAccessToken() {
         try {
-            log.info("Status do ClientRegistrastion");
-
             OAuth2AuthorizeRequest oAuth2AuthorizeRequest = OAuth2AuthorizeRequest
                     .withClientRegistrationId(clientRegistration.getRegistrationId())
                     .principal(principal)
                     .build();
-            log.info("Qualquer string para identificar ai" + oAuth2AuthorizeRequest.getPrincipal().getName());
             OAuth2AuthorizedClient client = manager.authorize(oAuth2AuthorizeRequest);
-            log.info("Status do Client: " + client);
-
-            log.info("Status do ClientRegistrastion: "+ clientRegistration);
 
             if (client == null) {
                 throw new IllegalStateException(String.format("Client Crendentials flow para registro %s falhou! ",

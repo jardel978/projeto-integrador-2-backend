@@ -29,11 +29,9 @@ public class OauthFeignConfiguration {
 
     @Bean
     public RequestInterceptor requestInterceptor() {
-        log.info("OUTRO LOG PARA NOIS VE!!!!!!!" + registrationRepository.findByRegistrationId(KEYCLOAK_REGISTRATION_ID));
         ClientRegistration clientRegistration = registrationRepository.findByRegistrationId(KEYCLOAK_REGISTRATION_ID);
         Oauth2ClientCredentialsFeignManager credentialsFeignMananger =
                 new Oauth2ClientCredentialsFeignManager(authorizedClientManager(), clientRegistration);
-        log.info("tipo uma string para verificar" + credentialsFeignMananger.getAccessToken());
         return requestInterceptor -> {
             requestInterceptor.header("Authorization", "Bearer " + credentialsFeignMananger.getAccessToken());
         };

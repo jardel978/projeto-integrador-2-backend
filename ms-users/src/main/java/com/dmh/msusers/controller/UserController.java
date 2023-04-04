@@ -28,15 +28,13 @@ public class UserController {
     @Autowired
     private ResponseHandler responseHandler;
 
-
-
     @PostMapping("/registration")
     public ResponseEntity<Object> create(@Valid @RequestBody UserDTORequest userDTO, BindingResult result) {
 
         if (result.hasErrors())
             throw new InvalidFieldException(result.getAllErrors().get(0).getDefaultMessage());
 
-        return responseHandler.build(userService.create(userDTO), HttpStatus.CREATED, "user created successfully.");
+        return userService.create(userDTO);
     }
 
     @Operation(summary = "Get user", description = "Get user")

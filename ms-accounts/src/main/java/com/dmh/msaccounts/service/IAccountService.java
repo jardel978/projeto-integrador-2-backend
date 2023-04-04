@@ -7,7 +7,7 @@ import com.dmh.msaccounts.model.dto.responses.AccountsDTOResponse;
 
 public interface IAccountService {
 
-    AccountsDTOResponse createAccount(AccountsDTORequest accountsDTORequest);
+    AccountsDTOResponse createAccount(AccountsDTORequest accountsDTORequest, boolean createUserWithAccount);
     AccountsDTOResponse findAccountById(Long id);
 //    void updateAccount(AccountsPatchDTORequest accountsPatchDTORequest, Long id);
     CardsDTO findAccountCardsById(Long accountId, Long cardId);

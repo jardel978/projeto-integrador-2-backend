@@ -1,21 +1,17 @@
 server:
   port: ${PORT_MS_USERS:8084}
 
-eureka:
-  instance:
-#    hostname: localhost
-    prefer-ip-address: true
-  client:
-    register-with-eureka: true
-    fetch-registry: true
-    serviceUrl:
-      defaultZone: http://localhost:8761/eureka
-
 spring:
   application:
     name: ms-users
   config:
-    import: optional:configserver:http://localhost:8888
+    import: optional:configserver:http://${CONFIG_SERVER_HOST}:8888
   cloud:
     config:
       profile: ${MS_USERS_PROFILE:dev}
+
+feign:
+  circuitbreaker:
+    enabled: true
+#https://stackoverflow:
+#  com/questions/72421740/spring-micro-services-eureka-client-is-not-registering-with-eureka-server:

@@ -167,7 +167,6 @@
                             <groupId>org.projectlombok</groupId>
                             <artifactId>lombok</artifactId>
                         </exclude>
-                        <finalName>ms-accounts</finalName>
                     </excludes>
                     <finalName>ms-accounts</finalName>
                 </configuration>
