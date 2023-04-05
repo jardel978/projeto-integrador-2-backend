@@ -16,16 +16,27 @@ import com.dmh.msaccounts.repository.ICardsRepository;
 import com.dmh.msaccounts.repository.ITransactionRepository;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.itextpdf.text.*;
+import com.itextpdf.text.pdf.PdfWriter;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
+import
+        org.springframework.data.domain.Page
+        ;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.net.MalformedURLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
+import
+        java.util.Date
+        ;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -82,9 +93,13 @@ public class TransactionService {
 
 //      accounts.getTransactions().add(transaction);
 //      gravar novo saldo no account
-        accountsRepository.save(account);
 
-        return mapper.map(transactionRepository.saveAndFlush(deposit), DepositDTO.class);
+        accountsRepository.save
+                (account);
+
+        return
+                mapper.map
+                        (transactionRepository.saveAndFlush(deposit), DepositDTO.class);
     }
 
     public List<TransactionDTO> findAll(Pageable pageable, Long accountOriginId) {
@@ -92,15 +107,21 @@ public class TransactionService {
             throw new DataNotFoundException("Account not found.");
         });
         Page<Transactions> transactionsPage = transactionRepository.findAllByAccountOriginId(pageable, accountOriginId);
-        return transactionsPage.stream().map(transactions -> {
-            TransactionDTO transactionDTO = null;
-            if (transactions instanceof Deposit)
-                transactionDTO = mapper.map(transactions, DepositDTO.class);
-            if (transactions instanceof Transferences)
-                transactionDTO = mapper.map(transactions, TransferenceDTOResponse.class);
+        return
+                transactionsPage.stream
+                        ().map(transactions -> {
+                    TransactionDTO transactionDTO = null;
+                    if (transactions instanceof Deposit)
+                        transactionDTO =
+                                mapper.map
+                                        (transactions, DepositDTO.class);
+                    if (transactions instanceof Transferences)
+                        transactionDTO =
+                                mapper.map
+                                        (transactions, TransferenceDTOResponse.class);
 
-            return transactionDTO;
-        }).collect(Collectors.toList());
+                    return transactionDTO;
+                }).collect(Collectors.toList());
     }
 
     public TransactionDTO findByAccountOriginIdAndTransactionId(Long accountOriginId, Long transactionId) {
@@ -109,9 +130,13 @@ public class TransactionService {
             throw new DataNotFoundException("Transaction not found.");
         });
         if (transactionsModel instanceof Deposit)
-            return mapper.map(transactionsModel, DepositDTO.class);
+            return
+                    mapper.map
+                            (transactionsModel, DepositDTO.class);
         if (transactionsModel instanceof Transferences)
-            return mapper.map(transactionsModel, TransferenceDTOResponse.class);
+            return
+                    mapper.map
+                            (transactionsModel, TransferenceDTOResponse.class);
 
         return null;
     }
@@ -128,8 +153,8 @@ public class TransactionService {
                 accountsRepository.findById(transferenceDTORequest.getAccountDestinyId()).orElseThrow(() -> new DataNotFoundException(
                         "Account of destiny not found, my consagrated"));
 
-        BigDecimal intialAmmountOrigin = accountOrigin.getAmmount();
-        BigDecimal intialAmmountDestiny = accountDestination.getAmmount();
+        BigDecimal initialAmmountOrigin = accountOrigin.getAmmount();
+        BigDecimal initialAmmountDestiny = accountDestination.getAmmount();
         BigDecimal transferenceValue = transferenceDTORequest.getValue();
 
         if (transferenceValue.doubleValue() < 0.0) {
@@ -139,9 +164,9 @@ public class TransactionService {
         if (accountOrigin.getAmmount().compareTo(transferenceValue) < 0)
             throw new InsufficientFundsException("Insufficient balance for transfer.");
 
-        BigDecimal newAmmountOrigin = intialAmmountOrigin.subtract(transferenceValue);
+        BigDecimal newAmmountOrigin = initialAmmountOrigin.subtract(transferenceValue);
         accountOrigin.setAmmount(newAmmountOrigin);
-        BigDecimal newAmmountDestiny = intialAmmountDestiny.add(transferenceValue);
+        BigDecimal newAmmountDestiny = initialAmmountDestiny.add(transferenceValue);
         accountDestination.setAmmount(newAmmountDestiny);
 
         Transferences transference = Transferences.builder()
@@ -159,44 +184,109 @@ public class TransactionService {
         accountsList.add(accountDestination);
         accountsRepository.saveAll(accountsList);
 
-        return mapper.map(transactionRepository.saveAndFlush(transference), TransferenceDTO.class);
+        return
+                mapper.map
+                        (transactionRepository.saveAndFlush(transference), TransferenceDTO.class);
     }
 
     public List<TransactionDTO> getLast5Transactions(Long accountId) {
         List<Transactions> transactions =
                 transactionRepository.findTop5ByAccountOriginIdOrderByDateTransactionDesc(accountId);
 
-        return transactions.stream().map(transaction -> {
-            if (transaction.getClass().equals(Deposit.class))
-                return mapper.map(transaction, DepositDTO.class);
-            else
-                return mapper.map(transaction, TransferenceDTOResponse.class);
+        return
+                transactions.stream
+                        ().map(transaction -> {
+                    if (transaction.getClass().equals(Deposit.class))
+                        return
+                                mapper.map
+                                        (transaction, DepositDTO.class);
+                    else
+                        return
+                                mapper.map
+                                        (transaction, TransferenceDTOResponse.class);
 
-        }).collect(Collectors.toList());
+                }).collect(Collectors.toList());
     }
 
     public List<AccountTransferenceDTOResponse> getLast5AccountsDetiny(Long accountId) {
         List<Transferences> depositList =
                 transactionRepository.findTop5DistinctAccountsDestinyByAccountOriginIdIsNot(accountId);
 
-        return depositList.stream().map(transaction -> {
-            ObjectMapper objectMapper = new ObjectMapper();
-            objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-            User user = objectMapper.convertValue(feignUserRepository.findByUserId(transaction.getAccountsDestiny().getUserId()).getBody().get(
-                    "data"), User.class);
-            AccountTransferenceDTOResponse transferenceDTOResponse = AccountTransferenceDTOResponse.builder()
-                    .accountDestiny(transaction.getAccountsDestiny().getAccount())
-                    .recipient(user.getName() + " " + user.getLastName())
-                    .dateTransaction(transaction.getDateTransaction()).build();
-            return transferenceDTOResponse;
-        }).collect(Collectors.toList());
+        return
+                depositList.stream
+                        ().map(transaction -> {
+                    ObjectMapper objectMapper = new ObjectMapper();
+                    objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+                    User user = objectMapper.convertValue(feignUserRepository.findByUserId(transaction.getAccountsDestiny().getUserId()).getBody().get(
+                            "data"), User.class);
+                    AccountTransferenceDTOResponse transferenceDTOResponse = AccountTransferenceDTOResponse.builder()
+                            .accountDestiny(transaction.getAccountsDestiny().getAccount())
+                            .recipient(user.getName() + " " + user.getLastName())
+                            .dateTransaction(transaction.getDateTransaction()).build();
+                    return transferenceDTOResponse;
+                }).collect(Collectors.toList());
     }
 
     public List<TransactionDTO> getLast10Transferences(Long accountId) {
         List<Transactions> transferences =
                 transactionRepository.findByAccountOriginIdOrderByDateTransactionDescLimitedTo(accountId, 10);
 
-        return transferences.stream().map(transference -> mapper.map(transference, TransferenceDTOResponse.class)).collect(Collectors.toList());
+        return
+                transferences.stream
+                        ().map(transference ->
+                        mapper.map
+                                (transference, TransferenceDTOResponse.class)).collect(Collectors.toList());
+    }
+
+    public Document getVoucher(Long transferenceId) {
+
+
+        Transferences transferences = (Transferences) transactionRepository.findById(transferenceId).orElseThrow(() -> new DataNotFoundException("Transference not found."));
+        Accounts accountDestination = accountsRepository.findById(transferences.getAccountsDestiny().getId()).orElseThrow(() -> new DataNotFoundException("Account of destiny not found, my consagrated"));
+        Accounts accountOrigin = accountsRepository.findById(transferences.getAccountOrigin().getId()).orElseThrow(() -> new DataNotFoundException("Origin account not found."));
+        User userOrigem = findUser(accountOrigin.getUserId());
+        User userDestiny = findUser(accountDestination.getUserId());
+
+        Document documentPDF = new Document(); //criando um documento vazio
+        LocalDate dataAtual = LocalDate.now();
+        try {
+            PdfWriter.getInstance(documentPDF, new FileOutputStream("../../../../../../Comprovante-" + accountOrigin.getId().toString() + dataAtual.toString() + ".pdf"));
+            documentPDF.open(); //abrindo documento
+            documentPDF.setPageSize(PageSize.A6); //setando o tamanho do documento
+            Font font = FontFactory.getFont(FontFactory.COURIER, 11, BaseColor.BLACK);
+            Chunk chunk = new Chunk("Teste de doc PDF", font);
+            Image img = Image.getInstance("C:\\Users\\enois\\OneDrive\\Área de Trabalho\\PI2\\DMH-extrato.png");
+            documentPDF.add(img);
+            documentPDF.add(chunk);
+            documentPDF.add(new Paragraph("Titular da Conta: " + userOrigem.getName() + " " + userOrigem.getLastName()));
+            documentPDF.add(new Paragraph("Conta de origem: " + accountOrigin.getAccount()));
+            documentPDF.add(new Paragraph("Titular de destino: " + userDestiny.getName() + " " + userOrigem.getLastName()));
+            documentPDF.add(new Paragraph("Conta de destino: " + accountDestination.getAccount()));
+            documentPDF.add(new Paragraph("Data da transferência: " + dataAtual.toString()));
+            documentPDF.add(new Paragraph("Valor: " + accountDestination.getAmmount()));
+            documentPDF.add(new Paragraph("Chave da Transação: " + accountOrigin.getAccount().toString() + accountDestination.getAccount().toString() + dataAtual.toString()));
+
+        } catch (DocumentException de) {
+            de.printStackTrace();
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } finally {
+            documentPDF.close();
+        }
+        return documentPDF; //TODO errado
+    }
+
+    private User findUser(String userId) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        User user = objectMapper.convertValue(feignUserRepository.findByUserId(userId).getBody().get(
+                "data"), User.class);
+
+        return user;
     }
 
 }
