@@ -104,7 +104,7 @@ public class TransactionService {
     }
 
     public TransactionDTO findByAccountOriginIdAndTransactionId(Long accountOriginId, Long transactionId) {
-        Transactions transactionsModel = transactionRepository.findByAccountOriginIdAndTransactionId(accountOriginId,
+        Transactions transactionsModel = transactionRepository.findByAccountOriginIdAndId(accountOriginId,
                 transactionId).orElseThrow(() -> {
             throw new DataNotFoundException("Transaction not found.");
         });
