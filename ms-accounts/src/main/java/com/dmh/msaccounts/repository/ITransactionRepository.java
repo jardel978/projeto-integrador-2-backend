@@ -14,7 +14,7 @@ public interface ITransactionRepository extends JpaRepository<Transactions, Long
 
     Page<Transactions> findAllByAccountOriginId(Pageable pageable, Long accountOriginId);
 
-    Optional<Transactions> findByAccountOriginIdAndTransactionId(Long accountOriginId, Long transactionId);
+    Optional<Transactions> findByAccountOriginIdAndId(Long accountOriginId, Long transactionId);
 
 //    @Query("from Deposit")
     List<Transactions> findTop5ByAccountOriginIdOrderByDateTransactionDesc(Long accountId);
