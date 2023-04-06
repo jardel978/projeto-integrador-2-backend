@@ -14,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -92,9 +94,9 @@ public class TransactionController {
     }
 
     @GetMapping("/{id}/transferences/document")
-    public Document getVoucher(@PathVariable("id") Long tranferenceId) {
-        return transactionService.getVoucher(tranferenceId);
-
+    public void getVoucher(@PathVariable("id") Long tranferenceId, HttpServletRequest request,
+                               HttpServletResponse response) {
+        transactionService.getVoucher(tranferenceId, request, response);
     }
 
 }

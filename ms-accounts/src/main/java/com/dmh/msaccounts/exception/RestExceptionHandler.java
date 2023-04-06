@@ -1,5 +1,7 @@
 package com.dmh.msaccounts.exception;
 
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +19,7 @@ import javax.ws.rs.BadRequestException;
 import java.time.LocalDateTime;
 
 @ControllerAdvice
+@Order(Ordered.HIGHEST_PRECEDENCE)
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
     private ApiError buildApiError(HttpStatus status, Exception exception, HttpServletRequest request) {
@@ -46,9 +49,16 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return buildResponseEntity(error);
     }
 
+    @ExceptionHandler(GenerateDocumentException.class)
+    protected ResponseEntity<Object> generateDocumentException(GenerateDocumentException exception,
+                                                               HttpServletRequest request) {
+        ApiError error = buildApiError(HttpStatus.BAD_REQUEST, exception, request);
+        return buildResponseEntity(error);
+    }
+
     @ExceptionHandler(IllegalArgumentException.class)
     protected ResponseEntity<Object> illegalArgumentException(IllegalArgumentException exception,
-                                                                HttpServletRequest request) {
+                                                              HttpServletRequest request) {
         ApiError error = buildApiError(HttpStatus.BAD_REQUEST, exception, request);
         return buildResponseEntity(error);
     }
