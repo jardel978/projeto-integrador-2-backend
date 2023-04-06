@@ -1,5 +1,6 @@
 package com.dmh.msaccounts.repository;
 
+import com.dmh.msaccounts.model.Accounts;
 import com.dmh.msaccounts.model.Transactions;
 import com.dmh.msaccounts.model.Transferences;
 import org.springframework.data.domain.Page;
@@ -19,9 +20,12 @@ public interface ITransactionRepository extends JpaRepository<Transactions, Long
 //    @Query("from Deposit")
     List<Transactions> findTop5ByAccountOriginIdOrderByDateTransactionDesc(Long accountId);
 
-    // TODO rever query: retorna não só as trasnferências destino
+    // TODO
     @Query("from Transferences")
-    List<Transferences> findTop5DistinctAccountsDestinyByAccountOriginIdIsNot(Long accountOriginId);
+    List<IAccountsTransference> findTop5DistinctAccountsDestinyByAccountOriginId(Long accountOriginId);
+
+    @Query("from Transferences")
+    Transferences findFirstByAccountDestinyId(Long accountDestinyId);
 
     @Query("from Transferences")
     List<Transactions> findByAccountOriginIdOrderByDateTransactionDescLimitedTo(Long accountId, int limit);

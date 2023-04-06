@@ -12,10 +12,8 @@ import org.keycloak.representations.AccessTokenResponse;
 import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.keycloak.representations.idm.UserSessionRepresentation;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
 
 import javax.servlet.http.HttpServletRequest;
@@ -69,6 +67,7 @@ public class KeycloakUserRepository implements IUserRepository {
         userAttributes.put("cpf", cpfList);
         userAttributes.put("phone", phoneList);
         UserRepresentation userRepresentation = new UserRepresentation();
+        userRepresentation.setEnabled(true);
         userRepresentation.setUsername(user.getEmail());
         userRepresentation.setFirstName(user.getName());
         userRepresentation.setLastName(user.getLastName());
@@ -91,6 +90,7 @@ public class KeycloakUserRepository implements IUserRepository {
         int statusId = response.getStatus();
         if (statusId == 201) {
             String userId = response.getLocation().getPath().replaceAll(".*/([^/]+)$", "$1");
+            keycloak.realm(realm).users().get(userId).sendVerifyEmail();
             return findById(userId);
         } else if (statusId == 409) {
             throw new UserAlreadyExistException("user already exist.");

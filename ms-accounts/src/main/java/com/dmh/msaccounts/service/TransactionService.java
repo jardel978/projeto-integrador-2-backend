@@ -27,6 +27,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.FileOutputStream;
 import java.math.BigDecimal;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -235,9 +236,9 @@ public class TransactionService {
             documentPDF.open(); //abrindo documento
             documentPDF.setPageSize(PageSize.A4); //setando o tamanho do documento
 
-//            String pathImage = currDir + "\\ms-accounts\\src\\main\\java\\com\\dmh\\msaccounts\\utils\\DMH-extrato.png";
+//            String pathImage = currDir + "/ms-accounts/src/main/java/com/dmh/msaccounts/utils/DMH-extrato.png";
 //            log.info("pathImage: " + pathImage);
-//            Image img = Image.getInstance(pathImage);
+//            Image img = Image.getInstance(new URL(pathImage));
 //            img.setWidthPercentage(.3f);
 //            img.setAlignment(Element.ALIGN_JUSTIFIED);
 //            documentPDF.add(img);
