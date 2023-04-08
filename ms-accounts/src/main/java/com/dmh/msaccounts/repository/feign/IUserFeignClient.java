@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.Map;
 
-@FeignClient(name = "ms-users", url = "localhost:8084/users",
+@FeignClient(name = "ms-users", url = "ms-users:8084/users",
         configuration = OauthFeignConfiguration.class, fallback = UsersFeignClientFallback.class)
 @LoadBalancerClient(name = "ms-users", configuration = ConfigLoadBalancer.class)
 public interface IUserFeignClient {

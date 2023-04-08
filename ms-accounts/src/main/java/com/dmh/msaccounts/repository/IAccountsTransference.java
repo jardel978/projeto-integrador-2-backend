@@ -4,17 +4,16 @@ public interface IAccountsTransference {
 
     Long getId();
 
-    String getAccountsDestinyAccount();
-    String getAccountsDestinyUserId();
+    AccountDestinyInfo getAccountDestinyInfo();
 
-//    interface AccountsInfo {
-//
-//        Long getId();
-//
-//        String getAccount();
-//
-//        String getUserId();
-//
-//    }
+    interface AccountDestinyInfo {
+
+        Long getId();
+
+        String getAccount();
+
+        String getUserId();
+
+    }
 
 }

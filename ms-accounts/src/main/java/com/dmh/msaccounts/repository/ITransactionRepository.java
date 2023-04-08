@@ -20,9 +20,8 @@ public interface ITransactionRepository extends JpaRepository<Transactions, Long
 //    @Query("from Deposit")
     List<Transactions> findTop5ByAccountOriginIdOrderByDateTransactionDesc(Long accountId);
 
-    // TODO
     @Query("from Transferences")
-    List<IAccountsTransference> findTop5DistinctAccountsDestinyByAccountOriginId(Long accountOriginId);
+    List<Transactions> findTop5ByAccountOriginIdDistinctAccountsDestiny(Long accountOriginId);
 
     @Query("from Transferences")
     Transferences findFirstByAccountDestinyId(Long accountDestinyId);
