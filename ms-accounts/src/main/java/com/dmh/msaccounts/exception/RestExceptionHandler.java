@@ -56,6 +56,13 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return buildResponseEntity(error);
     }
 
+    @ExceptionHandler(UserFeignClientException.class)
+    protected ResponseEntity<Object> userFeignClientException(UserFeignClientException exception,
+                                                               HttpServletRequest request) {
+        ApiError error = buildApiError(HttpStatus.BAD_REQUEST, exception, request);
+        return buildResponseEntity(error);
+    }
+
     @ExceptionHandler(IllegalArgumentException.class)
     protected ResponseEntity<Object> illegalArgumentException(IllegalArgumentException exception,
                                                               HttpServletRequest request) {

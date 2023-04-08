@@ -12,6 +12,7 @@ import com.dmh.msaccounts.model.dto.requests.TransferenceDTORequest;
 import com.dmh.msaccounts.model.dto.responses.AccountTransferenceDTOResponse;
 import com.dmh.msaccounts.model.dto.responses.TransferenceDTOResponse;
 import com.dmh.msaccounts.repository.*;
+import com.dmh.msaccounts.repository.feign.IUserFeignClient;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.itextpdf.text.*;
@@ -25,10 +26,8 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.FileOutputStream;
 import java.math.BigDecimal;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -55,7 +54,7 @@ public class TransactionService {
     private ITransactionRepository transactionRepository;
 
     @Autowired
-    private FeignUserRepository feignUserRepository;
+    private IUserFeignClient iUserFeignClient;
 
     @Autowired
     private ModelMapper mapper;
@@ -196,7 +195,7 @@ public class TransactionService {
             ObjectMapper objectMapper = new ObjectMapper();
             objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
             User user =
-                    objectMapper.convertValue(feignUserRepository.findByUserId(transference.getAccountsDestinyUserId()).getBody().get(
+                    objectMapper.convertValue(iUserFeignClient.findByUserId(transference.getAccountsDestinyUserId()).getBody().get(
                             "data"), User.class);
             Transferences lastTransference = transactionRepository.findFirstByAccountDestinyId(transference.getId());
             AccountTransferenceDTOResponse transferenceDTOResponse = AccountTransferenceDTOResponse.builder()
@@ -234,14 +233,14 @@ public class TransactionService {
             String currDir = System.getProperty("user.dir");
             PdfWriter.getInstance(documentPDF, response.getOutputStream());
             documentPDF.open(); //abrindo documento
-            documentPDF.setPageSize(PageSize.A4); //setando o tamanho do documento
+            documentPDF.setPageSize(PageSize.A5); //setando o tamanho do documento
 
-//            String pathImage = currDir + "/ms-accounts/src/main/java/com/dmh/msaccounts/utils/DMH-extrato.png";
-//            log.info("pathImage: " + pathImage);
-//            Image img = Image.getInstance(new URL(pathImage));
-//            img.setWidthPercentage(.3f);
-//            img.setAlignment(Element.ALIGN_JUSTIFIED);
-//            documentPDF.add(img);
+            String pathImage = currDir + "/ms-accounts/src/main/java/com/dmh/msaccounts/utils/DMH-extrato.png";
+            log.info("pathImage: " + pathImage);
+            Image img = Image.getInstance(new URL(pathImage));
+            img.setWidthPercentage(.3f);
+            img.setAlignment(Element.ALIGN_JUSTIFIED);
+            documentPDF.add(img);
 
             Font font = FontFactory.getFont(FontFactory.COURIER, 12, BaseColor.BLACK);
             Chunk chunk = new Chunk("Comprovante de Transferência", font);
@@ -295,7 +294,7 @@ public class TransactionService {
     private User findUser(String userId) {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        User user = objectMapper.convertValue(feignUserRepository.findByUserId(userId).getBody().get(
+        User user = objectMapper.convertValue(iUserFeignClient.findByUserId(userId).getBody().get(
                 "data"), User.class);
 
         return user;

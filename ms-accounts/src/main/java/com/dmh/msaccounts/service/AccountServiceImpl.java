@@ -9,7 +9,7 @@ import com.dmh.msaccounts.model.dto.CardsDTO;
 import com.dmh.msaccounts.model.dto.requests.AccountsDTORequest;
 import com.dmh.msaccounts.model.dto.requests.CardsDTORequest;
 import com.dmh.msaccounts.model.dto.responses.AccountsDTOResponse;
-import com.dmh.msaccounts.repository.FeignUserRepository;
+import com.dmh.msaccounts.repository.feign.IUserFeignClient;
 import com.dmh.msaccounts.repository.IAccountsRepository;
 import com.dmh.msaccounts.repository.ICardsRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 public class AccountServiceImpl implements IAccountService {
 
     @Autowired
-    private FeignUserRepository feignUserRepository;
+    private IUserFeignClient iUserFeignClient;
 
     @Autowired
     private IAccountsRepository accountsRepository;
@@ -48,7 +48,7 @@ public class AccountServiceImpl implements IAccountService {
                 .userId(accountsDTORequest.getUserId()).build();
 
         if (!createUserWithAccount) {
-            ResponseEntity<Map<String, Object>> response = feignUserRepository.findByUserId(accountsDTORequest.getUserId());
+            ResponseEntity<Map<String, Object>> response = iUserFeignClient.findByUserId(accountsDTORequest.getUserId());
             log.info("response: " + response.getBody().toString());
             if (response.getBody().containsKey("error")) {
                 throw new DataNotFoundException("User not found.");
