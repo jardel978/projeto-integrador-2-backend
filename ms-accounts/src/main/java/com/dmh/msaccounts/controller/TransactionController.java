@@ -5,7 +5,6 @@ import com.dmh.msaccounts.model.dto.requests.DepositDTORequest;
 import com.dmh.msaccounts.model.dto.requests.TransferenceDTORequest;
 import com.dmh.msaccounts.response.ResponseHandler;
 import com.dmh.msaccounts.service.TransactionService;
-import com.itextpdf.text.Document;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -89,7 +88,7 @@ public class TransactionController {
 
     @GetMapping("/{id}/transferences/accounts")
     public ResponseEntity<Object> getLastAccountsDestiny(@PathVariable("id") Long accountId) {
-        return responseHandler.build(transactionService.getLast5AccountsDetiny(accountId), HttpStatus.OK, "Last 5 " +
+        return responseHandler.build(transactionService.getLast5AccountsDestiny(accountId), HttpStatus.OK, "Last 5 " +
                 "accounts destiny.");
     }
 

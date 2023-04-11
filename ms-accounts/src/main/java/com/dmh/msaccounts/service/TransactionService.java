@@ -185,7 +185,7 @@ public class TransactionService {
         }).collect(Collectors.toList());
     }
 
-    public List<AccountTransferenceDTOResponse> getLast5AccountsDetiny(Long accountId) {
+    public List<AccountTransferenceDTOResponse> getLast5AccountsDestiny(Long accountId) {
         List<Transactions> accountsDestinyList =
                 transactionRepository.findByAccountOriginIdOrderByDateTransactionDescLimitedTo(accountId, 15);
 
