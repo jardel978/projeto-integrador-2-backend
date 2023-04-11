@@ -1,6 +1,5 @@
 package com.dmh.msaccounts.controller;
 
-import com.dmh.msaccounts.model.Transferences;
 import com.dmh.msaccounts.model.dto.TransactionDTO;
 import com.dmh.msaccounts.model.dto.requests.DepositDTORequest;
 import com.dmh.msaccounts.model.dto.requests.TransferenceDTORequest;
@@ -17,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -55,11 +55,14 @@ public class TransactionController {
         return responseHandler.build(transactionDTOList, HttpStatus.OK, message);
     }
 
-    @GetMapping("/transferences")
-    public ResponseEntity<Object> findAllTransferencesByRangeValue(@PathVariable Long startValue, @PathVariable Long endValue){
+    @GetMapping("/{id}/transactions-range")
+    public ResponseEntity<Object> findAllTransferencesByRangeValue(@PathVariable("id") Long accountOriginId,
+                                                                   @RequestParam("start") BigDecimal startValue,
+                                                                   @RequestParam("end") BigDecimal endValue) {
         String message = "Found transactions.";
-        List<TransactionDTO> transactions = transactionService.findAllTransferenceByValueRange(startValue, endValue);
-        if (transactions.isEmpty()){
+        List<TransactionDTO> transactions = transactionService.findAllTransferenceByValueRange(accountOriginId,
+                startValue, endValue);
+        if (transactions.isEmpty()) {
             message = "No transactions found";
         }
         return responseHandler.build(transactions, HttpStatus.OK, message);
@@ -105,7 +108,7 @@ public class TransactionController {
 
     @GetMapping("/{id}/transferences/document")
     public void getVoucher(@PathVariable("id") Long tranferenceId, HttpServletRequest request,
-                               HttpServletResponse response) {
+                           HttpServletResponse response) {
         transactionService.getVoucher(tranferenceId, request, response);
     }
 

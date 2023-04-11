@@ -308,8 +308,18 @@ public class TransactionService {
         return user;
     }
 
-    public List<TransactionDTO> findAllTransferenceByValueRange(Long startValue, Long endValue){
-        List<Transactions> transactionsList = transactionRepository.findAllTransferenceByValueRange(startValue, endValue);
-        return transactionsList.stream().map(transaction -> mapper.map(transaction, TransactionDTO.class)).collect(Collectors.toList());
+    public List<TransactionDTO> findAllTransferenceByValueRange(Long accountOriginId, BigDecimal startValue,
+                                                                BigDecimal endValue) {
+        List<Transactions> transactionsList =
+                transactionRepository.findAllByAccountOriginIdAndValueBetween(accountOriginId, startValue, endValue);
+        return transactionsList.stream().map(transaction -> {
+            TransactionDTO transactionDTO;
+            if (transaction instanceof Deposit)
+                transactionDTO = mapper.map(transaction, DepositDTO.class);
+            else
+                transactionDTO = mapper.map(transaction, TransferenceDTOResponse.class);
+            return transactionDTO;
+        }).collect(Collectors.toList());
     }
+
 }
