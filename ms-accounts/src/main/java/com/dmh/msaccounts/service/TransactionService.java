@@ -196,11 +196,7 @@ public class TransactionService {
                 log.info("account destiny user: " + ((Transferences) transaction).getAccountsDestiny().getUserId());
                 if (!accountsIds.contains(((Transferences) transaction).getAccountsDestiny().getAccount())
                         && accountsIds.size() <= 5 && !((Transferences) transaction).getAccountsDestiny().getId().equals(accountId)) {
-                    ObjectMapper objectMapper = new ObjectMapper();
-                    objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-                    User user =
-                            objectMapper.convertValue(Objects.requireNonNull(iUserFeignClient.findByUserId(((Transferences) transaction).getAccountsDestiny().getUserId()).getBody()).get(
-                                    "data"), User.class);
+                  User user = findUser(((Transferences) transaction).getAccountsDestiny().getUserId());
                     accountsDestinyDTOs.add(AccountTransferenceDTOResponse.builder()
                             .accountDestiny(((Transferences) transaction).getAccountsDestiny().getAccount())
                             .recipient(user.getName() + " " + user.getLastName())
@@ -287,9 +283,7 @@ public class TransactionService {
             documentPDF.add(recipient);
             documentPDF.add(new Paragraph(" "));
             documentPDF.add(dateTransaction);
-            documentPDF.add(new Paragraph(" "));
             documentPDF.add(ammount);
-            documentPDF.add(new Paragraph(" "));
             documentPDF.add(key);
 
         } catch (Exception e) {
@@ -302,9 +296,9 @@ public class TransactionService {
     private User findUser(String userId) {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        User user = objectMapper.convertValue(iUserFeignClient.findByUserId(userId).getBody().get(
+        User user = objectMapper.convertValue(Objects.requireNonNull(iUserFeignClient.findByUserId(userId).getBody()).get(
                 "data"), User.class);
-
+        log.info("user: " + user.toString());
         return user;
     }
 
