@@ -29,4 +29,7 @@ public interface ITransactionRepository extends JpaRepository<Transactions, Long
     @Query("from Transferences")
     List<Transactions> findByAccountOriginIdOrderByDateTransactionDescLimitedTo(Long accountId, int limit);
 
+    @Query("select t from Transferences t where t.value BETWEEN :startValue AND :endValue")
+    List<Transactions> findAllTransferenceByValueRange(Long startValue, Long endValue);
+
 }
