@@ -108,22 +108,8 @@ public class AccountServiceImpl implements IAccountService {
         return mapper.map(accountsModel, AccountsDTOResponse.class);
     }
 
-//    @Override
-//    public void updateAccount(AccountsPatchDTORequest accountsPatchDTORequest, String id) {
-//        Accounts accountsDB = accountsRepository.findById(id).orElseThrow(() -> {
-//            throw new DataNotFoundException("Account not found.");
-//        });
-//        Accounts accountsModel = mapper.map(accountsPatchDTORequest, Accounts.class);
-//
-//        // TODO validar uso de Alias
-//
-////        accountsRepository.save(accountsDB);
-//    }
-
-    //    Task 12, 13 e 14
     @Override
     public CardsDTO findAccountCardsById(Long accountId, Long cardId) {
-
         Accounts accounts = accountsRepository.findById(accountId)
                 .orElseThrow(() -> new DataNotFoundException("Account not found with id " + accountId));
         Cards cards = accounts.getCards().stream()
