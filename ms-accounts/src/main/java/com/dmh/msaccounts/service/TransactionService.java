@@ -270,7 +270,7 @@ public class TransactionService {
                     new Paragraph("Data da transferência: " + dateFormat.format(transference.getDateTransaction()),
                             font);
             dateTransaction.setAlignment(Element.ALIGN_MIDDLE);
-            Paragraph ammount = new Paragraph("Valor: " + accountDestination.getAmmount(), font);
+            Paragraph ammount = new Paragraph("Valor: " + transference.getValue(), font);
             ammount.setAlignment(Element.ALIGN_MIDDLE);
             Paragraph key =
                     new Paragraph("Chave da Transação: " + accountOrigin.getAccount() + accountDestination.getAccount() + transference.getDateTransaction().toInstant().getEpochSecond(), font);
