@@ -56,7 +56,7 @@ public class TransactionController {
     })
     @PostMapping("/{id}/transactions")
     public ResponseEntity<Object> depositingValue(@Parameter(description = "Chave identificadora da conta") @PathVariable("id") Long accountId,
-                                                  @Parameter(description = "Dados para ralizar depõsito de valores") @Valid @RequestBody DepositDTORequest depositDTORequest,
+                                                  @Parameter(description = "Dados para realizar depósito de valores") @Valid @RequestBody DepositDTORequest depositDTORequest,
                                                   BindingResult bindingResult) throws Exception {
         if (bindingResult.hasErrors()) {
             throw new Exception(String.valueOf(bindingResult.getAllErrors().get(0)));
