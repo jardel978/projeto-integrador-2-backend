@@ -3,6 +3,7 @@ package com.dmh.msaccounts.configuration.feign;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.OAuth2AuthorizeRequest;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager;
@@ -48,7 +49,7 @@ public class Oauth2ClientCredentialsFeignManager {
 
             @Override
             public boolean isAuthenticated() {
-                return principal.isAuthenticated();
+                return this.isAuthenticated();
             }
 
             @Override
@@ -65,17 +66,11 @@ public class Oauth2ClientCredentialsFeignManager {
 
     public String getAccessToken() {
         try {
-            log.info("Status do ClientRegistrastion");
-
             OAuth2AuthorizeRequest oAuth2AuthorizeRequest = OAuth2AuthorizeRequest
                     .withClientRegistrationId(clientRegistration.getRegistrationId())
                     .principal(principal)
                     .build();
-
             OAuth2AuthorizedClient client = manager.authorize(oAuth2AuthorizeRequest);
-            log.info("Status do Client: " + client);
-
-            log.info("Status do ClientRegistrastion: "+ clientRegistration);
 
             if (client == null) {
                 throw new IllegalStateException(String.format("Client Crendentials flow para registro %s falhou! ",

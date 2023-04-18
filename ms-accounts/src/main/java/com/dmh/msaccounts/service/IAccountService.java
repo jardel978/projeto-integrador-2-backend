@@ -1,12 +1,13 @@
 package com.dmh.msaccounts.service;
 
 import com.dmh.msaccounts.model.dto.*;
-
-import java.util.Optional;
+import com.dmh.msaccounts.model.dto.requests.AccountsDTORequest;
+import com.dmh.msaccounts.model.dto.requests.CardsDTORequest;
+import com.dmh.msaccounts.model.dto.responses.AccountsDTOResponse;
 
 public interface IAccountService {
 
-    AccountsDTOResponse createAccount(AccountsDTORequest accountsDTORequest);
+    AccountsDTOResponse createAccount(AccountsDTORequest accountsDTORequest, boolean createUserWithAccount);
     AccountsDTOResponse findAccountById(Long id);
 //    void updateAccount(AccountsPatchDTORequest accountsPatchDTORequest, Long id);
     CardsDTO findAccountCardsById(Long accountId, Long cardId);

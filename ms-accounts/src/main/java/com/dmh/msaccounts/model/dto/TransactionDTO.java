@@ -1,25 +1,28 @@
 package com.dmh.msaccounts.model.dto;
 
-import com.dmh.msaccounts.model.enums.CardsTypeEnum;
-import lombok.Builder;
-import lombok.Data;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
-@Data
-@Builder
+@Getter
+@Setter
+@ToString
+@SuperBuilder
+@AllArgsConstructor
+@NoArgsConstructor
 public class TransactionDTO implements Serializable {
 
-    @NotNull(message = "Card Type is required.")
-    private CardsTypeEnum cardType;
-    private Long accountId;
-    @NotNull(message = "Value is required.")
+    private Long id;
+    @NotNull(message = "\"value\" is required.")
     private BigDecimal value;
     private Date dateTransaction;
+    @NotNull(message = "\"transactionType\" is required.")
     private String transactionType;
     private String description;
+    private Long accountOriginId;
 
 }

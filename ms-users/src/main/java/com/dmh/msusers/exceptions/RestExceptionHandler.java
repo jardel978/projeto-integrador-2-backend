@@ -1,5 +1,7 @@
 package com.dmh.msusers.exceptions;
 
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +20,7 @@ import javax.ws.rs.NotAuthorizedException;
 import java.time.LocalDateTime;
 
 @ControllerAdvice
+@Order(Ordered.HIGHEST_PRECEDENCE)
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
     private ApiError buildApiError(HttpStatus status, Exception exception, HttpServletRequest request) {
@@ -42,6 +45,13 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(LogoutException.class)
     protected ResponseEntity<Object> logoutException(LogoutException exception, HttpServletRequest request) {
+        ApiError error = buildApiError(HttpStatus.BAD_REQUEST, exception, request);
+        return buildResponseEntity(error);
+    }
+
+    @ExceptionHandler(CreateAccountException.class)
+    protected ResponseEntity<Object> createAccountException(CreateAccountException exception,
+                                                               HttpServletRequest request) {
         ApiError error = buildApiError(HttpStatus.BAD_REQUEST, exception, request);
         return buildResponseEntity(error);
     }

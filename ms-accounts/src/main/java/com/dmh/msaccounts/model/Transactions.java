@@ -1,10 +1,9 @@
 package com.dmh.msaccounts.model;
 
-import com.dmh.msaccounts.model.enums.CardsTypeEnum;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -12,27 +11,25 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 @Data
-@Builder
+@SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "transact_type", discriminatorType = DiscriminatorType.STRING)
 @Table(name = "transactions")
 public class Transactions implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "card_type")
-    private CardsTypeEnum cardType;
     private BigDecimal value;
     private Date dateTransaction;
     private String transactionType;
     private String description;
 
     @ManyToOne
-    private Accounts account;
-
-    @ManyToOne
-    private Cards cards;
+    @JoinColumn(name = "account_origin_id")
+    private Accounts accountOrigin;
 
 }

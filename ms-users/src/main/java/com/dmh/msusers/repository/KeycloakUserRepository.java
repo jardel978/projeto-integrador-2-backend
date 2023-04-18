@@ -12,10 +12,8 @@ import org.keycloak.representations.AccessTokenResponse;
 import org.keycloak.representations.idm.CredentialRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.keycloak.representations.idm.UserSessionRepresentation;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
 
 import javax.servlet.http.HttpServletRequest;
@@ -69,6 +67,7 @@ public class KeycloakUserRepository implements IUserRepository {
         userAttributes.put("cpf", cpfList);
         userAttributes.put("phone", phoneList);
         UserRepresentation userRepresentation = new UserRepresentation();
+        userRepresentation.setEnabled(true);
         userRepresentation.setUsername(user.getEmail());
         userRepresentation.setFirstName(user.getName());
         userRepresentation.setLastName(user.getLastName());
@@ -91,6 +90,7 @@ public class KeycloakUserRepository implements IUserRepository {
         int statusId = response.getStatus();
         if (statusId == 201) {
             String userId = response.getLocation().getPath().replaceAll(".*/([^/]+)$", "$1");
+            keycloak.realm(realm).users().get(userId).sendVerifyEmail(clientId);
             return findById(userId);
         } else if (statusId == 409) {
             throw new UserAlreadyExistException("user already exist.");
@@ -150,10 +150,16 @@ public class KeycloakUserRepository implements IUserRepository {
     @Override
     public AccessTokenResponse login(String email, String password) {
         try {
-            Keycloak keycloakGatewayApp = KeycloakBuilder.builder().serverUrl(serverURL)
+            List<UserRepresentation> userSearch = keycloak.realm(realm).users().search(email, true);
+            if (userSearch.isEmpty())
+                throw new LoginException("Login failed. User not found with username: " + email + ".");
+            if (!userSearch.get(0).isEmailVerified())
+                throw new LoginException("Login failed. Verify your email.");
+            Keycloak keycloakUsersApp = KeycloakBuilder.builder().serverUrl(serverURL)
                     .realm(realm).clientSecret(clientSecret).username(email).password(password)
                     .clientId(clientId).build();
-            return keycloakGatewayApp.tokenManager().getAccessToken();
+
+            return keycloakUsersApp.tokenManager().getAccessToken();
         } catch (NotAuthorizedException e) {
             throw new LoginException("Login failed. Check your credentials.");
         }

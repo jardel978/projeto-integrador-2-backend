@@ -3,7 +3,8 @@ server:
 
 eureka:
   instance:
-    hostname: eureka-service
+#    hostname: localhost
+    hostname: ms-discovery
   client:
     registerWithEureka: false
     fetchRegistry: false

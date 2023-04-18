@@ -5,8 +5,11 @@ import com.dmh.msaccounts.exception.DataAlreadyExistsException;
 import com.dmh.msaccounts.exception.DataNotFoundException;
 import com.dmh.msaccounts.model.Accounts;
 import com.dmh.msaccounts.model.Cards;
-import com.dmh.msaccounts.model.dto.*;
-import com.dmh.msaccounts.repository.FeignUserRepository;
+import com.dmh.msaccounts.model.dto.CardsDTO;
+import com.dmh.msaccounts.model.dto.requests.AccountsDTORequest;
+import com.dmh.msaccounts.model.dto.requests.CardsDTORequest;
+import com.dmh.msaccounts.model.dto.responses.AccountsDTOResponse;
+import com.dmh.msaccounts.repository.feign.IUserFeignClient;
 import com.dmh.msaccounts.repository.IAccountsRepository;
 import com.dmh.msaccounts.repository.ICardsRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -27,7 +30,7 @@ import java.util.stream.Collectors;
 public class AccountServiceImpl implements IAccountService {
 
     @Autowired
-    private FeignUserRepository feignUserRepository;
+    private IUserFeignClient iUserFeignClient;
 
     @Autowired
     private IAccountsRepository accountsRepository;
@@ -39,13 +42,17 @@ public class AccountServiceImpl implements IAccountService {
     private ModelMapper mapper;
 
     @Override
-    public AccountsDTOResponse createAccount(AccountsDTORequest accountsDTORequest) {
-        Accounts accountsModel = mapper.map(accountsDTORequest, Accounts.class);
-        ResponseEntity<Map<String, Object>> response =
-                (ResponseEntity<Map<String, Object>>) feignUserRepository.findByUserId(accountsDTORequest.getUserId());
-        log.info("response: " + response.getBody().toString());
-        if (response.getBody().containsKey("error")) {
-            throw new DataNotFoundException("User not found.");
+    public AccountsDTOResponse createAccount(AccountsDTORequest accountsDTORequest, boolean createUserWithAccount) {
+
+        Accounts accountsModel = Accounts.builder()
+                .userId(accountsDTORequest.getUserId()).build();
+
+        if (!createUserWithAccount) {
+            ResponseEntity<Map<String, Object>> response = iUserFeignClient.findByUserId(accountsDTORequest.getUserId());
+            log.info("response: " + response.getBody().toString());
+            if (response.getBody().containsKey("error")) {
+                throw new DataNotFoundException("User not found.");
+            }
         }
         UUID uuid = UUID.nameUUIDFromBytes((accountsModel.getUserId() + LocalDateTime.now().toString()).getBytes(StandardCharsets.UTF_8));
         Long number = uuid.getMostSignificantBits();
@@ -56,7 +63,7 @@ public class AccountServiceImpl implements IAccountService {
         accountsModel.setAccount(accountNumber);
         accountsModel.setAmmount(new BigDecimal(0));
 
-        if (!accountsModel.getCards().isEmpty()) {
+        if (accountsModel.getCards() != null && !accountsModel.getCards().isEmpty()) {
             accountsModel.getCards().stream().map(cards -> cardsRepository.save(cards)).collect(Collectors.toSet());
         }
 
@@ -65,28 +72,31 @@ public class AccountServiceImpl implements IAccountService {
 
     @Override
     public CardsDTO createCardByAccount(Long accountId, CardsDTORequest cardsDTORequest) {
-        Accounts accounts = accountsRepository.findById(accountId)
+        Accounts account = accountsRepository.findById(accountId)
                 .orElseThrow(() -> new DataNotFoundException("Account not found with id " + accountId));
-        accounts.getCards().forEach(c -> {
-            if (c.getNumber().equals(cardsDTORequest.getNumber())) {
-                throw new DataAlreadyExistsException("Card already exists");
-            }
-        });
 
-        Cards cards = mapper.map(cardsDTORequest, Cards.class);
+        if (!account.getCards().isEmpty())
+            account.getCards().forEach(c -> {
+                log.info("tem cartão");
+                if (c.getNumber().equals(cardsDTORequest.getNumber())) {
+                    throw new DataAlreadyExistsException("Card already exists");
+                }
+            });
 
-        cards.setAccount(accounts);
+        Cards card = mapper.map(cardsDTORequest, Cards.class);
+
+        card.setAccount(account);
 
         if (cardsDTORequest.getAmmount() == null | cardsDTORequest.getAmmount().compareTo(new BigDecimal(0)) == -1) {
-            cards.setAmmount(new BigDecimal(0));
+            card.setAmmount(new BigDecimal(0));
         }
 
-        cards = cardsRepository.save(cards);
-        accounts.getCards().add(cards);
+        card = cardsRepository.saveAndFlush(card);
+        account.getCards().add(card);
 
-        accountsRepository.save(accounts);
+        accountsRepository.save(account);
 
-        return mapper.map(cards, CardsDTO.class);
+        return mapper.map(card, CardsDTO.class);
     }
 
     @Override
@@ -98,22 +108,8 @@ public class AccountServiceImpl implements IAccountService {
         return mapper.map(accountsModel, AccountsDTOResponse.class);
     }
 
-//    @Override
-//    public void updateAccount(AccountsPatchDTORequest accountsPatchDTORequest, String id) {
-//        Accounts accountsDB = accountsRepository.findById(id).orElseThrow(() -> {
-//            throw new DataNotFoundException("Account not found.");
-//        });
-//        Accounts accountsModel = mapper.map(accountsPatchDTORequest, Accounts.class);
-//
-//        // TODO validar uso de Alias
-//
-////        accountsRepository.save(accountsDB);
-//    }
-
-//    Task 12, 13 e 14
     @Override
-    public CardsDTO findAccountCardsById(Long accountId, Long cardId){
-
+    public CardsDTO findAccountCardsById(Long accountId, Long cardId) {
         Accounts accounts = accountsRepository.findById(accountId)
                 .orElseThrow(() -> new DataNotFoundException("Account not found with id " + accountId));
         Cards cards = accounts.getCards().stream()

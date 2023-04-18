@@ -21,7 +21,7 @@ public class CardsDTO implements Serializable {
     private String cvc;
     private String name;
     private BigDecimal ammount;
-//    private boolean isExternal;
-    private String accountId;
+    private Long accountId;
     private CardsTypeEnum cardType;
+
 }

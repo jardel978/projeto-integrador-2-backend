@@ -29,7 +29,7 @@ public class KeycloakClientConfig {
 
     @Bean
     public Keycloak getInstance() {
-
+        log.info("server-url: " + serverURL);
         Keycloak keycloak = KeycloakBuilder.builder()
                 .serverUrl(serverURL)
                 .realm("master")
