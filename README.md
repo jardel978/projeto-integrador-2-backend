@@ -83,7 +83,7 @@ O projeto em questão foi proposto como Projeto Integrador de Conclusão do segu
     	3.  Gateway: Controle de fluxo de acesso ao ecossistema;
     	4.  Keycloak: Controle de acesso e gerenciamento de usuários;
     	5.  Users: Serviço de usuários;
-    	6.  Accounts: Serviços de Contas, Cartões e Transações ;
+    	6.  Accounts: Serviços de Contas, Cartões e Transações;
   	**Keycloak:**
 
 	É uma ferramenta criada pela empresa Red Hat e que faz o gerenciamento de credenciais de usuários e de suas permissões;
