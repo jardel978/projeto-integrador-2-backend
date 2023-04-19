@@ -32,7 +32,7 @@ O projeto em questão foi proposto como Projeto Integrador de Conclusão do segu
 	 -  Encerrar a sessão na carteira Digital Money House;
 
 
- - Tecnologias e conceitos empregados
+ - ## Tecnologias e conceitos empregados
 
       **Cloud Computing:**
 
