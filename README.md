@@ -34,48 +34,48 @@ O projeto em questão foi proposto como Projeto Integrador de Conclusão do segu
 
  - ## Tecnologias e conceitos empregados
 
-      **Cloud Computing:**
+	**Cloud Computing:**
 
-      É uma tecnologia que usa a conectividade e a grande escala da Internet para hospedar os mais variados recursos, programas e informações de forma remota.
+	É uma tecnologia que usa a conectividade e a grande escala da Internet para hospedar os mais variados recursos, programas e informações de forma		remota.
 
+	1. Plataforma provedora de computação em nuvem: AWS Amazon Web Service)
+	2.  Recursos utilizados:
+	     1.  Instância EC2;
 	 
-    - Plataforma provedora de computação em nuvem: AWS Amazon Web Service)
-         2.  Recursos utilizados:
-             1.  Instância EC2;
-         3.  Diagrama de Arquitetura de Cloud:
+	**Git:**
     
-	   **Git:**
-    
-    	É um sistema de controle de versões distribuído, usado
+	É um sistema de controle de versões distribuído, usado
     principalmente no desenvolvimento de software;
     
-   	**Oauth2:**
+	**Oauth2:**
     
-    	É um protocolo de autorização que permite que aplicativos obtenham
+	É um protocolo de autorização que permite que aplicativos obtenham
     acesso limitado a contas de usuários em um serviço HTTP sem a
     necessidade de enviar seu usuário e senha. Basicamente, o usuário delega, a um determinado aplicativo, acesso aos seus dados em um determinado serviço ou API;
     
-   	**Postman:**
+	**Postman:**
     
-   	É uma plataforma de API para desenvolvedores projetarem,
+	É uma plataforma de API para desenvolvedores projetarem,
     construírem, testarem e iterarem suas APIs;
     
-   	**MySQL:**
+	**MySQL:**
     
-   	Um sistema open-source de gerenciamento de base de dados relacional;
+	Um sistema open-source de gerenciamento de base de dados relacional;
     
-	  **Docker:**
+  	**Docker:**
+	
      O Docker é uma plataforma open source que facilita a criação e administração de ambientes isolados. Ele possibilita o empacotamento de uma aplicação ou              ambiente dentro de um container, se tornando portátil para qualquer outro host que o contenha instalado.
     
-   	Ele proporciona criar, implantar, copiar e migrar de um ambiente para outro com maior flexibilidade e praticidade.
+	Ele proporciona criar, implantar, copiar e migrar de um ambiente para outro com maior flexibilidade e praticidade.
       	1.  Containers: 
     	2.  Arquivo Docker Compose:
     
-   	**Linguagens:**      
-    	Java em sua versão 17;
+	**Linguagens:**      
+	Java em sua versão 17;
     
-   	**Microsserviços:**
-       	Microsserviços são uma abordagem de arquitetura para a criação de aplicações que são distribuídas e levemente acopladas para que as mudanças feitas por uma equipe não corrompam toda a aplicação, com isso as equipes de desenvolvimento conseguem criar rapidamente novos componentes de app para atender às dinâmicas necessidades da empresa;
+	**Microsserviços:**
+	
+	Microsserviços são uma abordagem de arquitetura para a criação de aplicações que são distribuídas e levemente acopladas para que as mudanças feitas por uma equipe não corrompam toda a aplicação, com isso as equipes de desenvolvimento conseguem criar rapidamente novos componentes de app para atender às dinâmicas necessidades da empresa;
 	 Para esse projeto temos os seguintes microsserviços:
     
     	1.  Eureka: Monitoramento dos serviços disponíveis;
@@ -84,11 +84,13 @@ O projeto em questão foi proposto como Projeto Integrador de Conclusão do segu
     	4.  Keycloak: Controle de acesso e gerenciamento de usuários;
     	5.  Users: Serviço de usuários;
     	6.  Accounts: Serviços de Contas, Cartões e Transações;
+
+
   	**Keycloak:**
 
 	É uma ferramenta criada pela empresa Red Hat e que faz o gerenciamento de credenciais de usuários e de suas permissões;
     
-	  **API RESTful:**
+  	**API RESTful:**
     
 	API RESTful é aquela que está em conformidade com os critérios estabelecidos pela Transferência de Estado Representacional (REST); 
    O estilo de arquitetura REST representa um conjunto específico de princípios que, se aplicados no desenvolvimento de uma aplicação web, caracterizam uma API RESTful. Dentre esses princípios temos: sistema no formato cliente-servidor, comunicação stateless; capacidade de armazenar dados em cache; interface uniforme e sistema de camadas;
@@ -96,25 +98,26 @@ O projeto em questão foi proposto como Projeto Integrador de Conclusão do segu
 	**Testes:**
 
 	-  **Rest Assured:**
-  Rest-Assured é uma ferramenta que foi desenvolvida para facilitar a criação de testes automatizados para
+Rest-Assured é uma ferramenta que foi desenvolvida para facilitar a criação de testes automatizados para
     APIs REST. Esta oferece suporte para validar protocolo HTTP e requisições em JSON. O Rest Assured oferece também extensas opções de validações das requisições que são enviadas nos serviços REST, tais como: Status Code, Headers e também elementos do Body. Tornando
     a ferramenta extremamente flexível para utilizar na criação de testes automatizados de API;
-	  -  **Testes de Fumaça:**
-	 O ciclo de teste de fumaça que é realizado pelas equipes de QA no ambiente de teste garante que se o
+  	-  **Testes de Fumaça:**
+ O ciclo de teste de fumaça que é realizado pelas equipes de QA no ambiente de teste garante que se o
     edifício implantado está atingindo a meta principal e se deve ou não ser testado posteriormente. Em outras palavras, se a construção falhar no cenário de teste da funcionalidade central, então ela será rejeitada imediatamente pela equipe de QA, e eles deixarão de
     testá-la. Ele é elaborado para garantir a funcionalidade central do novo build. Este tipo de processo e método de verificação também verifica a estabilidade e o aspecto funcional completo da construção e se falhar no teste de fumaça, então não há sentido em prosseguir com o teste;
-	 	- **Teste de Regressão:**  O teste de regressão é uma técnica do teste de software que consiste na aplicação de versões mais recente do software, para garantir que não surgiram novos defeitos em componentes já analisados. Se, ao juntar o novo componente ou as suas alterações com os componentes restantes do sistema surgirem novos defeitos em componentes inalterados, então considera-se que o sistema regrediu;    
-	   	- **Teste Unitário:**  São testes que verificam se uma parte específica do código, costumeiramente a nível de função, está
-    funcionando corretamente. Em um ambiente orientado a objetos é
-    usualmente a nível de classes e a mínima unidade de testes inclui construtores e destrutores;
-	    
-		   Esta é a nossa [Planilha](https://docs.google.com/spreadsheets/d/1Ao7xNIRpqUyMUbLUS21Dlr9fgWTlM2QrokSb-jDmBOM/edit?usp=sharing) de todos os nossos Testes Manuais.
+	- **Teste de Regressão:**  
+O teste de regressão é uma técnica do teste de software que consiste na aplicação de versões mais recente do software, para garantir que não surgiram novos de feitos em componentes já analisados. Se, ao juntar o novo componente ou as suas alterações com os componentes restantes do sistema surgirem novos defeitos em componentes inalterados, então considera-se que o sistema regrediu;    
+	- **Teste Unitário:** 
+São testes que verificam se uma parte específica do código, costumeiramente a nível de função, está
+funcionando corretamente. Em um ambiente orientado a objetos é
+usualmente a nível de classes e a mínima unidade de testes inclui construtores e destrutores;
+																					Esta é a nossa [Planilha](https://docs.google.com/spreadsheets/d/1Ao7xNIRpqUyMUbLUS21Dlr9fgWTlM2QrokSb-jDmBOM/edit?usp=sharing) de todos os nossos Testes Manuais.
 	    
 	**Frameworks:**
 
    -  O **Swagger** é um framework composto por diversas ferramentas que, independente da linguagem, auxilia a descrição, consumo e
     visualização de serviços de uma API REST;
-   	- O **Spring Boot** é um framework Java open source que tem como objetivo facilitar esse processo em aplicações Java. Consequentemente, ele traz mais agilidade para o processo de desenvolvimento, uma vez que os desenvolvedores conseguem reduzir o tempo gasto com as configurações iniciais.
+	- O **Spring Boot** é um framework Java open source que tem como objetivo facilitar esse processo em aplicações Java. Consequentemente, ele traz mais agilidade para o processo de desenvolvimento, uma vez que os desenvolvedores conseguem reduzir o tempo gasto com as configurações iniciais.
     
 	**Jira:**
 
