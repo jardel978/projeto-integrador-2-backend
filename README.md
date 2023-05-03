@@ -128,5 +128,5 @@ usualmente a nível de classes e a mínima unidade de testes inclui construtores
 	É uma estrutura para gestão de projetos que ajuda as equipes a organizar e gerenciar o trabalho por meio de um conjunto de valores, princípios e práticas. Trata-se de um método de trabalho realizado a partir de pequenos ciclos que buscam otimizar e garantir que tudo seja feito da melhor forma possível e em tempo hábil;
 
 - ## Links úteis:    [![](https://github.com/jardel978/projeto-integrador-2-backend/raw/main/Aspose.Words.2eccba6c-d412-4cf6-bd61-ef1cdaf18169.010.png)](https://github.com/jardel978/projeto-integrador-2-backend/blob/main/Aspose.Words.2eccba6c-d412-4cf6-bd61-ef1cdaf18169.010.png)
-    1.  [Repositório do Projeto no GitHub](https://github.com/jardel978/projeto-integrador-2-backend)
+    1.  [Ficha Técnica do projeto](https://docs.google.com/document/d/17wiK6pprVzX3GblafPO9ZUgwAdYkiL7aZ5Nuh5HztpE/edit)
     2.  [Pitch - Apresentação do Projeto](https://docs.google.com/presentation/d/1_pvoxhy2wVSSdYDK7Pmr2q_YTYzkobCBmY8ucSOPsxE/edit#slide=id.g22c7befabde_0_51)
